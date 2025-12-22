@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://dpb8afang4tll"
+path="res://.godot/imported/right click sound.mp3-4b06c57e23a322607abef22ec0d90759.mp3str"
+
+[deps]
+
+source_file="res://audio/FX/right click sound.mp3"
+dest_files=["res://.godot/imported/right click sound.mp3-4b06c57e23a322607abef22ec0d90759.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

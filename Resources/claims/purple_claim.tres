@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="NonPlayerClaim" load_steps=2 format=3 uid="uid://b7hd3vdjnkml6"]
+
+[ext_resource type="Script" uid="uid://bmkjamamvf3ie" path="res://scripts/claims/non_player_claim.gd" id="1_totnl"]
+
+[resource]
+script = ExtResource("1_totnl")
+name = "plum valey"
+claim_colour = 2
+metadata/_custom_type_script = "uid://bmkjamamvf3ie"

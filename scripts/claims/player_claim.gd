@@ -1,0 +1,2 @@
+extends ClaimData
+class_name PlayerClaim
