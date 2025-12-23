@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=4 uid="uid://bojd4turtuu7f"]
+[gd_scene load_steps=13 format=4 uid="uid://bojd4turtuu7f"]
 
 [ext_resource type="Texture2D" uid="uid://c8dqm2t52mlvy" path="res://sprites/tilemaps/tile_captures/tile_ui.png" id="1_7wffp"]
 [ext_resource type="Script" uid="uid://d3656qxysmfyq" path="res://scripts/main_ui/board_ui.gd" id="1_fhnlk"]
@@ -63,6 +63,13 @@ custom_data_layer_0/type = 2
 custom_data_layer_1/name = "type"
 custom_data_layer_1/type = 2
 sources/0 = SubResource("TileSetAtlasSource_fhnlk")
+
+[sub_resource type="InputEventKey" id="InputEventKey_n3ddt"]
+device = -1
+keycode = 4194309
+
+[sub_resource type="Shortcut" id="Shortcut_alpnb"]
+events = [SubResource("InputEventKey_n3ddt")]
 
 [node name="main" type="Control"]
 layout_mode = 3
@@ -129,6 +136,7 @@ vertical = true
 [node name="next_turn" type="Button" parent="game/input border/BoxContainer/inputs"]
 unique_name_in_owner = true
 layout_mode = 2
+shortcut = SubResource("Shortcut_alpnb")
 text = "Next Turn"
 
 [node name="new_game" type="Button" parent="game/input border/BoxContainer/inputs"]

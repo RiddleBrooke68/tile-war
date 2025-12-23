@@ -6,12 +6,12 @@ class_name ClaimData
 @export var moves = 0
 var fuel_count = 0
 var tile_size = 0
-var capatal_tile : Vector2i
+var capatal_tile : Array[Vector2i]
 var claim_dead = false
 
-func refresh():
+func refresh(turn_num):
 	@warning_ignore("integer_division", "narrowing_conversion")
-	moves = mini(tile_size / 2,maxi(tile_size / 10,15)) + fuel_count # + pow(tile_size,1/2)
+	moves = mini(tile_size / 2,maxi(tile_size / 10,15)) + fuel_count + turn_num # + pow(tile_size,1/2)
 
 func print_data():
 	print("\n------------------")
@@ -23,5 +23,6 @@ func print_data():
 
 func get_data():
 	return "----------------\n
-{0} have\n
-{1} tiles and {2} fuel tiles\n".format([name,tile_size,fuel_count])
+{0} have
+{1} tiles, {2} fuel tiles,
+and {3} capitals\n".format([name,tile_size,fuel_count])

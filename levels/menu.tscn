@@ -93,11 +93,130 @@ text = "Ai level"
 layout_mode = 2
 button_pressed = true
 selected = 1
-item_count = 2
+item_count = 3
 popup/item_0/text = "level 1"
 popup/item_0/id = 0
 popup/item_1/text = "level 2"
 popup/item_1/id = 1
+popup/item_2/text = "level 3"
+popup/item_2/id = 2
+
+[node name="BoxContainer2" type="BoxContainer" parent="."]
+layout_mode = 0
+offset_left = 784.0
+offset_top = 192.0
+offset_right = 1040.0
+offset_bottom = 448.0
+vertical = true
+
+[node name="Control" type="Label" parent="BoxContainer2"]
+layout_mode = 2
+text = "Capital numbers"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BoxContainer" type="GridContainer" parent="BoxContainer2"]
+layout_mode = 2
+columns = 2
+
+[node name="player_number" type="BoxContainer" parent="BoxContainer2/BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+vertical = true
+
+[node name="Label" type="Label" parent="BoxContainer2/BoxContainer/player_number"]
+layout_mode = 2
+text = "Player has"
+
+[node name="player_cap" type="OptionButton" parent="BoxContainer2/BoxContainer/player_number"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+selected = 0
+item_count = 3
+popup/item_0/text = "1 capital"
+popup/item_0/id = 0
+popup/item_1/text = "2 capital's"
+popup/item_1/id = 1
+popup/item_2/text = "3 capital's"
+popup/item_2/id = 2
+
+[node name="plum_number" type="BoxContainer" parent="BoxContainer2/BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+vertical = true
+
+[node name="Label" type="Label" parent="BoxContainer2/BoxContainer/plum_number"]
+layout_mode = 2
+text = "Plum Valey has"
+
+[node name="plum_cap" type="OptionButton" parent="BoxContainer2/BoxContainer/plum_number"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+selected = 0
+item_count = 3
+popup/item_0/text = "1 capital"
+popup/item_0/id = 0
+popup/item_1/text = "2 capital's"
+popup/item_1/id = 1
+popup/item_2/text = "3 capital's"
+popup/item_2/id = 2
+
+[node name="york_number" type="BoxContainer" parent="BoxContainer2/BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+vertical = true
+
+[node name="Label" type="Label" parent="BoxContainer2/BoxContainer/york_number"]
+layout_mode = 2
+text = "York  Street has"
+
+[node name="york_cap" type="OptionButton" parent="BoxContainer2/BoxContainer/york_number"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+selected = 0
+item_count = 3
+popup/item_0/text = "1 capital"
+popup/item_0/id = 0
+popup/item_1/text = "2 capital's"
+popup/item_1/id = 1
+popup/item_2/text = "3 capital's"
+popup/item_2/id = 2
+
+[node name="river_number" type="BoxContainer" parent="BoxContainer2/BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+vertical = true
+
+[node name="Label" type="Label" parent="BoxContainer2/BoxContainer/river_number"]
+layout_mode = 2
+text = "River Solme has"
+
+[node name="river_cap" type="OptionButton" parent="BoxContainer2/BoxContainer/river_number"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+selected = 0
+item_count = 3
+popup/item_0/text = "1 capital"
+popup/item_0/id = 0
+popup/item_1/text = "2 capital's"
+popup/item_1/id = 1
+popup/item_2/text = "3 capital's"
+popup/item_2/id = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="BoxContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "[center][b]CAREFUL WITH THIS[/b][/center]
+It can crash your game."
 
 [connection signal="button_down" from="BoxContainer/start_game" to="." method="_on_start_game"]
 [connection signal="value_changed" from="BoxContainer/GridContainer/wall_settings/WallSlider" to="." method="_on_wall_slider_value_changed"]
@@ -107,3 +226,7 @@ popup/item_1/id = 1
 [connection signal="toggled" from="BoxContainer/GridContainer/yellow_setting" to="." method="_on_yellow_setting_toggled"]
 [connection signal="toggled" from="BoxContainer/GridContainer/red_setting" to="." method="_on_red_setting_toggled"]
 [connection signal="item_selected" from="BoxContainer/BoxContainer/ai_level_setting" to="." method="_on_change_ai_level"]
+[connection signal="item_selected" from="BoxContainer2/BoxContainer/player_number/player_cap" to="." method="_on_player_cap_item_selected"]
+[connection signal="item_selected" from="BoxContainer2/BoxContainer/plum_number/plum_cap" to="." method="_on_plum_cap_item_selected"]
+[connection signal="item_selected" from="BoxContainer2/BoxContainer/york_number/york_cap" to="." method="_on_york_cap_item_selected"]
+[connection signal="item_selected" from="BoxContainer2/BoxContainer/river_number/river_cap" to="." method="_on_river_cap_item_selected"]

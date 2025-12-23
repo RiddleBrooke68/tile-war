@@ -4,6 +4,7 @@
 
 [resource]
 script = ExtResource("1_totnl")
+fuel_beeline = 4
 name = "plum valey"
 claim_colour = 2
 metadata/_custom_type_script = "uid://bmkjamamvf3ie"

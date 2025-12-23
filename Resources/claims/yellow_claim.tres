@@ -4,6 +4,8 @@
 
 [resource]
 script = ExtResource("1_p2yjf")
+fuel_beeline = 1
+stratigic_beeline = 2
 name = "york street"
 claim_colour = 3
 metadata/_custom_type_script = "uid://bmkjamamvf3ie"
