@@ -25,4 +25,4 @@ func get_data():
 	return "----------------\n
 {0} have
 {1} tiles, {2} fuel tiles,
-and {3} capitals\n".format([name,tile_size,fuel_count])
+and {3} capitals\n".format([name,tile_size,fuel_count,capatal_tile.size()])

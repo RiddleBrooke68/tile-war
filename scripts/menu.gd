@@ -24,6 +24,10 @@ func _ready():
 	wall_slider.value = Global.wall_count
 	fuel_slider.value = Global.fuel_count
 	ai_level.selected = Global.ai_level
+	player_setting.button_pressed 	= Global.player_enabled
+	purple_setting.button_pressed 	= Global.purple_enabled
+	yellow_setting.button_pressed 	= Global.yellow_enabled
+	red_setting.button_pressed  	= Global.red_enabled
 	for i in range(0,4):
 		cap_list[i].selected = Global.cap_list[i] - 1
 

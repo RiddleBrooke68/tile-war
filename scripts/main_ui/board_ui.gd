@@ -360,6 +360,10 @@ func start_search(new_tile:tile_data,coords:Vector2i,claim:int,ignore_set:Array[
 			if not picked_tile.get_custom_data("ownership") in [0,claim] and check_tile_claimably(coords,claim):
 				new_tile.move_to_value = 1 if new_tile.move_to_value <= 0 else new_tile.move_to_value 
 				new_tile.move_to_value *= ai_data.stratigic_beeline if can_use_ai else 1
+			
+			if not picked_tile.get_custom_data("ownership") in [0,claim] and picked_tile.get_custom_data("type") == 1:
+				new_tile.move_to_value = 1 if new_tile.move_to_value <= 0 else new_tile.move_to_value 
+				new_tile.move_to_value *= ai_data.capital_beeline if can_use_ai else 1
 	#if can_use_ai:
 		#print("This tile has the folowing info\n--------------")
 		#print(new_tile.get_info()+"\n------------")
@@ -381,24 +385,36 @@ func search_surounding_tiles(tile:Vector2i,distance:int,claim,ignore_set:Array[V
 			for neighbor in neighbors:
 				var picked_tile = main_grid.get_cell_tile_data(neighbor)
 				if not picked_tile == null:
-					if not (picked_tile.get_custom_data("ownership") == 0 and picked_tile.get_custom_data("type") == 1): #check_tile_claimably(tile,claim)
-						# If this is a fuel source, then the ai will go for it.
-						var fuel_weight = picked_tile.get_custom_data("ownership") != claim and picked_tile.get_custom_data("type") == 3
-						if fuel_weight:
-							score += distance * ai_data.fuel_beeline if can_use_ai else distance
-						# This looks if the tile is of a enemy, and that they can take it.
-						var stratigic_weight = not picked_tile.get_custom_data("ownership") in [0,claim] and check_tile_claimably(tile,claim)
-						if stratigic_weight:
-							score += distance * ai_data.stratigic_beeline if can_use_ai else distance
-						# This looks if the tile is of a enemy, regadless of if they can take it or not.
-						var blindless_weight = not picked_tile.get_custom_data("ownership") in [0,claim]
-						if blindless_weight:
-							score += distance * ai_data.blindless_beeline if can_use_ai else distance * 0
-						
-						# Maybe seeing if it has hit something it will stop looking around and just go back. Maybe.
-						# I have no Idea though. :\
-						if not (fuel_weight and stratigic_weight and blindless_weight):
-							score += search_surounding_tiles(neighbor,distance-1,claim,[],can_use_ai,ai_data)
+					#if not (picked_tile.get_custom_data("ownership") == 0 and picked_tile.get_custom_data("type") == 1): #check_tile_claimably(tile,claim)
+					# If this is a fuel source, then the ai will go for it.
+					var fuel_weight = picked_tile.get_custom_data("ownership") != claim and picked_tile.get_custom_data("type") == 3
+					if fuel_weight:
+						score += distance * ai_data.fuel_beeline if can_use_ai else distance
+					# This looks if the tile is of a enemy, and that they can take it.
+					var stratigic_weight = not picked_tile.get_custom_data("ownership") in [0,claim] and check_tile_claimably(tile,claim)
+					if stratigic_weight:
+						score += distance * ai_data.stratigic_beeline if can_use_ai else distance
+					# This looks if the tile is of a enemy, regadless of if they can take it or not.
+					var blindless_weight = not picked_tile.get_custom_data("ownership") in [0,claim]
+					if blindless_weight:
+						score += distance * ai_data.blindless_beeline if can_use_ai else distance * 0
+					
+					var teratory_weight = picked_tile.get_custom_data("ownership") == claim 
+					if teratory_weight:
+						score += maxi(distance - (Global.dist - 1),0) * ai_data.teratory_beeline if can_use_ai else maxi(distance - (Global.dist - 1),0) * 0
+					
+					var capital_weight = not picked_tile.get_custom_data("ownership") in [0,claim] and picked_tile.get_custom_data("type") == 1 and check_tile_claimably(tile,claim)
+					if capital_weight:
+						score += maxi(distance - (Global.dist - 1),0) * ai_data.capital_beeline if can_use_ai else maxi(distance - (Global.dist - 1),0) * 0
+					
+					var wall_weight = picked_tile.get_custom_data("ownership") == 0 and picked_tile.get_custom_data("type") == 1
+					if wall_weight:
+						score += distance * ai_data.wall_beeline if can_use_ai else distance * 0
+					
+					# Maybe seeing if it has hit something it will stop looking around and just go back. Maybe.
+					# I have no Idea though. :\
+					if not (fuel_weight and stratigic_weight and blindless_weight):
+						score += search_surounding_tiles(neighbor,distance-1,claim,[],can_use_ai,ai_data)
 	return score
 
 ## Finds if two points are linked, normaly one tile, and its capital.
