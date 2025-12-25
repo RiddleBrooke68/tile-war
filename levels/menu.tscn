@@ -14,13 +14,14 @@ script = ExtResource("1_cnlwo")
 [node name="BoxContainer" type="BoxContainer" parent="."]
 layout_mode = 0
 offset_left = 384.0
-offset_top = 192.0
+offset_top = 152.0
 offset_right = 768.0
-offset_bottom = 448.0
+offset_bottom = 455.0
 vertical = true
 
 [node name="Label" type="Label" parent="BoxContainer"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 64
 text = "Tile War"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -100,6 +101,18 @@ popup/item_1/text = "level 2"
 popup/item_1/id = 1
 popup/item_2/text = "level 3"
 popup/item_2/id = 2
+
+[node name="BoxContainer2" type="BoxContainer" parent="BoxContainer"]
+layout_mode = 2
+
+[node name="Button" type="Label" parent="BoxContainer/BoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Last man standing"
+
+[node name="lms_setting" type="CheckBox" parent="BoxContainer/BoxContainer2"]
+layout_mode = 2
+button_pressed = true
 
 [node name="BoxContainer2" type="BoxContainer" parent="."]
 layout_mode = 0
@@ -226,6 +239,7 @@ It can crash your game."
 [connection signal="toggled" from="BoxContainer/GridContainer/yellow_setting" to="." method="_on_yellow_setting_toggled"]
 [connection signal="toggled" from="BoxContainer/GridContainer/red_setting" to="." method="_on_red_setting_toggled"]
 [connection signal="item_selected" from="BoxContainer/BoxContainer/ai_level_setting" to="." method="_on_change_ai_level"]
+[connection signal="toggled" from="BoxContainer/BoxContainer2/lms_setting" to="." method="_on_lms_setting_toggled"]
 [connection signal="item_selected" from="BoxContainer2/BoxContainer/player_number/player_cap" to="." method="_on_player_cap_item_selected"]
 [connection signal="item_selected" from="BoxContainer2/BoxContainer/plum_number/plum_cap" to="." method="_on_plum_cap_item_selected"]
 [connection signal="item_selected" from="BoxContainer2/BoxContainer/york_number/york_cap" to="." method="_on_york_cap_item_selected"]

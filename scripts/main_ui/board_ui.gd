@@ -413,7 +413,7 @@ func search_surounding_tiles(tile:Vector2i,distance:int,claim,ignore_set:Array[V
 					
 					# Maybe seeing if it has hit something it will stop looking around and just go back. Maybe.
 					# I have no Idea though. :\
-					if not (fuel_weight and stratigic_weight and blindless_weight):
+					if not (fuel_weight and stratigic_weight and blindless_weight and teratory_weight and capital_weight and wall_weight):
 						score += search_surounding_tiles(neighbor,distance-1,claim,[],can_use_ai,ai_data)
 	return score
 

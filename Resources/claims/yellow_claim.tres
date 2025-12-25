@@ -4,10 +4,12 @@
 
 [resource]
 script = ExtResource("1_p2yjf")
-stratigic_beeline = 3
+fuel_beeline = 3
+stratigic_beeline = 2
 blindless_beeline = 1
+teratory_beeline = 0
 capital_beeline = 2
-wall_beeline = 1
+wall_beeline = 2
 name = "york street"
 claim_colour = 3
 metadata/_custom_type_script = "uid://bmkjamamvf3ie"

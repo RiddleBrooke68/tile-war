@@ -15,3 +15,4 @@ var ai_level = 1:
 		ai_level =  value
 var dist = 2
 var cap_list = [1,1,1,1]
+var lms_enabled = true

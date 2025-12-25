@@ -19,6 +19,7 @@ extends Control
 @onready var river_cap = %river_cap
 @onready var cap_list = [player_cap,plum_cap,york_cap,river_cap]
 
+@onready var lms_setting = $BoxContainer/BoxContainer2/lms_setting
 
 func _ready():
 	wall_slider.value = Global.wall_count
@@ -30,6 +31,7 @@ func _ready():
 	red_setting.button_pressed  	= Global.red_enabled
 	for i in range(0,4):
 		cap_list[i].selected = Global.cap_list[i] - 1
+	lms_setting.button_pressed = Global.lms_enabled
 
 func _on_wall_slider_value_changed(value):
 	wall_text.text = "Wall count: {0}".format([value])
@@ -79,3 +81,7 @@ func _on_start_game():
 
 func _on_change_ai_level(index):
 	Global.ai_level = index
+
+
+func _on_lms_setting_toggled(toggled_on):
+	Global.lms_enabled = toggled_on

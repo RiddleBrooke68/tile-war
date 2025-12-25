@@ -46,12 +46,14 @@ func on_next_turn():
 			done_moves.clear()
 	game_state_changed(true)
 
+var dead_number = 0
 func game_state_changed(refresh=false):
 	#claims_info.clear()
 	var claim_text = "The Claims\n"
 	for claim in claims:
 		claim.claim_dead = board_ui.check_claim_captatal(claim.claim_colour).is_empty()
 		if claim.claim_dead == false:
+			dead_number += 1
 			claim.tile_size = board_ui.check_claim_tile_count(claim.claim_colour)
 			claim.fuel_count = board_ui.check_claim_fuel_tile_count(claim.claim_colour)
 			claim_text += claim.get_data()
@@ -76,6 +78,10 @@ func game_state_changed(refresh=false):
 			board_ui.off_input = false
 	
 	claims_info.text = claim_text
+	if dead_number == 1 and Global.lms_enabled:
+		next_turn.disabled = true
+	else:
+		dead_number = 0
 
 const turn_text = "Turn {0}"
 func _on_board_tile_info(data:tile_data):
