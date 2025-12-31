@@ -21,17 +21,30 @@ extends Control
 
 @onready var lms_setting = $BoxContainer/BoxContainer2/lms_setting
 
+@onready var music_type = $"BoxContainer3/BoxContainer/Music type/music_type_setting"
+@onready var music_slider = $BoxContainer3/BoxContainer/music_settings/MusicSlider
+@onready var sfx_slider = $BoxContainer3/BoxContainer/sfx_settings/SfxSlider
+
 func _ready():
+	# Genration
 	wall_slider.value = Global.wall_count
 	fuel_slider.value = Global.fuel_count
+	# Ai
 	ai_level.selected = Global.ai_level
+	# Active players
 	player_setting.button_pressed 	= Global.player_enabled
 	purple_setting.button_pressed 	= Global.purple_enabled
 	yellow_setting.button_pressed 	= Global.yellow_enabled
 	red_setting.button_pressed  	= Global.red_enabled
+	# Cap number
 	for i in range(0,4):
 		cap_list[i].selected = Global.cap_list[i] - 1
+	# Lms
 	lms_setting.button_pressed = Global.lms_enabled
+	# Music
+	music_type.selected = Global.music_type
+	music_slider.value = Global.music_vol
+	sfx_slider.value = Global.SFX_vol
 
 func _on_wall_slider_value_changed(value):
 	wall_text.text = "Wall count: {0}".format([value])
@@ -85,3 +98,15 @@ func _on_change_ai_level(index):
 
 func _on_lms_setting_toggled(toggled_on):
 	Global.lms_enabled = toggled_on
+
+
+func _on_music_type_setting_item_selected(index):
+	Global.music_type = index
+
+
+func _on_music_slider_value_changed(value):
+	Global.music_vol = value
+
+
+func _on_sfx_slider_value_changed(value):
+	Global.SFX_vol = value

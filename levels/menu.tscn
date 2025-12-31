@@ -14,9 +14,9 @@ script = ExtResource("1_cnlwo")
 [node name="BoxContainer" type="BoxContainer" parent="."]
 layout_mode = 0
 offset_left = 384.0
-offset_top = 152.0
+offset_top = 104.0
 offset_right = 768.0
-offset_bottom = 455.0
+offset_bottom = 407.0
 vertical = true
 
 [node name="Label" type="Label" parent="BoxContainer"]
@@ -27,7 +27,9 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="start_game" type="Button" parent="BoxContainer"]
+custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
+theme_override_font_sizes/font_size = 28
 text = "Start Game"
 
 [node name="GridContainer" type="GridContainer" parent="BoxContainer"]
@@ -46,6 +48,7 @@ text = "Wall count:"
 [node name="WallSlider" type="HSlider" parent="BoxContainer/GridContainer/wall_settings"]
 layout_mode = 2
 max_value = 160.0
+rounded = true
 
 [node name="fuel_settings" type="BoxContainer" parent="BoxContainer/GridContainer"]
 layout_mode = 2
@@ -61,6 +64,7 @@ layout_mode = 2
 min_value = 5.0
 max_value = 80.0
 value = 15.0
+rounded = true
 
 [node name="player_setting" type="CheckButton" parent="BoxContainer/GridContainer"]
 layout_mode = 2
@@ -116,9 +120,9 @@ button_pressed = true
 
 [node name="BoxContainer2" type="BoxContainer" parent="."]
 layout_mode = 0
-offset_left = 784.0
+offset_left = 112.0
 offset_top = 192.0
-offset_right = 1040.0
+offset_right = 368.0
 offset_bottom = 448.0
 vertical = true
 
@@ -231,6 +235,75 @@ bbcode_enabled = true
 text = "[center][b]CAREFUL WITH THIS[/b][/center]
 It can crash your game."
 
+[node name="BoxContainer3" type="BoxContainer" parent="."]
+layout_mode = 0
+offset_left = 784.0
+offset_top = 192.0
+offset_right = 976.0
+offset_bottom = 448.0
+vertical = true
+
+[node name="Label" type="Label" parent="BoxContainer3"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Audio"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BoxContainer" type="BoxContainer" parent="BoxContainer3"]
+layout_mode = 2
+size_flags_vertical = 3
+vertical = true
+
+[node name="Music type" type="BoxContainer" parent="BoxContainer3/BoxContainer"]
+layout_mode = 2
+vertical = true
+
+[node name="Button" type="Label" parent="BoxContainer3/BoxContainer/Music type"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Music type"
+
+[node name="music_type_setting" type="OptionButton" parent="BoxContainer3/BoxContainer/Music type"]
+layout_mode = 2
+button_pressed = true
+selected = 0
+item_count = 2
+popup/item_0/text = "warning siren"
+popup/item_0/id = 0
+popup/item_1/text = "wolfquest"
+popup/item_1/id = 1
+
+[node name="music_settings" type="BoxContainer" parent="BoxContainer3/BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+vertical = true
+
+[node name="Label" type="Label" parent="BoxContainer3/BoxContainer/music_settings"]
+layout_mode = 2
+text = "Music volume:"
+
+[node name="MusicSlider" type="HSlider" parent="BoxContainer3/BoxContainer/music_settings"]
+layout_mode = 2
+max_value = 10.0
+value = 10.0
+rounded = true
+
+[node name="sfx_settings" type="BoxContainer" parent="BoxContainer3/BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+vertical = true
+
+[node name="Label" type="Label" parent="BoxContainer3/BoxContainer/sfx_settings"]
+layout_mode = 2
+text = "SFX volume:"
+
+[node name="SfxSlider" type="HSlider" parent="BoxContainer3/BoxContainer/sfx_settings"]
+layout_mode = 2
+max_value = 10.0
+value = 10.0
+rounded = true
+
 [connection signal="button_down" from="BoxContainer/start_game" to="." method="_on_start_game"]
 [connection signal="value_changed" from="BoxContainer/GridContainer/wall_settings/WallSlider" to="." method="_on_wall_slider_value_changed"]
 [connection signal="value_changed" from="BoxContainer/GridContainer/fuel_settings/FuelSlider" to="." method="_on_fuel_slider_value_changed"]
@@ -244,3 +317,6 @@ It can crash your game."
 [connection signal="item_selected" from="BoxContainer2/BoxContainer/plum_number/plum_cap" to="." method="_on_plum_cap_item_selected"]
 [connection signal="item_selected" from="BoxContainer2/BoxContainer/york_number/york_cap" to="." method="_on_york_cap_item_selected"]
 [connection signal="item_selected" from="BoxContainer2/BoxContainer/river_number/river_cap" to="." method="_on_river_cap_item_selected"]
+[connection signal="item_selected" from="BoxContainer3/BoxContainer/Music type/music_type_setting" to="." method="_on_music_type_setting_item_selected"]
+[connection signal="value_changed" from="BoxContainer3/BoxContainer/music_settings/MusicSlider" to="." method="_on_music_slider_value_changed"]
+[connection signal="value_changed" from="BoxContainer3/BoxContainer/sfx_settings/SfxSlider" to="." method="_on_sfx_slider_value_changed"]

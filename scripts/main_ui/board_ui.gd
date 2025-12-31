@@ -34,6 +34,8 @@ var enabled_claims = [true, true, true, true]
 var grid_coords : Vector2i
 
 
+
+
 ## For game sounds. (CURRENTLY USING SOUNDS FROM GOD MACHINE)
 var sound : AudioStreamPlayer
 
@@ -48,6 +50,7 @@ func _ready():
 		Global.red_enabled])
 	sound = AudioStreamPlayer.new()
 	add_child(sound)
+	sound.volume_db = linear_to_db(Global.SFX_vol/10)
 	
 	var set_of_grid : Array[Vector2i] = main_grid.get_used_cells()
 	var maxx = set_of_grid.max()

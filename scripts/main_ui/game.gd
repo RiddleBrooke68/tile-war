@@ -13,7 +13,14 @@ var player_claim : PlayerClaim
 
 var turn = 0
 
+var music : AudioStreamPlayer
+
 func _ready():
+	music = AudioStreamPlayer.new()
+	add_child(music)
+	music.volume_db = linear_to_db(Global.SFX_vol/10)
+	music.stream = load(Global.music_list[Global.music_type]) as AudioStream
+	music.play()
 	game_state_changed(true)
 
 var done_moves : Array[Vector2i]

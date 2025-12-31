@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://bt05oqu2pl10q"
+path="res://.godot/imported/wolfquest sounding ass.mp3-b35b30464b06fafd0b98d7ff4ace9e92.mp3str"
+
+[deps]
+
+source_file="res://audio/music/wolfquest sounding ass/wolfquest sounding ass.mp3"
+dest_files=["res://.godot/imported/wolfquest sounding ass.mp3-b35b30464b06fafd0b98d7ff4ace9e92.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

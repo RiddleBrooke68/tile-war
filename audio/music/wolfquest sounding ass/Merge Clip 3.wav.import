@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://c0trhphn1aafg"
+path="res://.godot/imported/Merge Clip 3.wav-6ab63c5b0dd1518fb27087f2e5654065.sample"
+
+[deps]
+
+source_file="res://audio/music/wolfquest sounding ass/Merge Clip 3.wav"
+dest_files=["res://.godot/imported/Merge Clip 3.wav-6ab63c5b0dd1518fb27087f2e5654065.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

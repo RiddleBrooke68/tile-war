@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://dc0e3mbj5vo54"
+path="res://.godot/imported/wolfquest.ogg-6ecfbd54e8c36667d641c37e5388d3e9.oggvorbisstr"
+
+[deps]
+
+source_file="res://audio/music/wolfquest sounding ass/wolfquest.ogg"
+dest_files=["res://.godot/imported/wolfquest.ogg-6ecfbd54e8c36667d641c37e5388d3e9.oggvorbisstr"]
+
+[params]
+
+loop=true
+loop_offset=0.0
+bpm=0.0
+beat_count=0
+bar_beats=4
