@@ -25,10 +25,18 @@ extends Control
 @onready var music_slider = $BoxContainer3/BoxContainer/music_settings/MusicSlider
 @onready var sfx_slider = $BoxContainer3/BoxContainer/sfx_settings/SfxSlider
 
+## For game sounds. (CURRENTLY USING SOUNDS FROM GOD MACHINE)
+var sound : AudioStreamPlayer
+
 func _ready():
+	sound = AudioStreamPlayer.new()
+	add_child(sound)
+	sound_play()
 	# Genration
 	wall_slider.value = Global.wall_count
+	_on_wall_slider_value_changed(wall_slider.value)
 	fuel_slider.value = Global.fuel_count
+	_on_fuel_slider_value_changed(fuel_slider.value)
 	# Ai
 	ai_level.selected = Global.ai_level
 	# Active players
@@ -46,46 +54,68 @@ func _ready():
 	music_slider.value = Global.music_vol
 	sfx_slider.value = Global.SFX_vol
 
+func sound_play(use_drag=false):
+	if not use_drag or drag:
+		sound.volume_linear = Global.SFX_vol/10
+		sound.stream = load("res://audio/FX/left click sound.mp3") as AudioStream
+		sound.play()
+
+
+var drag = false
+
+func drag_ended(value):
+	drag = value
+
 func _on_wall_slider_value_changed(value):
 	wall_text.text = "Wall count: {0}".format([value])
 	Global.wall_count = value
+	sound_play(true)
 
 func _on_fuel_slider_value_changed(value):
 	fuel_text.text = "Fuel count: {0}".format([value])
 	Global.fuel_count = value
+	sound_play(true)
 
 # Enabled claims
 func _on_player_setting_toggled(toggled_on):
 	Global.player_enabled = toggled_on
+	sound_play()
 
 
 func _on_purple_setting_toggled(toggled_on):
 	Global.purple_enabled = toggled_on
+	sound_play()
 
 
 func _on_yellow_setting_toggled(toggled_on):
 	Global.yellow_enabled = toggled_on
+	sound_play()
 
 
 func _on_red_setting_toggled(toggled_on):
 	Global.red_enabled = toggled_on
+	sound_play()
 
 
 func _on_player_cap_item_selected(index):
 	Global.cap_list[0] = index + 1
+	sound_play()
 
 
 func _on_plum_cap_item_selected(index):
 	Global.cap_list[1] = index + 1
+	sound_play()
 
 
 func _on_york_cap_item_selected(index):
 	Global.cap_list[2] = index + 1
+	sound_play()
 
 
 
 func _on_river_cap_item_selected(index):
 	Global.cap_list[3] = index + 1
+	sound_play()
 
 
 func _on_start_game():
@@ -94,19 +124,24 @@ func _on_start_game():
 
 func _on_change_ai_level(index):
 	Global.ai_level = index
+	sound_play()
 
 
 func _on_lms_setting_toggled(toggled_on):
 	Global.lms_enabled = toggled_on
+	sound_play()
 
 
 func _on_music_type_setting_item_selected(index):
 	Global.music_type = index
+	sound_play()
 
 
 func _on_music_slider_value_changed(value):
 	Global.music_vol = value
+	sound_play(true)
 
-
+## Sets the volume of sound efects
 func _on_sfx_slider_value_changed(value):
 	Global.SFX_vol = value
+	sound_play(true)

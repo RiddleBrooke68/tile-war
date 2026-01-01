@@ -3,7 +3,7 @@ extends Node
 ## Sets the number of wall tiles
 var wall_count = 74
 ## Sets the number of fuel tiles
-var fuel_count = 25
+var fuel_count = 16
 ## Removes player if disabled
 var player_enabled = true
 ## Removes purple if disabled

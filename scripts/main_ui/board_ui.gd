@@ -20,6 +20,8 @@ signal tile_info(data:tile_data)
 
 @onready var game = $"../.."
 
+
+
 ## Watches for if the mouse is on the board or not.
 var hovered = false
 

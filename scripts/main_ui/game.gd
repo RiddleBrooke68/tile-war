@@ -10,7 +10,10 @@ var player_claim : PlayerClaim
 @onready var game_info = %game_Info
 @onready var claims_info = %claims_Info
 @onready var clock = %clock
+@onready var fade_anim = %fade_anim
 
+
+@onready var moves_plate = %moves_plate
 var turn = 0
 
 var music : AudioStreamPlayer
@@ -18,13 +21,14 @@ var music : AudioStreamPlayer
 func _ready():
 	music = AudioStreamPlayer.new()
 	add_child(music)
-	music.volume_db = linear_to_db(Global.SFX_vol/10)
+	music.volume_linear = Global.music_vol/10
 	music.stream = load(Global.music_list[Global.music_type]) as AudioStream
 	music.play()
 	game_state_changed(true)
 
 var done_moves : Array[Vector2i]
 func on_next_turn():
+	next_turn.disabled = true
 	print("Start Next turn:")
 	for claim : ClaimData in claims:
 		print("""----------------------------------------\nThe {0} turn""".format([claim.name]))
@@ -51,6 +55,7 @@ func on_next_turn():
 				clock.start()
 				await clock.timeout
 			done_moves.clear()
+	next_turn.disabled = false
 	game_state_changed(true)
 
 var dead_number = 0
@@ -78,6 +83,7 @@ func game_state_changed(refresh=false):
 		turn += 1
 	if player_claim != null:
 		claim_text += "----------\nYou have {0} moves left".format([player_claim.moves])
+		moves_plate.set_plate_number(player_claim.moves)
 		
 		if player_claim.moves == 0:
 			board_ui.off_input = true
@@ -97,4 +103,11 @@ func _on_board_tile_info(data:tile_data):
 
 
 func new_game():
-	get_tree().change_scene_to_file("res://levels/menu.tscn")
+	fade_anim.play("fade_out")
+	var tween = get_tree().create_tween()
+	tween.tween_property(music,"volume_linear",0.0,3.0)
+
+
+func _on_fade_anim_animation_finished(anim_name):
+	if anim_name == "fade_out":
+		get_tree().change_scene_to_file("res://levels/menu.tscn")
