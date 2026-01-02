@@ -1,5 +1,7 @@
 extends Node
 
+## Which map will be played.
+var map_type = 1
 ## Sets the number of wall tiles
 var wall_count = 74
 ## Sets the number of fuel tiles

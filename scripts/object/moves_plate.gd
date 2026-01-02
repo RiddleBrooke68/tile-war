@@ -19,14 +19,34 @@ extends Node2D
 ]
 @export var overflow_num : CompressedTexture2D = preload("res://sprites/ui/moves/numbers/move_overflow.png") as CompressedTexture2D
 
-@export var number = 10
+@export var number = 10:
+	set(num):
+		animate_change(num)
+		number = num
 
+## @deprecated
 func set_plate_number(num:int):
-	if num < number_set.size():
+	if num < number_set.size() and 0 <= num:
 		plate_number.texture = number_set[num]
 	else:
 		plate_number.texture = overflow_num
 	pass
 
-func get_plate_number() -> int:
-	return number
+func update_plate_display():
+	if number < number_set.size() and 0 <= number:
+		plate_number.texture = number_set[number]
+	else:
+		plate_number.texture = overflow_num
+	pass
+
+@onready var animation_player = $AnimationPlayer
+
+func animate_change(num):
+	if animation_player.is_playing():
+		update_plate_display()
+	animation_player.play("RESET")
+	if number == num or number == 0:
+		animation_player.play("out_of_moves")
+		update_plate_display()
+	elif number != num:
+		animation_player.play("drop_move")

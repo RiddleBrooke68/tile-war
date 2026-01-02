@@ -1,13 +1,34 @@
 extends Resource
 class_name ClaimData
 
-@export var name = ""
+signal changed_info
+
+@export var name = "":
+	set(n):
+		name = n
+		changed_info.emit()
 @export_range(1,4) var claim_colour = 1
-@export var moves = 0
-var fuel_count = 0
-var tile_size = 0
-var capatal_tile : Array[Vector2i]
-var claim_dead = false
+@export var moves = 0:
+	set(n):
+		moves = n
+		changed_info.emit()
+@export var claim_panel : Texture
+var fuel_count = 0:
+	set(n):
+		fuel_count = n
+		changed_info.emit()
+var tile_size = 0:
+	set(n):
+		tile_size = n
+		changed_info.emit()
+var capatal_tile : Array[Vector2i]:
+	set(n):
+		capatal_tile = n
+		changed_info.emit()
+var claim_dead = false:
+	set(n):
+		claim_dead = n
+		changed_info.emit()
 
 func refresh(turn_num):
 	@warning_ignore("integer_division", "narrowing_conversion")

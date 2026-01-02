@@ -2,6 +2,8 @@ extends Control
 
 @onready var start_game = $BoxContainer/start_game
 
+@onready var map_setting = $BoxContainer/map/map_setting
+
 @onready var wall_text = $BoxContainer/GridContainer/wall_settings/Label
 @onready var wall_slider = $BoxContainer/GridContainer/wall_settings/WallSlider
 @onready var fuel_text = $BoxContainer/GridContainer/fuel_settings/Label
@@ -25,6 +27,8 @@ extends Control
 @onready var music_slider = $BoxContainer3/BoxContainer/music_settings/MusicSlider
 @onready var sfx_slider = $BoxContainer3/BoxContainer/sfx_settings/SfxSlider
 
+
+
 ## For game sounds. (CURRENTLY USING SOUNDS FROM GOD MACHINE)
 var sound : AudioStreamPlayer
 
@@ -32,6 +36,8 @@ func _ready():
 	sound = AudioStreamPlayer.new()
 	add_child(sound)
 	sound_play()
+	# Pregenration
+	map_setting.selected = Global.map_type
 	# Genration
 	wall_slider.value = Global.wall_count
 	_on_wall_slider_value_changed(wall_slider.value)
@@ -65,6 +71,9 @@ var drag = false
 
 func drag_ended(value):
 	drag = value
+
+func _on_map_setting_item_selected(index):
+	Global.map_type = index
 
 func _on_wall_slider_value_changed(value):
 	wall_text.text = "Wall count: {0}".format([value])
@@ -140,6 +149,8 @@ func _on_music_type_setting_item_selected(index):
 func _on_music_slider_value_changed(value):
 	Global.music_vol = value
 	sound_play(true)
+
+
 
 ## Sets the volume of sound efects
 func _on_sfx_slider_value_changed(value):

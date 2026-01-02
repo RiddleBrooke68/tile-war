@@ -1,0 +1,81 @@
+[gd_scene load_steps=5 format=3 uid="uid://cj0c3ub7bgeqa"]
+
+[ext_resource type="Script" uid="uid://bb4ylgdiaum6k" path="res://objects/ui/claim_data_panel.gd" id="1_e7n3i"]
+[ext_resource type="Resource" uid="uid://ej04cfpihcpx" path="res://Resources/claims/main_player.tres" id="2_aj44g"]
+[ext_resource type="Texture2D" uid="uid://cos8wi52sbkgs" path="res://sprites/ui/claim_data/claim_dead_data_panel.png" id="3_18qme"]
+[ext_resource type="Texture2D" uid="uid://dovjr1fbn0ehx" path="res://sprites/ui/claim_data/claim_fallback_data_panel.png" id="4_18qme"]
+
+[node name="claim_data_panel" type="Control"]
+custom_minimum_size = Vector2(202, 88)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -950.0
+offset_bottom = -559.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_e7n3i")
+claim = ExtResource("2_aj44g")
+dead_panel = ExtResource("3_18qme")
+fallback_panel = ExtResource("4_18qme")
+
+[node name="panel" type="Sprite2D" parent="."]
+position = Vector2(101, 44)
+texture = ExtResource("4_18qme")
+
+[node name="name" type="Label" parent="."]
+modulate = Color(0, 0, 0, 1)
+clip_contents = true
+layout_mode = 0
+offset_left = 102.0
+offset_top = 4.0
+offset_right = 187.0
+offset_bottom = 27.0
+theme_override_font_sizes/font_size = 12
+text = "placeholder"
+horizontal_alignment = 1
+vertical_alignment = 1
+text_overrun_behavior = 1
+
+[node name="tiles" type="Label" parent="."]
+modulate = Color(0, 0, 0, 1)
+clip_contents = true
+layout_mode = 0
+offset_left = 8.0
+offset_top = 47.0
+offset_right = 50.0
+offset_bottom = 64.0
+theme_override_font_sizes/font_size = 10
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+text_overrun_behavior = 1
+
+[node name="fuel" type="Label" parent="."]
+modulate = Color(0, 0, 0, 1)
+clip_contents = true
+layout_mode = 0
+offset_left = 8.0
+offset_top = 66.0
+offset_right = 50.0
+offset_bottom = 83.0
+theme_override_font_sizes/font_size = 10
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+text_overrun_behavior = 1
+
+[node name="capitals" type="Label" parent="."]
+modulate = Color(0, 0, 0, 1)
+clip_contents = true
+layout_mode = 0
+offset_left = 104.0
+offset_top = 53.0
+offset_right = 142.0
+offset_bottom = 81.0
+theme_override_font_sizes/font_size = 10
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+text_overrun_behavior = 1

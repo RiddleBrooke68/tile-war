@@ -14,7 +14,10 @@ var player_claim : PlayerClaim
 
 
 @onready var moves_plate = %moves_plate
+## Tracks the current turn
 var turn = 0
+## Used when we need to display the current turn.
+const turn_text = "Turn {0}"
 
 var music : AudioStreamPlayer
 
@@ -25,6 +28,8 @@ func _ready():
 	music.stream = load(Global.music_list[Global.music_type]) as AudioStream
 	music.play()
 	game_state_changed(true)
+	moves_plate.number = player_claim.moves
+	moves_plate.update_plate_display()
 
 var done_moves : Array[Vector2i]
 func on_next_turn():
@@ -57,6 +62,8 @@ func on_next_turn():
 			done_moves.clear()
 	next_turn.disabled = false
 	game_state_changed(true)
+	moves_plate.number = player_claim.moves
+	moves_plate.update_plate_display()
 
 var dead_number = 0
 func game_state_changed(refresh=false):
@@ -69,9 +76,9 @@ func game_state_changed(refresh=false):
 			claim.tile_size = board_ui.check_claim_tile_count(claim.claim_colour)
 			claim.fuel_count = board_ui.check_claim_fuel_tile_count(claim.claim_colour)
 			claim_text += claim.get_data()
+			claim.capatal_tile = board_ui.check_claim_captatal(claim.claim_colour).duplicate() 
 			if refresh:
 				claim.refresh(turn)
-				claim.capatal_tile = board_ui.check_claim_captatal(claim.claim_colour).duplicate() 
 			if claim is PlayerClaim:
 				if player_claim == null or refresh:
 					player_claim = claim.duplicate()
@@ -83,7 +90,8 @@ func game_state_changed(refresh=false):
 		turn += 1
 	if player_claim != null:
 		claim_text += "----------\nYou have {0} moves left".format([player_claim.moves])
-		moves_plate.set_plate_number(player_claim.moves)
+		#%test_player_data.claim = player_claim
+		#%test_player_data.update()
 		
 		if player_claim.moves == 0:
 			board_ui.off_input = true
@@ -96,12 +104,20 @@ func game_state_changed(refresh=false):
 	else:
 		dead_number = 0
 
-const turn_text = "Turn {0}"
+
+
+# EXTRA ACTIONS
+
+## This currently oprates the move panel animation.
+func gui_board_events():
+	moves_plate.number = player_claim.moves
+
+
 func _on_board_tile_info(data:tile_data):
 	tile_info.text = data.get_info()
 	game_info.text = turn_text.format([turn])
 
-
+## This changes the scene back to the main menu.
 func new_game():
 	fade_anim.play("fade_out")
 	var tween = get_tree().create_tween()

@@ -12,7 +12,7 @@ signal tile_info(data:tile_data)
 ## Controls the fuel tile count
 @export var fuel_tile_count = 10
 
-## The main grid. 7x10
+## The main grid. 18x20 or a 3 to 4 ratio
 @onready var main_grid = $main_grid
 ## The overlay thats to show the player what their clicking.
 @onready var overlay_grid = $overlay_grid
@@ -35,8 +35,8 @@ var enabled_claims = [true, true, true, true]
 ## The grid_coords where the mouse is.
 var grid_coords : Vector2i
 
-
-
+## Used just for paterns.
+var tile_set : TileSet
 
 ## For game sounds. (CURRENTLY USING SOUNDS FROM GOD MACHINE)
 var sound : AudioStreamPlayer
@@ -60,32 +60,82 @@ func _ready():
 	lot = Vector4i(maxx.x,maxx.y,minn.x,minn.y)
 	print(lot)
 	
+	# Set map
+	tile_set = main_grid.tile_set
+	main_grid.set_pattern(Vector2i(-10,-13),tile_set.get_pattern(Global.map_type))
+	
+	
 	# Genration
-	var rcoord : Callable = func(dot=false,wall=false)->Vector2i:
+	var rcoord : Callable = func(dot=false,wall=false,tries=-999)->Vector2i:
 		var thing
 		var spot = false
-		while not spot:
+		while not spot and tries != 0:
 			thing = Vector2i(randi_range(lot.z,lot.x),randi_range(lot.w,lot.y))
 			spot = check_tile_neutralty(thing,dot,wall)
+			tries -= 1
+		if tries == 0:
+			print("Error: could not find a place for a tile, Dont have such high gen settings.")
+			OS.alert("Error: could not find a place for a tile, Dont have such high gen settings.", "ERROR")
+			OS.crash("ERROR")
+			var test = null
+			test.kill() # This will crash the game
 		return thing
 	
 	# Places all enabled players.
 	for i in range(0,4):
-		if enabled_claims[i]:
-			for x in range(0,Global.cap_list[i]):
+		if enabled_claims[i] and check_claim_captatal(i+1).size() < Global.cap_list[i]:
+			for x in range(check_claim_tile_type_count(i+1,1),Global.cap_list[i]):
 				on_claim_tile(rcoord.call(),i+1,1,false)
+		elif enabled_claims[i] and check_claim_captatal(i+1).size() > Global.cap_list[i]:
+			while check_claim_captatal(i+1).size() > Global.cap_list[i]:
+				on_claim_tile(check_claim_captatal(i+1).pick_random(),0,2,false)
+		print(i+1," capitals: ",check_claim_captatal(i+1).size())
 	
+	var break_loop = 999
 	# This places down all the unowned tile, and will not stop untill it gets the right amount.
 	while ( check_claim_tile_type_count(0,1) < Global.wall_count
 			or
-			check_claim_tile_type_count(0,3) < Global.fuel_count):
+			check_claim_tile_type_count(-1,3) < Global.fuel_count) and break_loop != 0:
+		
 		for i in range(check_claim_tile_type_count(0,1),Global.wall_count):
 			on_claim_tile(rcoord.call(false,true),0,1,false,true)
-		for i in range(check_claim_tile_type_count(0,3),Global.fuel_count):
+			break_loop -= 1
+			if break_loop == 0:
+				print("Error: could not find a place for a tile, Dont have such high gen settings.")
+				OS.alert("Error: could not find a place for a tile, Dont have such high gen settings.", "ERROR")
+				OS.crash("ERROR")
+				var test = null
+				test.kill() # This will crash the game
+		
+		for i in range(check_claim_tile_type_count(-1,3),Global.fuel_count):
 			on_claim_tile(rcoord.call(true),0,3,false,true)
+			break_loop -= 1
+			if break_loop == 0:
+				print("Error: could not find a place for a tile, Dont have such high gen settings.")
+				OS.alert("Error: could not find a place for a tile, Dont have such high gen settings.", "ERROR")
+				OS.crash("ERROR")
+				var test = null
+				test.kill() # This will crash the game
+		
+		break_loop -= 1
+		if break_loop == 0:
+			print("Error: could not find a place for a tile, Dont have such high gen settings.")
+			OS.alert("Error: could not find a place for a tile, Dont have such high gen settings.", "ERROR")
+			OS.crash("ERROR")
+			var test = null
+			test.kill() # This will crash the game
+	if break_loop == 0:
+		print("Error: could not find a place for a tile, Dont have such high gen settings.")
+		OS.alert("Error: could not find a place for a tile, Dont have such high gen settings.", "ERROR")
+		OS.crash("ERROR")
+		var test = null
+		test.kill() # This will crash the game
+		
 	# Debug test if the walls and fuel
 	print("wall: ",check_claim_tile_type_count(0,1))
-	print("fuel: ",check_claim_tile_type_count(0,3))
+	print("fuel: ",check_claim_tile_type_count(-1,3))
+	for i in check_empty_tiles():
+		on_claim_tile(i,0,0,false,true)
 
 
 func _process(_delta):
@@ -120,8 +170,10 @@ func _on_gui_input(event):
 		if event.button_index == MOUSE_BUTTON_LEFT and not event.pressed and not (lock_mode or off_input):
 			on_claim_tile(grid_coords,1)
 			sound.stream = load("res://audio/FX/left click sound.mp3") as AudioStream
-		elif lock_mode:
+			game.gui_board_events()
+		elif (lock_mode or off_input):
 			sound.stream = load("res://audio/FX/right click sound.mp3") as AudioStream
+			game.gui_board_events()
 		sound.play()
 
 ## Sets a tile on the main board.
@@ -129,17 +181,21 @@ func on_claim_tile(coords:Vector2i,claim:int,type:int=-1,update=true,terain=fals
 	var picked_tile : TileData = main_grid.get_cell_tile_data(coords)
 	if picked_tile.get_custom_data("type") == 1 and type == -1:
 		type = 1
+	elif picked_tile.get_custom_data("type") == 2 and type == 1:
+		type = 2
 	elif picked_tile.get_custom_data("type") == 3 and type == -1:
 		type = 3
 	elif type == -1:
 		type = 0
 	main_grid.set_cell(coords,0,Vector2i(claim,type))
-	if type == 1 and not terain:
+	if (picked_tile.get_custom_data("type") == 1 and not type == 1 or type == 1 and not picked_tile.get_custom_data("type") == 1) and not terain:
+		if type == 1 and not picked_tile.get_custom_data("type") == 1:
+			type = 0
 		var neighbors = main_grid.get_surrounding_cells(coords)
 		for neighbor in neighbors:
 			picked_tile = main_grid.get_cell_tile_data(neighbor)
 			if not picked_tile == null:
-				on_claim_tile(neighbor,claim,0,update)
+				on_claim_tile(neighbor,claim,type,update)
 	if update:
 		game_state_change.emit()
 
@@ -476,7 +532,9 @@ func check_claim_fuel_tile_count(claim) -> int:
 	return count
 
 ## Gets all of a one tile type, from its claim and its accual type.[br]
-##[code]Gdscript[/code][codeblock]
+## [code]claim[/code] is asking which claim do we need to look at. If it is -1, it won't care what type it is. [br]
+## [code]type[/code] what type of tile is it.[br][code]Plain[/code]=0,[br][code]Wall/capital[/code]=1,[br][code]refuse hover[/code]=2,[br][code]fuel[/code]=3.[br][br][br]
+##Heres an example of how to use this function.[codeblock]
 ## var i = check_claim_tile_type_count(0,1)
 ## print(i) # prints the number of walls on the map.
 ##[/codeblock]
@@ -486,9 +544,9 @@ func check_claim_tile_type_count(claim,type) -> int:
 	for tile in colection:
 		var picked_tile = main_grid.get_cell_tile_data(tile)
 		if not picked_tile == null:
-			if picked_tile.get_custom_data("ownership") == claim and picked_tile.get_custom_data("type") == type:
+			if (picked_tile.get_custom_data("ownership") == claim or claim == -1) and picked_tile.get_custom_data("type") == type:
 				# I want it so, if this tile isn't linked to the capital, then its not counted
-				if claim != 0:
+				if claim > 0:
 					if find_linked_tiles(tile,check_claim_captatal(claim),claim):
 						tested_tiles = []
 						count += 1
@@ -500,8 +558,20 @@ func check_claim_tile_type_count(claim,type) -> int:
 
 # coords
 
+## Gets the positon of the preplaced empty tile, to make acualy empty.
+func check_empty_tiles() -> Array[Vector2i]:
+	var coord : Array[Vector2i]
+	var colection = main_grid.get_used_cells()
+	for tile in colection:
+		var picked_tile = main_grid.get_cell_tile_data(tile)
+		if not picked_tile == null:
+			if picked_tile.get_custom_data("ownership") == 0 and picked_tile.get_custom_data("type") == 2:
+				coord.append(tile)
+	return coord
+
+
 ## Gets the positon of the capitals.
-func check_claim_captatal(claim) -> Array[Vector2i]:
+func check_claim_captatal(claim:int) -> Array[Vector2i]:
 	var coord : Array[Vector2i]
 	var colection = main_grid.get_used_cells()
 	for tile in colection:

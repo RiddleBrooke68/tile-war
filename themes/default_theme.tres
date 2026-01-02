@@ -1,0 +1,18 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://dxveohgc0uce2"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mpelh"]
+bg_color = Color(0.17283267, 0.17283267, 0.17283258, 1)
+border_width_left = 6
+border_width_top = 6
+border_width_right = 6
+border_width_bottom = 6
+border_blend = true
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 12
+anti_aliasing_size = 3.0
+
+[resource]
+TooltipPanel/styles/panel = SubResource("StyleBoxFlat_mpelh")

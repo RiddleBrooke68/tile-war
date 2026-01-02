@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://dgvl0kruj60fy"]
+[gd_scene load_steps=5 format=3 uid="uid://dgvl0kruj60fy"]
 
 [ext_resource type="Script" uid="uid://cdggui00f6ndm" path="res://scripts/menu.gd" id="1_cnlwo"]
+[ext_resource type="Theme" uid="uid://dxveohgc0uce2" path="res://themes/default_theme.tres" id="1_kfbsc"]
 
 [sub_resource type="Gradient" id="Gradient_n3ddt"]
 colors = PackedColorArray(0.13544941, 0.09605298, 0.041523762, 1, 0.06992452, 0.019128133, 0.020676874, 1)
@@ -16,6 +17,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_kfbsc")
 script = ExtResource("1_cnlwo")
 
 [node name="back_ground" type="Sprite2D" parent="."]
@@ -28,7 +30,7 @@ layout_mode = 0
 offset_left = 384.0
 offset_top = 104.0
 offset_right = 768.0
-offset_bottom = 407.0
+offset_bottom = 512.0
 vertical = true
 
 [node name="Label" type="Label" parent="BoxContainer"]
@@ -43,6 +45,32 @@ custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
 theme_override_font_sizes/font_size = 28
 text = "Start Game"
+
+[node name="map" type="BoxContainer" parent="BoxContainer"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+vertical = true
+
+[node name="Button" type="Label" parent="BoxContainer/map"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Map:"
+horizontal_alignment = 1
+
+[node name="map_setting" type="OptionButton" parent="BoxContainer/map"]
+layout_mode = 2
+size_flags_vertical = 3
+tooltip_text = "This sets the map, before genration.
+
+Some map may have preplaced walls, fuel tiles, capitals, etc..."
+button_pressed = true
+alignment = 1
+selected = 1
+item_count = 2
+popup/item_0/text = "No genration"
+popup/item_0/id = 0
+popup/item_1/text = "Standoff"
+popup/item_1/id = 1
 
 [node name="GridContainer" type="GridContainer" parent="BoxContainer"]
 layout_mode = 2
@@ -59,6 +87,7 @@ text = "Wall count:"
 
 [node name="WallSlider" type="HSlider" parent="BoxContainer/GridContainer/wall_settings"]
 layout_mode = 2
+tooltip_text = "Controls the number of Wall tiles there will be added in grenrating a map."
 max_value = 160.0
 rounded = true
 
@@ -73,6 +102,7 @@ text = "fuel count:"
 
 [node name="FuelSlider" type="HSlider" parent="BoxContainer/GridContainer/fuel_settings"]
 layout_mode = 2
+tooltip_text = "Controls the number of fuel tiles there will be added in grenrating a map."
 max_value = 76.0
 value = 16.0
 rounded = true
@@ -162,13 +192,15 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 selected = 0
-item_count = 3
+item_count = 4
 popup/item_0/text = "1 capital"
 popup/item_0/id = 0
 popup/item_1/text = "2 capital's"
 popup/item_1/id = 1
 popup/item_2/text = "3 capital's"
 popup/item_2/id = 2
+popup/item_3/text = "4 capital's"
+popup/item_3/id = 3
 
 [node name="plum_number" type="BoxContainer" parent="BoxContainer2/BoxContainer"]
 layout_mode = 2
@@ -185,13 +217,15 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 selected = 0
-item_count = 3
+item_count = 4
 popup/item_0/text = "1 capital"
 popup/item_0/id = 0
 popup/item_1/text = "2 capital's"
 popup/item_1/id = 1
 popup/item_2/text = "3 capital's"
 popup/item_2/id = 2
+popup/item_3/text = "4 capital's"
+popup/item_3/id = 3
 
 [node name="york_number" type="BoxContainer" parent="BoxContainer2/BoxContainer"]
 layout_mode = 2
@@ -208,13 +242,15 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 selected = 0
-item_count = 3
+item_count = 4
 popup/item_0/text = "1 capital"
 popup/item_0/id = 0
 popup/item_1/text = "2 capital's"
 popup/item_1/id = 1
 popup/item_2/text = "3 capital's"
 popup/item_2/id = 2
+popup/item_3/text = "4 capital's"
+popup/item_3/id = 3
 
 [node name="river_number" type="BoxContainer" parent="BoxContainer2/BoxContainer"]
 layout_mode = 2
@@ -231,13 +267,15 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 selected = 0
-item_count = 3
+item_count = 4
 popup/item_0/text = "1 capital"
 popup/item_0/id = 0
 popup/item_1/text = "2 capital's"
 popup/item_1/id = 1
 popup/item_2/text = "3 capital's"
 popup/item_2/id = 2
+popup/item_3/text = "4 capital's"
+popup/item_3/id = 3
 
 [node name="RichTextLabel" type="RichTextLabel" parent="BoxContainer2"]
 layout_mode = 2
@@ -316,6 +354,7 @@ value = 10.0
 rounded = true
 
 [connection signal="button_down" from="BoxContainer/start_game" to="." method="_on_start_game"]
+[connection signal="item_selected" from="BoxContainer/map/map_setting" to="." method="_on_map_setting_item_selected"]
 [connection signal="drag_ended" from="BoxContainer/GridContainer/wall_settings/WallSlider" to="." method="drag_ended"]
 [connection signal="value_changed" from="BoxContainer/GridContainer/wall_settings/WallSlider" to="." method="_on_wall_slider_value_changed"]
 [connection signal="drag_ended" from="BoxContainer/GridContainer/fuel_settings/FuelSlider" to="." method="drag_ended"]
