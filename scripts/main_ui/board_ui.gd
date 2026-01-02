@@ -188,14 +188,14 @@ func on_claim_tile(coords:Vector2i,claim:int,type:int=-1,update=true,terain=fals
 	elif type == -1:
 		type = 0
 	main_grid.set_cell(coords,0,Vector2i(claim,type))
-	if (picked_tile.get_custom_data("type") == 1 and not type == 1 or type == 1 and not picked_tile.get_custom_data("type") == 1) and not terain:
-		if type == 1 and not picked_tile.get_custom_data("type") == 1:
-			type = 0
+	if (picked_tile.get_custom_data("type") == 1 and claim != 0 or type == 1 and not picked_tile.get_custom_data("type") == 1) and not terain:
+		#if (type == 1 or claim != 0) and not picked_tile.get_custom_data("type") == 1:
+		type = 0
 		var neighbors = main_grid.get_surrounding_cells(coords)
 		for neighbor in neighbors:
 			picked_tile = main_grid.get_cell_tile_data(neighbor)
 			if not picked_tile == null:
-				on_claim_tile(neighbor,claim,type,update)
+				on_claim_tile(neighbor,claim,type,update,true)
 	if update:
 		game_state_change.emit()
 
