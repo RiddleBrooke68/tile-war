@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dtu2pypwi1pse"]
+
+[ext_resource type="Script" uid="uid://volo70ippc63" path="res://scripts/object/active_player_indicator.gd" id="1_rn50t"]
+
+[node name="active_player_indicator" type="Node2D"]
+script = ExtResource("1_rn50t")

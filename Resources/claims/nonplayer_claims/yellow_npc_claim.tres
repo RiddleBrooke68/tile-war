@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="NonPlayerClaim" load_steps=3 format=3 uid="uid://bi1dlfq3ngrj2"]
+
+[ext_resource type="Texture2D" uid="uid://furaa0nu5dm6" path="res://sprites/ui/claim_data/claim_alined_panels/claim_york_data_panel.png" id="1_bkfqs"]
+[ext_resource type="Script" uid="uid://bmkjamamvf3ie" path="res://scripts/claims/non_player_claim.gd" id="1_p2yjf"]
+
+[resource]
+script = ExtResource("1_p2yjf")
+fuel_beeline = 3
+stratigic_beeline = 2
+blindless_beeline = 1
+teratory_beeline = 0
+capital_beeline = 2
+wall_beeline = 2
+name = "york street"
+claim_colour = 3
+claim_panel = ExtResource("1_bkfqs")
+metadata/_custom_type_script = "uid://bmkjamamvf3ie"

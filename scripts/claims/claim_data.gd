@@ -3,11 +3,14 @@ class_name ClaimData
 
 signal changed_info
 
+## What will game present as their defualt name
 @export var name = "":
 	set(n):
 		name = n
 		changed_info.emit()
+## What colour do they asine to. Note that 0 is unclaimed
 @export_range(1,4) var claim_colour = 1
+## How meny moves do they get.
 @export var moves = 0:
 	set(n):
 		moves = n
@@ -28,6 +31,14 @@ var capatal_tile : Array[Vector2i]:
 var claim_dead = false:
 	set(n):
 		claim_dead = n
+		changed_info.emit()
+var claim_active = false:
+	set(n):
+		claim_active = n
+		changed_info.emit()
+var claim_had_turn = false:
+	set(n):
+		claim_had_turn = n
 		changed_info.emit()
 
 func refresh(turn_num):

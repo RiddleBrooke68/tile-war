@@ -28,9 +28,9 @@ texture = SubResource("GradientTexture2D_cnlwo")
 [node name="BoxContainer" type="BoxContainer" parent="."]
 layout_mode = 0
 offset_left = 384.0
-offset_top = 104.0
+offset_top = 64.0
 offset_right = 768.0
-offset_bottom = 512.0
+offset_bottom = 576.0
 vertical = true
 
 [node name="Label" type="Label" parent="BoxContainer"]
@@ -66,11 +66,15 @@ Some map may have preplaced walls, fuel tiles, capitals, etc..."
 button_pressed = true
 alignment = 1
 selected = 1
-item_count = 2
+item_count = 4
 popup/item_0/text = "No genration"
 popup/item_0/id = 0
 popup/item_1/text = "Standoff"
 popup/item_1/id = 1
+popup/item_2/text = "Fortress"
+popup/item_2/id = 2
+popup/item_3/text = "Surrounded"
+popup/item_3/id = 3
 
 [node name="GridContainer" type="GridContainer" parent="BoxContainer"]
 layout_mode = 2
@@ -107,22 +111,158 @@ max_value = 76.0
 value = 16.0
 rounded = true
 
+[node name="green_settings" type="BoxContainer" parent="BoxContainer/GridContainer"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+vertical = true
+
+[node name="green_mode" type="BoxContainer" parent="BoxContainer/GridContainer/green_settings"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="BoxContainer/GridContainer/green_settings/green_mode"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Greenwich"
+
+[node name="green_claim_type" type="OptionButton" parent="BoxContainer/GridContainer/green_settings/green_mode"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "This controls who is at play and if they are a player or not."
+selected = 2
+item_count = 3
+popup/item_0/text = "disabled"
+popup/item_0/id = 0
+popup/item_1/text = "bot"
+popup/item_1/id = 1
+popup/item_2/text = "player"
+popup/item_2/id = 2
+
+[node name="green_name" type="LineEdit" parent="BoxContainer/GridContainer/green_settings"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "This sets the name of the claim in game if controled by a player."
+placeholder_text = "Greenwich"
+
+[node name="purple_settings" type="BoxContainer" parent="BoxContainer/GridContainer"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+vertical = true
+
+[node name="purple_mode" type="BoxContainer" parent="BoxContainer/GridContainer/purple_settings"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="BoxContainer/GridContainer/purple_settings/purple_mode"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Plum Valley"
+
+[node name="purple_claim_type" type="OptionButton" parent="BoxContainer/GridContainer/purple_settings/purple_mode"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "This controls who is at play and if they are a player or not."
+selected = 2
+item_count = 3
+popup/item_0/text = "disabled"
+popup/item_0/id = 0
+popup/item_1/text = "bot"
+popup/item_1/id = 1
+popup/item_2/text = "player"
+popup/item_2/id = 2
+
+[node name="purple_name" type="LineEdit" parent="BoxContainer/GridContainer/purple_settings"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "This sets the name of the claim in game if controled by a player."
+placeholder_text = "Plum Valley"
+
+[node name="yellow_settings" type="BoxContainer" parent="BoxContainer/GridContainer"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+vertical = true
+
+[node name="yellow_mode" type="BoxContainer" parent="BoxContainer/GridContainer/yellow_settings"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="BoxContainer/GridContainer/yellow_settings/yellow_mode"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "York Street"
+
+[node name="yellow_claim_type" type="OptionButton" parent="BoxContainer/GridContainer/yellow_settings/yellow_mode"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "This controls who is at play and if they are a player or not."
+selected = 2
+item_count = 3
+popup/item_0/text = "disabled"
+popup/item_0/id = 0
+popup/item_1/text = "bot"
+popup/item_1/id = 1
+popup/item_2/text = "player"
+popup/item_2/id = 2
+
+[node name="yellow_name" type="LineEdit" parent="BoxContainer/GridContainer/yellow_settings"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "This sets the name of the claim in game if controled by a player."
+placeholder_text = "York Street"
+
+[node name="red_settings" type="BoxContainer" parent="BoxContainer/GridContainer"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+vertical = true
+
+[node name="red_mode" type="BoxContainer" parent="BoxContainer/GridContainer/red_settings"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="BoxContainer/GridContainer/red_settings/red_mode"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "River Solme"
+
+[node name="red_claim_type" type="OptionButton" parent="BoxContainer/GridContainer/red_settings/red_mode"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "This controls who is at play and if they are a player or not."
+selected = 2
+item_count = 3
+popup/item_0/text = "disabled"
+popup/item_0/id = 0
+popup/item_1/text = "bot"
+popup/item_1/id = 1
+popup/item_2/text = "player"
+popup/item_2/id = 2
+
+[node name="red_name" type="LineEdit" parent="BoxContainer/GridContainer/red_settings"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "This sets the name of the claim in game if controled by a player."
+placeholder_text = "River Solme"
+
 [node name="player_setting" type="CheckButton" parent="BoxContainer/GridContainer"]
+visible = false
 layout_mode = 2
 button_pressed = true
 text = "Have Player"
 
 [node name="purple_setting" type="CheckButton" parent="BoxContainer/GridContainer"]
+visible = false
 layout_mode = 2
 button_pressed = true
 text = "Have plum valey"
 
 [node name="yellow_setting" type="CheckButton" parent="BoxContainer/GridContainer"]
+visible = false
 layout_mode = 2
 button_pressed = true
 text = "Have york street"
 
 [node name="red_setting" type="CheckButton" parent="BoxContainer/GridContainer"]
+visible = false
 layout_mode = 2
 button_pressed = true
 text = "Have river solme"
@@ -281,8 +421,8 @@ popup/item_3/id = 3
 layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
-text = "[center][b]CAREFUL WITH THIS[/b][/center]
-It can crash your game."
+text = "[center][b]CAREFUL WITH THESE SETTINGS[/b][/center]
+They can crash your game."
 
 [node name="BoxContainer3" type="BoxContainer" parent="."]
 layout_mode = 0
@@ -359,6 +499,14 @@ rounded = true
 [connection signal="value_changed" from="BoxContainer/GridContainer/wall_settings/WallSlider" to="." method="_on_wall_slider_value_changed"]
 [connection signal="drag_ended" from="BoxContainer/GridContainer/fuel_settings/FuelSlider" to="." method="drag_ended"]
 [connection signal="value_changed" from="BoxContainer/GridContainer/fuel_settings/FuelSlider" to="." method="_on_fuel_slider_value_changed"]
+[connection signal="item_selected" from="BoxContainer/GridContainer/green_settings/green_mode/green_claim_type" to="." method="_on_green_claim_type_item_selected"]
+[connection signal="text_changed" from="BoxContainer/GridContainer/green_settings/green_name" to="." method="_on_green_name_text_submitted"]
+[connection signal="item_selected" from="BoxContainer/GridContainer/purple_settings/purple_mode/purple_claim_type" to="." method="_on_purple_claim_type_item_selected"]
+[connection signal="text_changed" from="BoxContainer/GridContainer/purple_settings/purple_name" to="." method="_on_purple_name_text_submitted"]
+[connection signal="item_selected" from="BoxContainer/GridContainer/yellow_settings/yellow_mode/yellow_claim_type" to="." method="_on_yellow_claim_type_item_selected"]
+[connection signal="text_changed" from="BoxContainer/GridContainer/yellow_settings/yellow_name" to="." method="_on_yellow_name_text_submitted"]
+[connection signal="item_selected" from="BoxContainer/GridContainer/red_settings/red_mode/red_claim_type" to="." method="_on_red_claim_type_item_selected"]
+[connection signal="text_changed" from="BoxContainer/GridContainer/red_settings/red_name" to="." method="_on_red_name_text_submitted"]
 [connection signal="toggled" from="BoxContainer/GridContainer/player_setting" to="." method="_on_player_setting_toggled"]
 [connection signal="toggled" from="BoxContainer/GridContainer/purple_setting" to="." method="_on_purple_setting_toggled"]
 [connection signal="toggled" from="BoxContainer/GridContainer/yellow_setting" to="." method="_on_yellow_setting_toggled"]

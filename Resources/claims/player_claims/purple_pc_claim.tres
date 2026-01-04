@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="PlayerClaim" load_steps=3 format=3 uid="uid://dqxj6bihsmrmx"]
+
+[ext_resource type="Script" uid="uid://cioo3en61w18o" path="res://scripts/claims/player_claim.gd" id="1_nsd1r"]
+[ext_resource type="Texture2D" uid="uid://cxjajtakofljh" path="res://sprites/ui/claim_data/claim_alined_panels/claim_plum_data_panel.png" id="1_ynru8"]
+
+[resource]
+script = ExtResource("1_nsd1r")
+name = "plum valley"
+claim_colour = 2
+claim_panel = ExtResource("1_ynru8")
+metadata/_custom_type_script = "uid://cioo3en61w18o"
