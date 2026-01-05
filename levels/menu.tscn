@@ -25,7 +25,7 @@ position = Vector2(576, 325)
 scale = Vector2(18, 10.09375)
 texture = SubResource("GradientTexture2D_cnlwo")
 
-[node name="BoxContainer" type="BoxContainer" parent="."]
+[node name="BoxContainer" type="BoxContainer" parent="." groups=["menu_settings_ui"]]
 layout_mode = 0
 offset_left = 384.0
 offset_top = 64.0
@@ -41,6 +41,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="start_game" type="Button" parent="BoxContainer"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
 theme_override_font_sizes/font_size = 28
@@ -58,6 +59,7 @@ text = "Map:"
 horizontal_alignment = 1
 
 [node name="map_setting" type="OptionButton" parent="BoxContainer/map"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 tooltip_text = "This sets the map, before genration.
@@ -85,11 +87,13 @@ layout_mode = 2
 size_flags_horizontal = 3
 vertical = true
 
-[node name="Label" type="Label" parent="BoxContainer/GridContainer/wall_settings"]
+[node name="wall_text" type="Label" parent="BoxContainer/GridContainer/wall_settings"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Wall count:"
 
 [node name="WallSlider" type="HSlider" parent="BoxContainer/GridContainer/wall_settings"]
+unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Controls the number of Wall tiles there will be added in grenrating a map."
 max_value = 160.0
@@ -299,7 +303,18 @@ text = "Last man standing"
 layout_mode = 2
 button_pressed = true
 
-[node name="BoxContainer2" type="BoxContainer" parent="."]
+[node name="BoxContainer3" type="BoxContainer" parent="BoxContainer"]
+layout_mode = 2
+
+[node name="Button" type="Label" parent="BoxContainer/BoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Battle random results"
+
+[node name="bran_setting" type="CheckBox" parent="BoxContainer/BoxContainer3"]
+layout_mode = 2
+
+[node name="BoxContainer2" type="BoxContainer" parent="." groups=["menu_settings_ui"]]
 layout_mode = 0
 offset_left = 112.0
 offset_top = 192.0
@@ -317,17 +332,17 @@ vertical_alignment = 1
 layout_mode = 2
 columns = 2
 
-[node name="player_number" type="BoxContainer" parent="BoxContainer2/BoxContainer"]
+[node name="green_number" type="BoxContainer" parent="BoxContainer2/BoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 vertical = true
 
-[node name="Label" type="Label" parent="BoxContainer2/BoxContainer/player_number"]
+[node name="Label" type="Label" parent="BoxContainer2/BoxContainer/green_number"]
 layout_mode = 2
 text = "Player has"
 
-[node name="player_cap" type="OptionButton" parent="BoxContainer2/BoxContainer/player_number"]
+[node name="green_cap" type="OptionButton" parent="BoxContainer2/BoxContainer/green_number"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
@@ -424,7 +439,7 @@ bbcode_enabled = true
 text = "[center][b]CAREFUL WITH THESE SETTINGS[/b][/center]
 They can crash your game."
 
-[node name="BoxContainer3" type="BoxContainer" parent="."]
+[node name="BoxContainer3" type="BoxContainer" parent="." groups=["menu_settings_ui"]]
 layout_mode = 0
 offset_left = 784.0
 offset_top = 192.0
@@ -493,6 +508,11 @@ max_value = 10.0
 value = 10.0
 rounded = true
 
+[node name="multiplayer" type="Button" parent="."]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
 [connection signal="button_down" from="BoxContainer/start_game" to="." method="_on_start_game"]
 [connection signal="item_selected" from="BoxContainer/map/map_setting" to="." method="_on_map_setting_item_selected"]
 [connection signal="drag_ended" from="BoxContainer/GridContainer/wall_settings/WallSlider" to="." method="drag_ended"]
@@ -513,7 +533,8 @@ rounded = true
 [connection signal="toggled" from="BoxContainer/GridContainer/red_setting" to="." method="_on_red_setting_toggled"]
 [connection signal="item_selected" from="BoxContainer/BoxContainer/ai_level_setting" to="." method="_on_change_ai_level"]
 [connection signal="toggled" from="BoxContainer/BoxContainer2/lms_setting" to="." method="_on_lms_setting_toggled"]
-[connection signal="item_selected" from="BoxContainer2/BoxContainer/player_number/player_cap" to="." method="_on_player_cap_item_selected"]
+[connection signal="toggled" from="BoxContainer/BoxContainer3/bran_setting" to="." method="_on_bran_setting_toggled"]
+[connection signal="item_selected" from="BoxContainer2/BoxContainer/green_number/green_cap" to="." method="_on_green_cap_item_selected"]
 [connection signal="item_selected" from="BoxContainer2/BoxContainer/plum_number/plum_cap" to="." method="_on_plum_cap_item_selected"]
 [connection signal="item_selected" from="BoxContainer2/BoxContainer/york_number/york_cap" to="." method="_on_york_cap_item_selected"]
 [connection signal="item_selected" from="BoxContainer2/BoxContainer/river_number/river_cap" to="." method="_on_river_cap_item_selected"]
@@ -522,3 +543,4 @@ rounded = true
 [connection signal="value_changed" from="BoxContainer3/BoxContainer/music_settings/MusicSlider" to="." method="_on_music_slider_value_changed"]
 [connection signal="drag_ended" from="BoxContainer3/BoxContainer/sfx_settings/SfxSlider" to="." method="drag_ended"]
 [connection signal="value_changed" from="BoxContainer3/BoxContainer/sfx_settings/SfxSlider" to="." method="_on_sfx_slider_value_changed"]
+[connection signal="pressed" from="multiplayer" to="." method="_on_multiplayer_pressed"]

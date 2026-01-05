@@ -127,6 +127,8 @@ func on_next_turn():
 		moves_plate.number = active_player.moves
 		moves_plate.update_plate_display()
 
+#bran removes a move if set to true
+var failed_move = false
 ## Counts how meny claims that are dead, if 3,ie... all but one claim is alive, the game is over and the player must hit new game if lms is enabled.[br]
 ## See [member Global.lms_enabled] and [method game_manger.game_state_changed]
 var dead_number = 0
@@ -154,7 +156,8 @@ func game_state_changed(refresh=false):
 						active_player = claim.duplicate()
 						active_player.tile_size = claim.tile_size
 						moves_plate.colour = claim.claim_colour - 1
-					if active_player.tile_size != claim.tile_size and active_player.moves > 0:
+					if (active_player.tile_size != claim.tile_size or failed_move) and active_player.moves > 0:
+						failed_move = false
 						active_player.moves -= 1
 						claim.moves -= 1
 	if refresh:
@@ -181,6 +184,13 @@ func game_state_changed(refresh=false):
 
 
 # EXTRA ACTIONS
+@onready var game_event_recorder = %game_event_recorder
+var game_event_text = ""
+@rpc("any_peer","call_local")
+func print_data_to_game(_str):
+	game_event_text += _str+"\n"
+	game_event_recorder.text = game_event_text
+
 
 ## This currently oprates the move panel animation.
 func gui_board_events():

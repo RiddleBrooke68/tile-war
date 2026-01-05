@@ -1,0 +1,680 @@
+[gd_scene load_steps=5 format=3 uid="uid://cqj63olmuv65h"]
+
+[ext_resource type="Script" uid="uid://c8gqgkxqt2ucn" path="res://scripts/menu_mp.gd" id="1_l6f4p"]
+[ext_resource type="PackedScene" uid="uid://bjhedtnkrakw6" path="res://objects/ui/main_menu/server_connection_button.tscn" id="2_pb0ft"]
+
+[sub_resource type="Gradient" id="Gradient_n3ddt"]
+colors = PackedColorArray(0.13544941, 0.09605298, 0.041523762, 1, 0.06992452, 0.019128133, 0.020676874, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_l6f4p"]
+gradient = SubResource("Gradient_n3ddt")
+fill_from = Vector2(0, 1)
+
+[node name="menu_mp" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_l6f4p")
+server_join = ExtResource("2_pb0ft")
+
+[node name="back_ground" type="Sprite2D" parent="."]
+position = Vector2(576, 325)
+scale = Vector2(18, 10.09375)
+texture = SubResource("GradientTexture2D_l6f4p")
+
+[node name="lobby_player_list" type="PanelContainer" parent="." groups=["menu_settings_ui"]]
+visible = false
+layout_mode = 0
+offset_left = 832.0
+offset_top = 64.0
+offset_right = 1152.0
+offset_bottom = 576.0
+
+[node name="BoxContainer" type="BoxContainer" parent="lobby_player_list"]
+layout_mode = 2
+vertical = true
+
+[node name="Label" type="Label" parent="lobby_player_list/BoxContainer"]
+layout_mode = 2
+size_flags_vertical = 6
+theme_override_font_sizes/font_size = 24
+text = "lobby"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="green_settings" type="BoxContainer" parent="lobby_player_list/BoxContainer"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+vertical = true
+
+[node name="green_mode" type="BoxContainer" parent="lobby_player_list/BoxContainer/green_settings"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="lobby_player_list/BoxContainer/green_settings/green_mode"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Greenwich"
+
+[node name="green_claim_type" type="OptionButton" parent="lobby_player_list/BoxContainer/green_settings/green_mode"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "This controls who is at play and if they are a player or not."
+selected = 2
+item_count = 3
+popup/item_0/text = "disabled"
+popup/item_0/id = 0
+popup/item_1/text = "bot"
+popup/item_1/id = 1
+popup/item_2/text = "player"
+popup/item_2/id = 2
+
+[node name="green_picker" type="Button" parent="lobby_player_list/BoxContainer/green_settings"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "pick as you"
+
+[node name="green_name" type="LineEdit" parent="lobby_player_list/BoxContainer/green_settings"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "This sets the name of the claim in game if controled by a player."
+placeholder_text = "Greenwich"
+editable = false
+
+[node name="purple_settings" type="BoxContainer" parent="lobby_player_list/BoxContainer"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+vertical = true
+
+[node name="purple_mode" type="BoxContainer" parent="lobby_player_list/BoxContainer/purple_settings"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="lobby_player_list/BoxContainer/purple_settings/purple_mode"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Plum Valley"
+
+[node name="purple_claim_type" type="OptionButton" parent="lobby_player_list/BoxContainer/purple_settings/purple_mode"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "This controls who is at play and if they are a player or not."
+selected = 2
+item_count = 3
+popup/item_0/text = "disabled"
+popup/item_0/id = 0
+popup/item_1/text = "bot"
+popup/item_1/id = 1
+popup/item_2/text = "player"
+popup/item_2/id = 2
+
+[node name="purple_picker" type="Button" parent="lobby_player_list/BoxContainer/purple_settings"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "pick as you"
+
+[node name="purple_name" type="LineEdit" parent="lobby_player_list/BoxContainer/purple_settings"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "This sets the name of the claim in game if controled by a player."
+placeholder_text = "Plum Valley"
+editable = false
+
+[node name="yellow_settings" type="BoxContainer" parent="lobby_player_list/BoxContainer"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+vertical = true
+
+[node name="yellow_mode" type="BoxContainer" parent="lobby_player_list/BoxContainer/yellow_settings"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="lobby_player_list/BoxContainer/yellow_settings/yellow_mode"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "York Street"
+
+[node name="yellow_claim_type" type="OptionButton" parent="lobby_player_list/BoxContainer/yellow_settings/yellow_mode"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "This controls who is at play and if they are a player or not."
+selected = 2
+item_count = 3
+popup/item_0/text = "disabled"
+popup/item_0/id = 0
+popup/item_1/text = "bot"
+popup/item_1/id = 1
+popup/item_2/text = "player"
+popup/item_2/id = 2
+
+[node name="yellow_picker" type="Button" parent="lobby_player_list/BoxContainer/yellow_settings"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "pick as you"
+
+[node name="yellow_name" type="LineEdit" parent="lobby_player_list/BoxContainer/yellow_settings"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "This sets the name of the claim in game if controled by a player."
+placeholder_text = "York Street"
+editable = false
+
+[node name="red_settings" type="BoxContainer" parent="lobby_player_list/BoxContainer"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+vertical = true
+
+[node name="red_mode" type="BoxContainer" parent="lobby_player_list/BoxContainer/red_settings"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="lobby_player_list/BoxContainer/red_settings/red_mode"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "River Solme"
+
+[node name="red_claim_type" type="OptionButton" parent="lobby_player_list/BoxContainer/red_settings/red_mode"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "This controls who is at play and if they are a player or not."
+selected = 2
+item_count = 3
+popup/item_0/text = "disabled"
+popup/item_0/id = 0
+popup/item_1/text = "bot"
+popup/item_1/id = 1
+popup/item_2/text = "player"
+popup/item_2/id = 2
+
+[node name="red_picker" type="Button" parent="lobby_player_list/BoxContainer/red_settings"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "pick as you"
+
+[node name="red_name" type="LineEdit" parent="lobby_player_list/BoxContainer/red_settings"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "This sets the name of the claim in game if controled by a player."
+placeholder_text = "River Solme"
+editable = false
+
+[node name="BoxContainer" type="BoxContainer" parent="." groups=["menu_settings_ui"]]
+visible = false
+layout_mode = 0
+offset_left = 384.0
+offset_top = 72.0
+offset_right = 768.0
+offset_bottom = 584.0
+vertical = true
+
+[node name="Label" type="Label" parent="BoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "Tile War MP"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="start_game" type="Button" parent="BoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Start Game"
+
+[node name="map" type="BoxContainer" parent="BoxContainer"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+vertical = true
+
+[node name="Button" type="Label" parent="BoxContainer/map"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Map:"
+horizontal_alignment = 1
+
+[node name="map_setting" type="OptionButton" parent="BoxContainer/map"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+tooltip_text = "This sets the map, before genration.
+
+Some map may have preplaced walls, fuel tiles, capitals, etc..."
+button_pressed = true
+alignment = 1
+selected = 1
+item_count = 4
+popup/item_0/text = "No genration"
+popup/item_0/id = 0
+popup/item_1/text = "Standoff"
+popup/item_1/id = 1
+popup/item_2/text = "Fortress"
+popup/item_2/id = 2
+popup/item_3/text = "Surrounded"
+popup/item_3/id = 3
+
+[node name="GridContainer" type="GridContainer" parent="BoxContainer"]
+layout_mode = 2
+columns = 2
+
+[node name="wall_settings" type="BoxContainer" parent="BoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+vertical = true
+
+[node name="wall_text" type="Label" parent="BoxContainer/GridContainer/wall_settings"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Wall count:"
+
+[node name="WallSlider" type="HSlider" parent="BoxContainer/GridContainer/wall_settings"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Controls the number of Wall tiles there will be added in grenrating a map."
+max_value = 160.0
+rounded = true
+
+[node name="fuel_settings" type="BoxContainer" parent="BoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+vertical = true
+
+[node name="Label" type="Label" parent="BoxContainer/GridContainer/fuel_settings"]
+layout_mode = 2
+text = "fuel count:"
+
+[node name="FuelSlider" type="HSlider" parent="BoxContainer/GridContainer/fuel_settings"]
+layout_mode = 2
+tooltip_text = "Controls the number of fuel tiles there will be added in grenrating a map."
+max_value = 76.0
+value = 16.0
+rounded = true
+
+[node name="player_setting" type="CheckButton" parent="BoxContainer/GridContainer"]
+visible = false
+layout_mode = 2
+button_pressed = true
+text = "Have Player"
+
+[node name="purple_setting" type="CheckButton" parent="BoxContainer/GridContainer"]
+visible = false
+layout_mode = 2
+button_pressed = true
+text = "Have plum valey"
+
+[node name="yellow_setting" type="CheckButton" parent="BoxContainer/GridContainer"]
+visible = false
+layout_mode = 2
+button_pressed = true
+text = "Have york street"
+
+[node name="red_setting" type="CheckButton" parent="BoxContainer/GridContainer"]
+visible = false
+layout_mode = 2
+button_pressed = true
+text = "Have river solme"
+
+[node name="BoxContainer" type="BoxContainer" parent="BoxContainer"]
+layout_mode = 2
+
+[node name="Button" type="Label" parent="BoxContainer/BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Ai level"
+
+[node name="ai_level_setting" type="OptionButton" parent="BoxContainer/BoxContainer"]
+layout_mode = 2
+button_pressed = true
+selected = 1
+item_count = 3
+popup/item_0/text = "level 1"
+popup/item_0/id = 0
+popup/item_1/text = "level 2"
+popup/item_1/id = 1
+popup/item_2/text = "level 3"
+popup/item_2/id = 2
+
+[node name="BoxContainer2" type="BoxContainer" parent="BoxContainer"]
+layout_mode = 2
+
+[node name="Button" type="Label" parent="BoxContainer/BoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Last man standing"
+
+[node name="lms_setting" type="CheckBox" parent="BoxContainer/BoxContainer2"]
+layout_mode = 2
+button_pressed = true
+
+[node name="BoxContainer3" type="BoxContainer" parent="BoxContainer"]
+layout_mode = 2
+
+[node name="Button" type="Label" parent="BoxContainer/BoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Battle random results"
+
+[node name="bran_setting" type="CheckBox" parent="BoxContainer/BoxContainer3"]
+layout_mode = 2
+
+[node name="BoxContainer2" type="BoxContainer" parent="." groups=["menu_settings_ui"]]
+visible = false
+layout_mode = 0
+offset_left = 64.0
+offset_top = 64.0
+offset_right = 320.0
+offset_bottom = 320.0
+vertical = true
+
+[node name="Control" type="Label" parent="BoxContainer2"]
+layout_mode = 2
+text = "Capital numbers"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BoxContainer" type="GridContainer" parent="BoxContainer2"]
+layout_mode = 2
+columns = 2
+
+[node name="green_number" type="BoxContainer" parent="BoxContainer2/BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+vertical = true
+
+[node name="Label" type="Label" parent="BoxContainer2/BoxContainer/green_number"]
+layout_mode = 2
+text = "Player has"
+
+[node name="green_cap" type="OptionButton" parent="BoxContainer2/BoxContainer/green_number"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+selected = 0
+item_count = 4
+popup/item_0/text = "1 capital"
+popup/item_0/id = 0
+popup/item_1/text = "2 capital's"
+popup/item_1/id = 1
+popup/item_2/text = "3 capital's"
+popup/item_2/id = 2
+popup/item_3/text = "4 capital's"
+popup/item_3/id = 3
+
+[node name="plum_number" type="BoxContainer" parent="BoxContainer2/BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+vertical = true
+
+[node name="Label" type="Label" parent="BoxContainer2/BoxContainer/plum_number"]
+layout_mode = 2
+text = "Plum Valey has"
+
+[node name="plum_cap" type="OptionButton" parent="BoxContainer2/BoxContainer/plum_number"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+selected = 0
+item_count = 4
+popup/item_0/text = "1 capital"
+popup/item_0/id = 0
+popup/item_1/text = "2 capital's"
+popup/item_1/id = 1
+popup/item_2/text = "3 capital's"
+popup/item_2/id = 2
+popup/item_3/text = "4 capital's"
+popup/item_3/id = 3
+
+[node name="york_number" type="BoxContainer" parent="BoxContainer2/BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+vertical = true
+
+[node name="Label" type="Label" parent="BoxContainer2/BoxContainer/york_number"]
+layout_mode = 2
+text = "York  Street has"
+
+[node name="york_cap" type="OptionButton" parent="BoxContainer2/BoxContainer/york_number"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+selected = 0
+item_count = 4
+popup/item_0/text = "1 capital"
+popup/item_0/id = 0
+popup/item_1/text = "2 capital's"
+popup/item_1/id = 1
+popup/item_2/text = "3 capital's"
+popup/item_2/id = 2
+popup/item_3/text = "4 capital's"
+popup/item_3/id = 3
+
+[node name="river_number" type="BoxContainer" parent="BoxContainer2/BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+vertical = true
+
+[node name="Label" type="Label" parent="BoxContainer2/BoxContainer/river_number"]
+layout_mode = 2
+text = "River Solme has"
+
+[node name="river_cap" type="OptionButton" parent="BoxContainer2/BoxContainer/river_number"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+selected = 0
+item_count = 4
+popup/item_0/text = "1 capital"
+popup/item_0/id = 0
+popup/item_1/text = "2 capital's"
+popup/item_1/id = 1
+popup/item_2/text = "3 capital's"
+popup/item_2/id = 2
+popup/item_3/text = "4 capital's"
+popup/item_3/id = 3
+
+[node name="RichTextLabel" type="RichTextLabel" parent="BoxContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "[center][b]CAREFUL WITH THESE SETTINGS[/b][/center]
+They can crash your game."
+
+[node name="BoxContainer3" type="BoxContainer" parent="." groups=["menu_settings_ui"]]
+visible = false
+layout_mode = 0
+offset_left = 96.0
+offset_top = 320.0
+offset_right = 296.0
+offset_bottom = 576.0
+vertical = true
+
+[node name="Label" type="Label" parent="BoxContainer3"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Audio"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BoxContainer" type="BoxContainer" parent="BoxContainer3"]
+layout_mode = 2
+size_flags_vertical = 3
+vertical = true
+
+[node name="Music type" type="BoxContainer" parent="BoxContainer3/BoxContainer"]
+layout_mode = 2
+vertical = true
+
+[node name="Button" type="Label" parent="BoxContainer3/BoxContainer/Music type"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Music type"
+
+[node name="music_type_setting" type="OptionButton" parent="BoxContainer3/BoxContainer/Music type"]
+layout_mode = 2
+button_pressed = true
+selected = 0
+item_count = 2
+popup/item_0/text = "warning siren"
+popup/item_0/id = 0
+popup/item_1/text = "wolfquest"
+popup/item_1/id = 1
+
+[node name="music_settings" type="BoxContainer" parent="BoxContainer3/BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+vertical = true
+
+[node name="Label" type="Label" parent="BoxContainer3/BoxContainer/music_settings"]
+layout_mode = 2
+text = "Music volume:"
+
+[node name="MusicSlider" type="HSlider" parent="BoxContainer3/BoxContainer/music_settings"]
+layout_mode = 2
+max_value = 10.0
+value = 10.0
+rounded = true
+
+[node name="sfx_settings" type="BoxContainer" parent="BoxContainer3/BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+vertical = true
+
+[node name="Label" type="Label" parent="BoxContainer3/BoxContainer/sfx_settings"]
+layout_mode = 2
+text = "SFX volume:"
+
+[node name="SfxSlider" type="HSlider" parent="BoxContainer3/BoxContainer/sfx_settings"]
+layout_mode = 2
+max_value = 10.0
+value = 10.0
+rounded = true
+
+[node name="host_menu" type="BoxContainer" parent="." groups=["menu_mp"]]
+layout_mode = 0
+offset_left = 192.0
+offset_top = 160.0
+offset_right = 576.0
+offset_bottom = 448.0
+vertical = true
+
+[node name="Label" type="Label" parent="host_menu"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "Tile War MP"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="host_game" type="Button" parent="host_menu"]
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+disabled = true
+text = "Host"
+
+[node name="server_name" type="LineEdit" parent="host_menu"]
+layout_mode = 2
+placeholder_text = "server name"
+
+[node name="client_settings" type="BoxContainer" parent="host_menu"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+vertical = true
+
+[node name="Label" type="Label" parent="host_menu/client_settings"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Client name"
+
+[node name="client_name" type="LineEdit" parent="host_menu/client_settings"]
+layout_mode = 2
+placeholder_text = "name"
+
+[node name="server_input" type="BoxContainer" parent="host_menu/client_settings"]
+layout_mode = 2
+
+[node name="server_ip" type="LineEdit" parent="host_menu/client_settings/server_input"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "server ip"
+
+[node name="server_port" type="LineEdit" parent="host_menu/client_settings/server_input"]
+layout_mode = 2
+placeholder_text = "port"
+virtual_keyboard_type = 2
+
+[node name="join_menu" type="BoxContainer" parent="." groups=["menu_mp"]]
+layout_mode = 0
+offset_left = 640.0
+offset_top = 128.0
+offset_right = 960.0
+offset_bottom = 519.0
+vertical = true
+
+[node name="Label" type="Label" parent="join_menu"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "Join game"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="join_game" type="Button" parent="join_menu"]
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+disabled = true
+text = "Join"
+
+[node name="avalable_servers" type="PanelContainer" parent="join_menu"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="BoxContainer" type="BoxContainer" parent="join_menu/avalable_servers"]
+layout_mode = 2
+vertical = true
+
+[node name="Label" type="Label" parent="join_menu/avalable_servers/BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Servers"
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="join_menu/avalable_servers/BoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="server_browser" type="BoxContainer" parent="join_menu/avalable_servers/BoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+vertical = true
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 5.0
+
+[connection signal="item_selected" from="lobby_player_list/BoxContainer/green_settings/green_mode/green_claim_type" to="." method="_on_green_claim_type_item_selected"]
+[connection signal="value_changed" from="BoxContainer/GridContainer/wall_settings/WallSlider" to="." method="_on_wall_slider_value_changed"]
+[connection signal="value_changed" from="BoxContainer/GridContainer/fuel_settings/FuelSlider" to="." method="_on_fuel_slider_value_changed"]
+[connection signal="item_selected" from="BoxContainer/BoxContainer/ai_level_setting" to="." method="_on_change_ai_level"]
+[connection signal="toggled" from="BoxContainer/BoxContainer2/lms_setting" to="." method="_on_lms_setting_toggled"]
+[connection signal="toggled" from="BoxContainer/BoxContainer3/bran_setting" to="." method="_on_bran_setting_toggled"]
+[connection signal="item_selected" from="BoxContainer2/BoxContainer/green_number/green_cap" to="." method="_on_green_cap_item_selected"]
+[connection signal="item_selected" from="BoxContainer2/BoxContainer/plum_number/plum_cap" to="." method="_on_plum_cap_item_selected"]
+[connection signal="item_selected" from="BoxContainer2/BoxContainer/york_number/york_cap" to="." method="_on_york_cap_item_selected"]
+[connection signal="item_selected" from="BoxContainer2/BoxContainer/river_number/river_cap" to="." method="_on_river_cap_item_selected"]
+[connection signal="item_selected" from="BoxContainer3/BoxContainer/Music type/music_type_setting" to="." method="_on_music_type_setting_item_selected"]
+[connection signal="value_changed" from="BoxContainer3/BoxContainer/music_settings/MusicSlider" to="." method="_on_music_slider_value_changed"]
+[connection signal="value_changed" from="BoxContainer3/BoxContainer/sfx_settings/SfxSlider" to="." method="_on_sfx_slider_value_changed"]
+[connection signal="pressed" from="host_menu/host_game" to="." method="_on_host_button_down"]
+[connection signal="text_changed" from="host_menu/server_name" to="." method="_on_server_name_text_changed"]
+[connection signal="text_changed" from="host_menu/client_settings/client_name" to="." method="_on_client_name_text_changed"]
+[connection signal="text_submitted" from="host_menu/client_settings/server_input/server_ip" to="." method="_on_server_ip_text_changed"]
+[connection signal="text_changed" from="host_menu/client_settings/server_input/server_port" to="." method="_on_server_port_text_changed"]
+[connection signal="pressed" from="join_menu/join_game" to="." method="_on_join_button_down"]
+[connection signal="timeout" from="Timer" to="." method="update_broadcast_data"]

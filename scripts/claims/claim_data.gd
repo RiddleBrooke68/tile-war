@@ -8,14 +8,18 @@ signal changed_info
 	set(n):
 		name = n
 		changed_info.emit()
-## What colour do they asine to. Note that 0 is unclaimed
-@export_range(1,4) var claim_colour = 1
+## What colour do they asine to. Note that 0 is unclaimed and 5 is unused.
+@export_range(1,5) var claim_colour = 1
 ## How meny moves do they get.
 @export var moves = 0:
 	set(n):
 		moves = n
 		changed_info.emit()
 @export var claim_panel : Texture
+
+@export_group("Unused info")
+##@deprecated: This will never apear in game and is used only as to give me thoughts on how they work.
+@export_multiline var info : String
 var fuel_count = 0:
 	set(n):
 		fuel_count = n

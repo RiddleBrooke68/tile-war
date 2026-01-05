@@ -24,6 +24,11 @@ Global="*res://scripts/global.gd"
 
 window/stretch/mode="viewport"
 
+[global_group]
+
+menu_settings_ui=""
+menu_mp=""
+
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0

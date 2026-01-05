@@ -1,5 +1,8 @@
 extends Node
 
+const app_id = 0xF3459
+
+
 # PREGENRATION
 ## Which map will be played.
 var map_type = 1
@@ -31,6 +34,7 @@ var yellow_enabled = true
 ## Removes red if disabled[br]
 ##@deprecated: Use [member claim_list] instead.
 var red_enabled = true
+# AI DIFCATY
 ## Sets how hard each the ai will be.
 var ai_level = 1:
 	set(value):
@@ -40,11 +44,23 @@ var ai_level = 1:
 			dist = 3
 		ai_level =  value
 var dist = 2
-
-## Last man standing
-var lms_enabled = true
+# MUSIC OPTIONS
 ## Which type of music is it.
 var music_type = 0
 const music_list = ["res://audio/music/warning siren/warning siren.ogg","res://audio/music/wolfquest sounding ass/wolfquest.ogg"]
 var music_vol = 10.0
 var SFX_vol = 10.0
+# MISC OPTIONS
+## Last man standing[br]
+## This makes it so if there is only one claim, the game will finaly end.
+var lms_enabled = true
+#Bran when there is something like the start of this line, then it involess this thing.
+#Brian THANKS DAD.
+## Battle random result[br]
+## When enabled, the game will roll a d20 that has 
+var bran_enabled = false
+
+#multiplayer
+var mp_enabled = false
+var mp_player_list = {} # peer_id:peer_data
+var mp_player_picked_claims = [0,0,0,0]

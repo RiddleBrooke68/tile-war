@@ -105,7 +105,7 @@ func _ready():
 	for i in range(0,4):
 		if enabled_claims[i] and check_claim_captatal(i+1).size() < Global.cap_list[i]:
 			for x in range(check_claim_tile_type_count(i+1,1),Global.cap_list[i]):
-				if not on_claim_tile(rcoord.call(false,false,break_loop),i+1,1,false):
+				if not on_claim_tile(rcoord.call(false,false,break_loop),i+1,1,false,false,true):
 					print_rich("[color=red][b]GEN_ERROR.001:[/b] could not find a place for a captial, Dont have such high gen settings.[/color]")
 					OS.alert("Error: could not find a place for a capital tile, Dont have such high gen settings. The game will break after this, ENDING GAME", "GEN_ERROR.001")
 					OS.crash("ERROR")
@@ -113,10 +113,10 @@ func _ready():
 					test.kill() # This will crash the game
 		elif enabled_claims[i] and check_claim_captatal(i+1).size() > Global.cap_list[i]:
 			while check_claim_captatal(i+1).size() > Global.cap_list[i]:
-				on_claim_tile(check_claim_captatal(i+1).pick_random(),0,2,false)
+				on_claim_tile(check_claim_captatal(i+1).pick_random(),0,2,false,false,true)
 		elif not enabled_claims[i]:
 			for x in check_claim_captatal(i+1):
-				on_claim_tile(x,0,2,false)
+				on_claim_tile(x,0,2,false,false,true)
 		print(i+1," capitals: ",check_claim_captatal(i+1).size())
 	
 	# This places down all the unowned tile, and will not stop untill it gets the right amount.
@@ -125,7 +125,7 @@ func _ready():
 			check_claim_tile_type_count(-1,3) < Global.fuel_count):
 		
 		if check_claim_tile_type_count(0,1) < Global.wall_count:
-			if not on_claim_tile(rcoord.call(false,true,break_loop),0,1,false,true):
+			if not on_claim_tile(rcoord.call(false,true,break_loop),0,1,false,true,true):
 				end_genration -= 1
 				print_rich("[color=red][b]GEN_ERROR.002:[/b] could not find a place for a wall tile, Dont have such high gen settings.[/color]")
 				OS.alert("Error: could not find a place for a wall tile, Dont have such high gen settings.", "GEN_ERROR.002")
@@ -134,7 +134,7 @@ func _ready():
 				#test.kill() # This will crash the game
 		
 		if check_claim_tile_type_count(-1,3) < Global.fuel_count:
-			if not on_claim_tile(rcoord.call(true,false,break_loop),0,3,false,true):
+			if not on_claim_tile(rcoord.call(true,false,break_loop),0,3,false,true,true):
 				end_genration -= 1
 				print_rich("[color=red][b]GEN_ERROR.003:[/b] could not find a place for a tile, Dont have such high gen settings.[/color]")
 				OS.alert("Error: could not find a place for a fuel tile, Dont have such high gen settings.", "GEN_ERROR.003")
@@ -154,7 +154,7 @@ func _ready():
 	print("wall: ",check_claim_tile_type_count(0,1))
 	print("fuel: ",check_claim_tile_type_count(-1,3))
 	for i in check_special_empty_tiles():
-		on_claim_tile(i,0,0,false,true)
+		on_claim_tile(i,0,0,false,true,true)
 
 
 func _process(_delta):
@@ -196,31 +196,57 @@ func _on_gui_input(event):
 		sound.play()
 
 ## Sets a tile on the main board.
-func on_claim_tile(coords,claim:int,type:int=-1,update=true,terain=false):
+func on_claim_tile(coords,claim:int,type:int=-1,update=true,terain=false,force_do=false):
 	if coords is Vector2i:
 		var picked_tile : TileData = main_grid.get_cell_tile_data(coords)
 		if picked_tile != null:
 			var changed = true
-			if picked_tile.get_custom_data("type") == 1 and type == -1:
-				type = 1
-			elif picked_tile.get_custom_data("type") == 2 and type in [1,3]:
-				type = 2
-				changed = false
-			elif picked_tile.get_custom_data("type") == 3 and type == -1:
-				type = 3
-			elif type == -1:
-				type = 0
-			main_grid.set_cell(coords,0,Vector2i(claim,type))
-			if (picked_tile.get_custom_data("type") == 1 or (type == 1 or type == 2) and not picked_tile.get_custom_data("type") == 1) and not terain:
-				if type != 2:
+			var tile
+			var ran_attacker
+			var ran_defender
+			#bran So when bran is active this has to check if its takeable or not and then will check if it needs to make a roll or not.
+			if Global.bran_enabled and not force_do and check_tile_claimably(coords,claim):
+				tile = check_tile_claimably(coords,claim,false,true)
+				ran_attacker = randi_range(0,10)+tile.points+tile.fuel if tile.type == 1 else null
+				ran_defender = randi_range(0,10)+tile.oppose_points+tile.oppose_fuel if tile.type == 1 else null
+				if tile.type == 1 and ran_attacker < ran_defender:
+					print("Fail, {0}, {1}".format([ran_attacker,ran_defender]))
+					game.failed_move = true
+					changed = false
+			#elif Global.bran_enabled and not check_tile_claimably(coords,claim):
+				#changed = false
+			if changed:
+				if picked_tile.get_custom_data("type") == 1 and type == -1:
+					type = 1
+				elif picked_tile.get_custom_data("type") == 2 and type in [1,3]:
+					type = 2
+					changed = false
+				elif picked_tile.get_custom_data("type") == 3 and type == -1:
+					type = 3
+				elif type == -1:
 					type = 0
-				var neighbors = main_grid.get_surrounding_cells(coords)
-				for neighbor in neighbors:
-					picked_tile = main_grid.get_cell_tile_data(neighbor)
-					if not picked_tile == null:
-						on_claim_tile(neighbor,claim,type,false,true)
+				main_grid.set_cell(coords,0,Vector2i(claim,type))
+				if (picked_tile.get_custom_data("type") == 1 or (type == 1 or type == 2) and not picked_tile.get_custom_data("type") == 1) and changed and not terain:
+					if type != 2:
+						type = 0
+					var neighbors = main_grid.get_surrounding_cells(coords)
+					for neighbor in neighbors:
+						picked_tile = main_grid.get_cell_tile_data(neighbor)
+						if not picked_tile == null:
+							on_claim_tile(neighbor,claim,type,false,true,true)
 			if update:
 				game_state_change.emit()
+			if not terain and not force_do:
+				if not Global.mp_enabled:
+					game.print_data_to_game(
+						"Was able to take this tile at: {0}\n{1}".format([coords,"With a roll of: {0}Atk aganst {1}Def".format([ran_attacker,ran_defender]) if ran_attacker != null and ran_defender != null else ""])
+						if changed else 
+						"Wasn't able to take this tile at: {0}\n{1}".format([coords,"With a roll of: {0}Atk aganst {1}Def".format([ran_attacker,ran_defender]) if ran_attacker != null and ran_defender != null else ""]))
+				else:
+					game.print_data_to_game.rpc(
+						"Was able to take this tile at: {0}\n{1}".format([coords,"With a roll of: {0}Atk aganst {1}Def".format([ran_attacker,ran_defender]) if ran_attacker != null and ran_defender != null else ""])
+						if changed else 
+						"Wasn't able to take this tile at: {0}\n{1}".format([coords,"With a roll of: {0}Atk aganst {1}Def".format([ran_attacker,ran_defender]) if ran_attacker != null and ran_defender != null else ""]))
 			return changed
 		#else:
 			#print("Failed to place a tile as the coords given: {0}, are outside map boundrys".format([coords]))
@@ -229,7 +255,7 @@ func on_claim_tile(coords,claim:int,type:int=-1,update=true,terain=false):
 	return false
 
 ## Checks if a tile can be claimed. Returns true if claimable.
-func check_tile_claimably(coords:Vector2i,claim:int,test_suroundings=false) -> bool:
+func check_tile_claimably(coords:Vector2i,claim:int,test_suroundings=false,wants_tile_data=false):
 	var tile = tile_data.new()
 	var has_neighbors = find_linked_tiles(coords,check_claim_captatal(claim),claim)
 	tested_tiles = []
@@ -246,6 +272,8 @@ func check_tile_claimably(coords:Vector2i,claim:int,test_suroundings=false) -> b
 	if picked_tile == null:
 		# DATA
 		tile.type = -1
+		if wants_tile_data:
+			return tile
 		tile_info.emit(tile)
 		# RESULT
 		return false
@@ -271,8 +299,10 @@ func check_tile_claimably(coords:Vector2i,claim:int,test_suroundings=false) -> b
 					elif picked_tile.get_custom_data("type") == 3:
 						tile.points -= 1
 		tile.fuel = mini(4,(check_claim_fuel_tile_count(claim)))
-		tile_info.emit(tile)
 		# RESULT
+		if wants_tile_data:
+			return tile
+		tile_info.emit(tile)
 		return false
 	elif picked_tile.get_custom_data("ownership") != 0:
 		
@@ -291,6 +321,7 @@ func check_tile_claimably(coords:Vector2i,claim:int,test_suroundings=false) -> b
 			tile.oppose_points -= 2
 			count += 2
 		var cap_buff = 0
+		var cap_debuff = 0
 		var caps_linked : Array[Vector2i]
 		for neighbor in neighbors:
 			picked_tile = main_grid.get_cell_tile_data(neighbor)
@@ -314,6 +345,11 @@ func check_tile_claimably(coords:Vector2i,claim:int,test_suroundings=false) -> b
 						count += 1
 				# elif this it one of the opposing claims
 				elif picked_tile.get_custom_data("ownership") == oppose_claim:
+					for x in check_claim_captatal(oppose_claim).filter(func(_coords): return not _coords in caps_linked):
+						tested_tiles = []
+						if find_linked_tiles(tile.coords,[x],oppose_claim,18):
+							caps_linked.append(x)
+							cap_debuff += 1
 					if picked_tile.get_custom_data("type") == 0:
 						tile.oppose_points += 1
 						count -= 1
@@ -330,12 +366,12 @@ func check_tile_claimably(coords:Vector2i,claim:int,test_suroundings=false) -> b
 			if cap_buff >= 1:
 				#tile.points += cap_buff
 				count += cap_buff
-			cap_buff = 0
-			for x in check_claim_captatal(oppose_claim):
-				cap_buff += 1 if find_linked_tiles(tile.coords,[x],oppose_claim) else 0
+			#cap_buff = 0
+			#for x in check_claim_captatal(oppose_claim):
+				#cap_buff += 1 if find_linked_tiles(tile.coords,[x],oppose_claim) else 0
 				#print(cap_buff)
 			# If the tile isn't conected to a capital, then it gets a -10 debuff to reward cutting off areas.
-			if cap_buff == 0:
+			if cap_debuff == 0:
 				tile.oppose_points -= 10
 				count += 10
 			#elif cap_buff >= 2:
@@ -345,16 +381,29 @@ func check_tile_claimably(coords:Vector2i,claim:int,test_suroundings=false) -> b
 		tile.fuel = mini(4,(check_claim_fuel_tile_count(claim)/2))
 		tile.oppose_fuel = mini(4,(check_claim_fuel_tile_count(oppose_claim)))
 		@warning_ignore("integer_division")
-		count += mini(4,(check_claim_fuel_tile_count(claim)/2)) - mini(4,(check_claim_fuel_tile_count(oppose_claim)))
-		if count >= 0 and has_neighbors:
+		count += tile.fuel - tile.oppose_fuel
+		tile.final_score = count
+		if Global.bran_enabled and count > -10 and has_neighbors:
 			tile.available = true
+			if wants_tile_data:
+				return tile
+			tile_info.emit(tile)
+			return true
+		elif count >= 0 and has_neighbors:
+			tile.available = true
+			if wants_tile_data:
+				return tile
 			tile_info.emit(tile)
 			return true
 		else:
+			if wants_tile_data:
+				return tile
 			tile_info.emit(tile)
 			return false
 	elif main_grid.get_cell_atlas_coords(coords) == Vector2i(0,1):
 		tile.type = 3
+		if wants_tile_data:
+			return tile
 		tile_info.emit(tile)
 		return false
 	else:
@@ -368,8 +417,12 @@ func check_tile_claimably(coords:Vector2i,claim:int,test_suroundings=false) -> b
 				if not picked_tile == null:
 					if picked_tile.get_custom_data("ownership") == claim:
 						tile.available = true
+						if wants_tile_data:
+							return tile
 						tile_info.emit(tile)
 						return true
+		if wants_tile_data:
+			return tile
 		tile_info.emit(tile)
 		return false
 

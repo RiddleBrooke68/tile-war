@@ -7,4 +7,5 @@
 script = ExtResource("2_366fs")
 name = "Greenwich"
 claim_panel = ExtResource("1_yxuxr")
+info = "Early on, this was the only player."
 metadata/_custom_type_script = "uid://cioo3en61w18o"

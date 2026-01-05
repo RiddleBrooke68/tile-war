@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="NonPlayerClaim" load_steps=3 format=3 uid="uid://bm8nesojeh0hq"]
+
+[ext_resource type="Texture2D" uid="uid://d1fnd65wn40ro" path="res://sprites/ui/claim_data/claim_alined_panels/claim_builders_data_panel.png" id="1_15koo"]
+[ext_resource type="Script" uid="uid://bmkjamamvf3ie" path="res://scripts/claims/non_player_claim.gd" id="2_prvci"]
+
+[resource]
+script = ExtResource("2_prvci")
+fuel_beeline = 10
+stratigic_beeline = 5
+blindless_beeline = 1
+teratory_beeline = 5
+capital_beeline = 10
+wall_beeline = 3
+name = "Builders League"
+claim_colour = 5
+claim_panel = ExtResource("1_15koo")
+info = "This is a funny 5th claim that I wanted to add, but didn't get time to do it, only acts as a refrence to Team Fortres 2, and acts as Unused content. How you were suposed to see it was through naming a player ether, [Builders, Builders League, or Blu] and start the game, and that player would be replaced by this.
+
+So if your reading this... Hi, I hope you've injoyed this game that you'd data mine it.
+
+Ah, who am I kidding, noone is going to read this."
+metadata/_custom_type_script = "uid://wjguspviu1q"
