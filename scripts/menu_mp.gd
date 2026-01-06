@@ -270,18 +270,18 @@ func player_connected(id):
 	if not Global.mp_player_list.is_empty():
 		print(client_name," player connected: " + str(id))
 		send_player_data.rpc_id(id,client_label.text,Global.mp_player_id,Global.mp_player_list[Global.mp_player_id].current_claim)
-		if Global.mp_host:
-			update_global_data.rpc_id(id,
-				Global.map_type,
-				Global.wall_count,
-				Global.fuel_count,
-				Global.cap_list,
-				Global.claim_list,
-				Global.ai_level,
-				Global.music_type,
-				Global.lms_enabled,
-				Global.bran_enabled,
-				Global.mp_player_list)
+		#if Global.mp_host:
+			#update_global_data.rpc_id(id,
+				#Global.map_type,
+				#Global.wall_count,
+				#Global.fuel_count,
+				#Global.cap_list,
+				#Global.claim_list,
+				#Global.ai_level,
+				#Global.music_type,
+				#Global.lms_enabled,
+				#Global.bran_enabled,
+				#Global.mp_player_list)
 
 ## Called when a player disconnects to a server, regadless of client or server
 func player_disconnected(id):
