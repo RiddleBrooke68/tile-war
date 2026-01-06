@@ -9,19 +9,18 @@ class_name menu_class
 @onready var wall_slider = %WallSlider
 @onready var fuel_text = $BoxContainer/GridContainer/fuel_settings/Label
 @onready var fuel_slider = $BoxContainer/GridContainer/fuel_settings/FuelSlider
-@onready var ai_level = $BoxContainer/BoxContainer/ai_level_setting
+@onready var ai_level : OptionButton = $BoxContainer/BoxContainer/ai_level_setting
 
 # Claims and their control.
-@onready var green_claim_type = %green_claim_type
-@onready var purple_claim_type = %purple_claim_type
-@onready var yellow_claim_type = %yellow_claim_type
-@onready var red_claim_type = %red_claim_type
+@onready var green_claim_type : OptionButton = %green_claim_type
+@onready var purple_claim_type : OptionButton = %purple_claim_type
+@onready var yellow_claim_type : OptionButton = %yellow_claim_type
+@onready var red_claim_type : OptionButton = %red_claim_type
 
 @onready var green_name = %green_name
 @onready var purple_name = %purple_name
 @onready var yellow_name = %yellow_name
 @onready var red_name = %red_name
-
 
 ##@deprecated
 @onready var player_setting = $BoxContainer/GridContainer/player_setting
@@ -38,7 +37,7 @@ class_name menu_class
 @onready var river_cap = %river_cap
 @onready var cap_list = [green_cap,plum_cap,york_cap,river_cap]
 
-@onready var music_type = $"BoxContainer3/BoxContainer/Music type/music_type_setting"
+@onready var music_type : OptionButton = $"BoxContainer3/BoxContainer/Music type/music_type_setting"
 @onready var music_slider = $BoxContainer3/BoxContainer/music_settings/MusicSlider
 @onready var sfx_slider = $BoxContainer3/BoxContainer/sfx_settings/SfxSlider
 
@@ -89,6 +88,7 @@ func _ready():
 	sfx_slider.value = Global.SFX_vol
 	# Remove Multiplayer
 	Global.mp_enabled = false
+	Global.mp_player_list = {}
 
 
 func sound_play(use_drag=false):
@@ -203,24 +203,28 @@ func _on_red_name_text_submitted(new_text,mp_player_source=true):
 func _on_green_claim_type_item_selected(index,mp_player_source=true):
 	if Global.mp_enabled and mp_player_source:
 		_on_green_claim_type_item_selected.rpc(index,false)
+	green_claim_type.selected = index
 	Global.claim_list[0] = index
 
 @rpc("any_peer")
 func _on_purple_claim_type_item_selected(index,mp_player_source=true):
 	if Global.mp_enabled and mp_player_source:
 		_on_purple_claim_type_item_selected.rpc(index,false)
+	purple_claim_type.selected = index
 	Global.claim_list[1] = index
 
 @rpc("any_peer")
 func _on_yellow_claim_type_item_selected(index,mp_player_source=true):
 	if Global.mp_enabled and mp_player_source:
 		_on_yellow_claim_type_item_selected.rpc(index,false)
+	yellow_claim_type.selected = index
 	Global.claim_list[2] = index
 
 @rpc("any_peer")
 func _on_red_claim_type_item_selected(index,mp_player_source=true):
 	if Global.mp_enabled and mp_player_source:
 		_on_red_claim_type_item_selected.rpc(index,false)
+	red_claim_type.selected = index
 	Global.claim_list[3] = index
 
 #mp Would probably be rendered obslet if I were to go through with my changes.
@@ -270,8 +274,16 @@ func _on_river_cap_item_selected(index,mp_player_source=true):
 	Global.cap_list[3] = index + 1
 	sound_play()
 
+
 func _on_start_game():
 	get_tree().change_scene_to_file("res://levels/main_ui.tscn")
+
+func _on_multiplayer_pressed():
+	get_tree().change_scene_to_file("res://levels/menu_mp.tscn")
+
+func _on_singleplayer_pressed():
+	get_tree().change_scene_to_file("res://levels/menu.tscn")
+
 
 @rpc("any_peer")
 func _on_change_ai_level(index,mp_player_source=true):
@@ -289,31 +301,31 @@ func _on_music_type_setting_item_selected(index,mp_player_source=true):
 	Global.music_type = index
 	sound_play()
 
-@rpc("any_peer")
-func _on_music_slider_value_changed(value,mp_player_source=true):
+#@rpc("any_peer")
+func _on_music_slider_value_changed(value):
 	# Multiplayer parts.
-	if Global.mp_enabled and mp_player_source and Global.music_vol != value:
-		Global.music_vol = value
-		_on_music_slider_value_changed.rpc(value,false)
-	elif Global.mp_enabled and fuel_slider.value != value:
-		Global.music_vol = value
-		music_slider.value = value
-	else:
-		Global.music_vol = value
+	#if Global.mp_enabled and mp_player_source and Global.music_vol != value:
+		#Global.music_vol = value
+		#_on_music_slider_value_changed.rpc(value,false)
+	#elif Global.mp_enabled and fuel_slider.value != value:
+		#Global.music_vol = value
+		#music_slider.value = value
+	#else:
+	Global.music_vol = value
 	sound_play(true)
 
-@rpc("any_peer")
+#@rpc("any_peer")
 ## Sets the volume of sound efects
-func _on_sfx_slider_value_changed(value,mp_player_source=true):
+func _on_sfx_slider_value_changed(value):
 	# Multiplayer parts.
-	if Global.mp_enabled and mp_player_source and Global.SFX_vol != value:
-		Global.SFX_vol = value
-		_on_sfx_slider_value_changed.rpc(value,false)
-	elif Global.mp_enabled and fuel_slider.value != value:
-		Global.SFX_vol = value
-		sfx_slider.value = value
-	else:
-		Global.SFX_vol = value
+	#if Global.mp_enabled and mp_player_source and Global.SFX_vol != value:
+		#Global.SFX_vol = value
+		#_on_sfx_slider_value_changed.rpc(value,false)
+	#elif Global.mp_enabled and fuel_slider.value != value:
+		#Global.SFX_vol = value
+		#sfx_slider.value = value
+	#else:
+	Global.SFX_vol = value
 	sound_play(true)
 
 @rpc("any_peer")
@@ -329,7 +341,3 @@ func _on_bran_setting_toggled(toggled_on,mp_player_source=true):
 		_on_bran_setting_toggled.rpc(toggled_on,false)
 	Global.bran_enabled = toggled_on
 	sound_play()
-
-
-func _on_multiplayer_pressed():
-	get_tree().change_scene_to_file("res://levels/menu_mp.tscn")

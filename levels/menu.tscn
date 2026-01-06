@@ -510,8 +510,11 @@ rounded = true
 
 [node name="multiplayer" type="Button" parent="."]
 layout_mode = 0
-offset_right = 8.0
-offset_bottom = 8.0
+offset_left = 904.0
+offset_top = 592.0
+offset_right = 1144.0
+offset_bottom = 632.0
+text = "Local Multiplayer"
 
 [connection signal="button_down" from="BoxContainer/start_game" to="." method="_on_start_game"]
 [connection signal="item_selected" from="BoxContainer/map/map_setting" to="." method="_on_map_setting_item_selected"]

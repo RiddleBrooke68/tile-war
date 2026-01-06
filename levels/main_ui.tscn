@@ -280,18 +280,47 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_font_sizes/normal_font_size = 14
+theme_override_font_sizes/bold_font_size = 14
 bbcode_enabled = true
-
-[node name="game_event_recorder" type="RichTextLabel" parent="game/input border/BoxContainer2/BoxContainer/inputs"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 128)
-layout_mode = 2
-scroll_following = true
 
 [node name="new_game" type="Button" parent="game/input border/BoxContainer2/BoxContainer/inputs"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "New Game"
+
+[node name="game_chat" type="BoxContainer" parent="game/input border/BoxContainer2/BoxContainer/inputs"]
+layout_mode = 2
+vertical = true
+
+[node name="top" type="HSeparator" parent="game/input border/BoxContainer2/BoxContainer/inputs/game_chat"]
+layout_mode = 2
+
+[node name="game_event_recorder" type="RichTextLabel" parent="game/input border/BoxContainer2/BoxContainer/inputs/game_chat"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 128)
+layout_mode = 2
+scroll_following = true
+
+[node name="chat_input_divider" type="HSeparator" parent="game/input border/BoxContainer2/BoxContainer/inputs/game_chat"]
+layout_mode = 2
+
+[node name="input_chat" type="BoxContainer" parent="game/input border/BoxContainer2/BoxContainer/inputs/game_chat"]
+layout_mode = 2
+
+[node name="chat_mode" type="OptionButton" parent="game/input border/BoxContainer2/BoxContainer/inputs/game_chat/input_chat"]
+unique_name_in_owner = true
+layout_mode = 2
+selected = 0
+item_count = 1
+popup/item_0/text = "global"
+popup/item_0/id = 0
+
+[node name="chat_input" type="LineEdit" parent="game/input border/BoxContainer2/BoxContainer/inputs/game_chat/input_chat"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "chat input"
 
 [node name="Data" type="BoxContainer" parent="game/input border/BoxContainer2/BoxContainer"]
 layout_mode = 2
@@ -363,4 +392,5 @@ libraries = {
 [connection signal="tile_info" from="game/board border/board" to="game" method="_on_board_tile_info"]
 [connection signal="pressed" from="game/input border/BoxContainer2/BoxContainer/inputs/next_turn" to="game" method="on_next_turn"]
 [connection signal="pressed" from="game/input border/BoxContainer2/BoxContainer/inputs/new_game" to="game" method="new_game"]
+[connection signal="text_submitted" from="game/input border/BoxContainer2/BoxContainer/inputs/game_chat/input_chat/chat_input" to="game" method="_on_chat_input_text_submitted"]
 [connection signal="animation_finished" from="fade/fade_anim" to="game" method="_on_fade_anim_animation_finished"]

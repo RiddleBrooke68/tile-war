@@ -13,10 +13,10 @@ signal tile_info(data:tile_data)
 @export var fuel_tile_count = 10
 
 ## The main grid. 18x20 or a 3 to 4 ratio
-@onready var main_grid = $main_grid
+@onready var main_grid : TileMapLayer = $main_grid
 ## The overlay thats to show the player what their clicking.
 @onready var overlay_grid = $overlay_grid
-
+const placement = Vector2i(-10,-13)
 
 @onready var game = $"../.."
 
@@ -69,92 +69,97 @@ func _ready():
 	add_child(sound)
 	sound.volume_db = linear_to_db(Global.SFX_vol/10)
 	
+	# Read map limits
 	var set_of_grid : Array[Vector2i] = main_grid.get_used_cells()
 	var maxx = set_of_grid.max()
 	var minn = set_of_grid.min()
 	lot = Vector4i(maxx.x,maxx.y,minn.x,minn.y)
 	print(lot)
 	
-	# Set map
-	tile_set = main_grid.tile_set
-	var placement = Vector2i(-10,-13)
-	if Global.map_type == 1:
-		placement.x = -10
-	main_grid.set_pattern(placement,tile_set.get_pattern(Global.map_type))
-	
-	var break_loop = 500
-	var end_genration = 3
-	# Genration
-	var rcoord : Callable = func(dot=false,wall=false,tries=-999):
-		var thing
-		var spot = false
-		while not spot and tries != 0:
-			thing = Vector2i(randi_range(lot.z,lot.x),randi_range(lot.w,lot.y))
-			spot = check_tile_neutralty(thing,dot,wall)
-			tries -= 1
-			if tries == 0:
-				#print("Error: could not find a place for a tile, placing in null location. Dont have such high gen settings.")
-				thing = null
-				#OS.alert("Error: could not find a place for a tile, Dont have such high gen settings.", "ERROR.001")
+	if not Global.mp_enabled or multiplayer.get_unique_id() == 1:
+		# Pre Gen
+		tile_set = main_grid.tile_set
+		#var placement = Vector2i(-10,-13)
+		#if Global.map_type == 1:
+			#placement.x = -10
+		main_grid.set_pattern(placement,tile_set.get_pattern(Global.map_type))
+		
+		var break_loop = 500
+		var end_genration = 3
+		# Genration
+		var rcoord : Callable = func(dot=false,wall=false,tries=-999):
+			var thing
+			var spot = false
+			while not spot and tries != 0:
+				thing = Vector2i(randi_range(lot.z,lot.x),randi_range(lot.w,lot.y))
+				spot = check_tile_neutralty(thing,dot,wall)
+				tries -= 1
+				if tries == 0:
+					#print("Error: could not find a place for a tile, placing in null location. Dont have such high gen settings.")
+					thing = null
+					#OS.alert("Error: could not find a place for a tile, Dont have such high gen settings.", "ERROR.001")
+					#OS.crash("ERROR")
+					#var test = null
+					#test.kill() # This will crash the game
+			return thing
+		
+		# Places all enabled players.
+		for i in range(0,4):
+			if enabled_claims[i] and check_claim_captatal(i+1).size() < Global.cap_list[i]:
+				for x in range(check_claim_tile_type_count(i+1,1),Global.cap_list[i]):
+					if not on_claim_tile(rcoord.call(false,false,break_loop),i+1,1,false,false,true):
+						print_rich("[color=red][b]GEN_ERROR.001:[/b] could not find a place for a captial, Dont have such high gen settings.[/color]")
+						OS.alert("Error: could not find a place for a capital tile, Dont have such high gen settings. The game will break after this, ENDING GAME", "GEN_ERROR.001")
+						OS.crash("ERROR")
+						var test = null
+						test.kill() # This will crash the game
+			elif enabled_claims[i] and check_claim_captatal(i+1).size() > Global.cap_list[i]:
+				while check_claim_captatal(i+1).size() > Global.cap_list[i]:
+					on_claim_tile(check_claim_captatal(i+1).pick_random(),0,2,false,false,true)
+			elif not enabled_claims[i]:
+				for x in check_claim_captatal(i+1):
+					on_claim_tile(x,0,2,false,false,true)
+			print(i+1," capitals: ",check_claim_captatal(i+1).size())
+		
+		# This places down all the unowned tile, and will not stop untill it gets the right amount.
+		while ( check_claim_tile_type_count(0,1) < Global.wall_count
+				or
+				check_claim_tile_type_count(-1,3) < Global.fuel_count):
+			
+			if check_claim_tile_type_count(0,1) < Global.wall_count:
+				if not on_claim_tile(rcoord.call(false,true,break_loop),0,1,false,true,true):
+					end_genration -= 1
+					print_rich("[color=red][b]GEN_ERROR.002:[/b] could not find a place for a wall tile, Dont have such high gen settings.[/color]")
+					OS.alert("Error: could not find a place for a wall tile, Dont have such high gen settings.", "GEN_ERROR.002")
+					#OS.crash("ERROR")
+					#var test = null
+					#test.kill() # This will crash the game
+			
+			if check_claim_tile_type_count(-1,3) < Global.fuel_count:
+				if not on_claim_tile(rcoord.call(true,false,break_loop),0,3,false,true,true):
+					end_genration -= 1
+					print_rich("[color=red][b]GEN_ERROR.003:[/b] could not find a place for a tile, Dont have such high gen settings.[/color]")
+					OS.alert("Error: could not find a place for a fuel tile, Dont have such high gen settings.", "GEN_ERROR.003")
+					#OS.crash("ERROR")
+					#var test = null
+					#test.kill() # This will crash the game
+			
+			if end_genration == 0:
+				print("Stopping.")
+				break
+				#OS.alert("Error: could not find a place for a tile, Dont have such high gen settings.", "ERROR.003")
 				#OS.crash("ERROR")
 				#var test = null
 				#test.kill() # This will crash the game
-		return thing
-	
-	# Places all enabled players.
-	for i in range(0,4):
-		if enabled_claims[i] and check_claim_captatal(i+1).size() < Global.cap_list[i]:
-			for x in range(check_claim_tile_type_count(i+1,1),Global.cap_list[i]):
-				if not on_claim_tile(rcoord.call(false,false,break_loop),i+1,1,false,false,true):
-					print_rich("[color=red][b]GEN_ERROR.001:[/b] could not find a place for a captial, Dont have such high gen settings.[/color]")
-					OS.alert("Error: could not find a place for a capital tile, Dont have such high gen settings. The game will break after this, ENDING GAME", "GEN_ERROR.001")
-					OS.crash("ERROR")
-					var test = null
-					test.kill() # This will crash the game
-		elif enabled_claims[i] and check_claim_captatal(i+1).size() > Global.cap_list[i]:
-			while check_claim_captatal(i+1).size() > Global.cap_list[i]:
-				on_claim_tile(check_claim_captatal(i+1).pick_random(),0,2,false,false,true)
-		elif not enabled_claims[i]:
-			for x in check_claim_captatal(i+1):
-				on_claim_tile(x,0,2,false,false,true)
-		print(i+1," capitals: ",check_claim_captatal(i+1).size())
-	
-	# This places down all the unowned tile, and will not stop untill it gets the right amount.
-	while ( check_claim_tile_type_count(0,1) < Global.wall_count
-			or
-			check_claim_tile_type_count(-1,3) < Global.fuel_count):
+			
+		# Debug test if the walls and fuel
+		print("wall: ",check_claim_tile_type_count(0,1))
+		print("fuel: ",check_claim_tile_type_count(-1,3))
+		for i in check_special_empty_tiles():
+			on_claim_tile(i,0,0,false,true,true)
 		
-		if check_claim_tile_type_count(0,1) < Global.wall_count:
-			if not on_claim_tile(rcoord.call(false,true,break_loop),0,1,false,true,true):
-				end_genration -= 1
-				print_rich("[color=red][b]GEN_ERROR.002:[/b] could not find a place for a wall tile, Dont have such high gen settings.[/color]")
-				OS.alert("Error: could not find a place for a wall tile, Dont have such high gen settings.", "GEN_ERROR.002")
-				#OS.crash("ERROR")
-				#var test = null
-				#test.kill() # This will crash the game
-		
-		if check_claim_tile_type_count(-1,3) < Global.fuel_count:
-			if not on_claim_tile(rcoord.call(true,false,break_loop),0,3,false,true,true):
-				end_genration -= 1
-				print_rich("[color=red][b]GEN_ERROR.003:[/b] could not find a place for a tile, Dont have such high gen settings.[/color]")
-				OS.alert("Error: could not find a place for a fuel tile, Dont have such high gen settings.", "GEN_ERROR.003")
-				#OS.crash("ERROR")
-				#var test = null
-				#test.kill() # This will crash the game
-		
-		if end_genration == 0:
-			print("Stopping.")
-			break
-			#OS.alert("Error: could not find a place for a tile, Dont have such high gen settings.", "ERROR.003")
-			#OS.crash("ERROR")
-			#var test = null
-			#test.kill() # This will crash the game
-		
-	# Debug test if the walls and fuel
-	print("wall: ",check_claim_tile_type_count(0,1))
-	print("fuel: ",check_claim_tile_type_count(-1,3))
-	for i in check_special_empty_tiles():
-		on_claim_tile(i,0,0,false,true,true)
+		if Global.mp_enabled:
+			mp_update_board_state.rpc(serialize_pattern(main_grid.get_pattern(set_of_grid)))
 
 
 func _process(_delta):
@@ -176,6 +181,41 @@ func _process(_delta):
 		overlay_grid.set_cell(grid_coords, 0, Vector2i(game.active_player.claim_colour,type))
 
 
+func serialize_pattern(pattern: TileMapPattern) -> Dictionary:
+	var pattern_data := {}
+	pattern_data["size"] = pattern.get_size() # Get the size of the pattern
+	var cells_data := []
+	
+	# Iterate over all used cells in the pattern
+	for coords in pattern.get_used_cells():
+		var cell_data := {}
+		cell_data["coords"] = coords
+		cell_data["source_id"] = pattern.get_cell_source_id(coords)
+		cell_data["atlas_coords"] = pattern.get_cell_atlas_coords(coords)
+		cell_data["alternative_tile"] = pattern.get_cell_alternative_tile(coords)
+		cells_data.append(cell_data)
+	
+	pattern_data["cells"] = cells_data
+	return pattern_data
+
+func deserialize_pattern(pattern_data: Dictionary) -> TileMapPattern:
+	var pattern := TileMapPattern.new()
+	pattern.set_size(pattern_data["size"])
+	
+	for cell_data in pattern_data["cells"]:
+		pattern.set_cell(
+		cell_data["coords"],
+		cell_data["source_id"],
+		cell_data["atlas_coords"],
+		cell_data["alternative_tile"]
+		)
+	return pattern
+
+@rpc("any_peer")
+func mp_update_board_state(board_state:Dictionary):
+	main_grid.set_pattern(placement,deserialize_pattern(board_state))
+
+
 ## Gets if the mouse enters the board. [member board.hovered]
 func _on_mouse_entered():
 	hovered = true
@@ -195,20 +235,38 @@ func _on_gui_input(event):
 			game.gui_board_events()
 		sound.play()
 
+@rpc("any_peer")
+## Fires only when there is a mpui input from other clients.
+func _on_mpui_input(coords,claim:int,type:int=-1,update=true,terain=false,force_do=false,did_claim=true,mp_ran_results=[0,0]):
+	if on_claim_tile(coords,claim,type,update,terain,force_do,false,did_claim,mp_ran_results):
+		sound.stream = load("res://audio/FX/left click sound.mp3") as AudioStream
+	else:
+		sound.stream = load("res://audio/FX/right click sound.mp3") as AudioStream
+	game.gui_board_events()
+	sound.play()
+
+
 ## Sets a tile on the main board.
-func on_claim_tile(coords,claim:int,type:int=-1,update=true,terain=false,force_do=false):
+func on_claim_tile(coords,claim:int,type:int=-1,update=true,terain=false,force_do=false,mp_player_source=true,mp_did_claim=false,mp_ran_results=[0,0]) -> bool:
 	if coords is Vector2i:
 		var picked_tile : TileData = main_grid.get_cell_tile_data(coords)
 		if picked_tile != null:
 			var changed = true
+			var did_claim = false
 			var tile
 			var ran_attacker
 			var ran_defender
+			var mp_start_type = type
 			#bran So when bran is active this has to check if its takeable or not and then will check if it needs to make a roll or not.
 			if Global.bran_enabled and not force_do and check_tile_claimably(coords,claim):
 				tile = check_tile_claimably(coords,claim,false,true)
-				ran_attacker = randi_range(0,10)+tile.points+tile.fuel if tile.type == 1 else null
-				ran_defender = randi_range(0,10)+tile.oppose_points+tile.oppose_fuel if tile.type == 1 else null
+				if mp_did_claim or did_claim:
+					ran_attacker = mp_ran_results[0]
+					ran_defender = mp_ran_results[1]
+				else:
+					ran_attacker = randi_range(0,10)+tile.points+tile.fuel if tile.type == 1 else null
+					ran_defender = randi_range(0,10)+tile.oppose_points+tile.oppose_fuel if tile.type == 1 else null
+					did_claim = true
 				if tile.type == 1 and ran_attacker < ran_defender:
 					print("Fail, {0}, {1}".format([ran_attacker,ran_defender]))
 					game.failed_move = true
@@ -239,14 +297,27 @@ func on_claim_tile(coords,claim:int,type:int=-1,update=true,terain=false,force_d
 			if not terain and not force_do:
 				if not Global.mp_enabled:
 					game.print_data_to_game(
-						"Was able to take this tile at: {0}\n{1}".format([coords,"With a roll of: {0}Atk aganst {1}Def".format([ran_attacker,ran_defender]) if ran_attacker != null and ran_defender != null else ""])
+						"{0} was able to take this tile at: {1}{2}".format([
+							game.active_player.name,
+							coords,
+							"\nWith a roll of: {0}Atk aganst {1}Def".format([ran_attacker,ran_defender]) if ran_attacker != null and ran_defender != null else ""])
 						if changed else 
-						"Wasn't able to take this tile at: {0}\n{1}".format([coords,"With a roll of: {0}Atk aganst {1}Def".format([ran_attacker,ran_defender]) if ran_attacker != null and ran_defender != null else ""]))
-				else:
+						"{0} wasnt able to take this tile at: {1}{2}".format([
+							game.active_player.name,
+							coords,
+							"\nWith a roll of: {0}Atk aganst {1}Def".format([ran_attacker,ran_defender]) if ran_attacker != null and ran_defender != null else ""]))
+				elif mp_player_source:
 					game.print_data_to_game.rpc(
-						"Was able to take this tile at: {0}\n{1}".format([coords,"With a roll of: {0}Atk aganst {1}Def".format([ran_attacker,ran_defender]) if ran_attacker != null and ran_defender != null else ""])
+						"{0} was able to take this tile at: {1}{2}".format([
+							game.active_player.name,
+							coords,
+							"\nWith a roll of: {0}Atk aganst {1}Def".format([ran_attacker,ran_defender]) if ran_attacker != null and ran_defender != null else ""])
 						if changed else 
-						"Wasn't able to take this tile at: {0}\n{1}".format([coords,"With a roll of: {0}Atk aganst {1}Def".format([ran_attacker,ran_defender]) if ran_attacker != null and ran_defender != null else ""]))
+						"{0} wasnt able to take this tile at: {1}{2}".format([
+							game.active_player.name,
+							coords,
+							"\nWith a roll of: {0}Atk aganst {1}Def".format([ran_attacker,ran_defender]) if ran_attacker != null and ran_defender != null else ""]))
+					_on_mpui_input.rpc(coords,claim,mp_start_type,update,terain,force_do,did_claim,[ran_attacker,ran_defender])
 			return changed
 		#else:
 			#print("Failed to place a tile as the coords given: {0}, are outside map boundrys".format([coords]))

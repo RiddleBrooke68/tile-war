@@ -62,5 +62,9 @@ var bran_enabled = false
 
 #multiplayer
 var mp_enabled = false
-var mp_player_list = {} # peer_id:peer_data
-var mp_player_picked_claims = [0,0,0,0]
+var mp_host = false
+var mp_player_id = 0
+var mp_player_list = {} # peer_id:peer_data={
+			#"name": _name,
+			#"id": id,
+			#"current_claim": 0}

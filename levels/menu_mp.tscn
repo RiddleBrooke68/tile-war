@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://cqj63olmuv65h"]
+[gd_scene load_steps=6 format=3 uid="uid://cqj63olmuv65h"]
 
 [ext_resource type="Script" uid="uid://c8gqgkxqt2ucn" path="res://scripts/menu_mp.gd" id="1_l6f4p"]
 [ext_resource type="PackedScene" uid="uid://bjhedtnkrakw6" path="res://objects/ui/main_menu/server_connection_button.tscn" id="2_pb0ft"]
+[ext_resource type="PackedScene" uid="uid://bojd4turtuu7f" path="res://levels/main_ui.tscn" id="2_us8tt"]
 
 [sub_resource type="Gradient" id="Gradient_n3ddt"]
 colors = PackedColorArray(0.13544941, 0.09605298, 0.041523762, 1, 0.06992452, 0.019128133, 0.020676874, 1)
@@ -18,6 +19,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_l6f4p")
+game_mp = ExtResource("2_us8tt")
 server_join = ExtResource("2_pb0ft")
 
 [node name="back_ground" type="Sprite2D" parent="."]
@@ -75,6 +77,7 @@ popup/item_2/id = 2
 [node name="green_picker" type="Button" parent="lobby_player_list/BoxContainer/green_settings"]
 unique_name_in_owner = true
 layout_mode = 2
+toggle_mode = true
 text = "pick as you"
 
 [node name="green_name" type="LineEdit" parent="lobby_player_list/BoxContainer/green_settings"]
@@ -114,6 +117,7 @@ popup/item_2/id = 2
 [node name="purple_picker" type="Button" parent="lobby_player_list/BoxContainer/purple_settings"]
 unique_name_in_owner = true
 layout_mode = 2
+toggle_mode = true
 text = "pick as you"
 
 [node name="purple_name" type="LineEdit" parent="lobby_player_list/BoxContainer/purple_settings"]
@@ -153,6 +157,7 @@ popup/item_2/id = 2
 [node name="yellow_picker" type="Button" parent="lobby_player_list/BoxContainer/yellow_settings"]
 unique_name_in_owner = true
 layout_mode = 2
+toggle_mode = true
 text = "pick as you"
 
 [node name="yellow_name" type="LineEdit" parent="lobby_player_list/BoxContainer/yellow_settings"]
@@ -192,6 +197,7 @@ popup/item_2/id = 2
 [node name="red_picker" type="Button" parent="lobby_player_list/BoxContainer/red_settings"]
 unique_name_in_owner = true
 layout_mode = 2
+toggle_mode = true
 text = "pick as you"
 
 [node name="red_name" type="LineEdit" parent="lobby_player_list/BoxContainer/red_settings"]
@@ -655,10 +661,31 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 vertical = true
 
+[node name="singleplayer" type="Button" parent="."]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 592.0
+offset_right = 248.0
+offset_bottom = 632.0
+text = "Singleplayer/hot Seat"
+
 [node name="Timer" type="Timer" parent="."]
 wait_time = 5.0
 
 [connection signal="item_selected" from="lobby_player_list/BoxContainer/green_settings/green_mode/green_claim_type" to="." method="_on_green_claim_type_item_selected"]
+[connection signal="toggled" from="lobby_player_list/BoxContainer/green_settings/green_picker" to="." method="_on_green_picker_toggled"]
+[connection signal="text_changed" from="lobby_player_list/BoxContainer/green_settings/green_name" to="." method="_on_green_name_text_submitted"]
+[connection signal="item_selected" from="lobby_player_list/BoxContainer/purple_settings/purple_mode/purple_claim_type" to="." method="_on_purple_claim_type_item_selected"]
+[connection signal="toggled" from="lobby_player_list/BoxContainer/purple_settings/purple_picker" to="." method="_on_purple_picker_toggled"]
+[connection signal="text_changed" from="lobby_player_list/BoxContainer/purple_settings/purple_name" to="." method="_on_purple_name_text_submitted"]
+[connection signal="item_selected" from="lobby_player_list/BoxContainer/yellow_settings/yellow_mode/yellow_claim_type" to="." method="_on_yellow_claim_type_item_selected"]
+[connection signal="toggled" from="lobby_player_list/BoxContainer/yellow_settings/yellow_picker" to="." method="_on_yellow_picker_toggled"]
+[connection signal="text_changed" from="lobby_player_list/BoxContainer/yellow_settings/yellow_name" to="." method="_on_yellow_name_text_submitted"]
+[connection signal="item_selected" from="lobby_player_list/BoxContainer/red_settings/red_mode/red_claim_type" to="." method="_on_red_claim_type_item_selected"]
+[connection signal="toggled" from="lobby_player_list/BoxContainer/red_settings/red_picker" to="." method="_on_red_picker_toggled"]
+[connection signal="text_changed" from="lobby_player_list/BoxContainer/red_settings/red_name" to="." method="_on_red_name_text_submitted"]
+[connection signal="pressed" from="BoxContainer/start_game" to="." method="_on_start_button_down"]
+[connection signal="item_selected" from="BoxContainer/map/map_setting" to="." method="_on_map_setting_item_selected"]
 [connection signal="value_changed" from="BoxContainer/GridContainer/wall_settings/WallSlider" to="." method="_on_wall_slider_value_changed"]
 [connection signal="value_changed" from="BoxContainer/GridContainer/fuel_settings/FuelSlider" to="." method="_on_fuel_slider_value_changed"]
 [connection signal="item_selected" from="BoxContainer/BoxContainer/ai_level_setting" to="." method="_on_change_ai_level"]
@@ -677,4 +704,5 @@ wait_time = 5.0
 [connection signal="text_submitted" from="host_menu/client_settings/server_input/server_ip" to="." method="_on_server_ip_text_changed"]
 [connection signal="text_changed" from="host_menu/client_settings/server_input/server_port" to="." method="_on_server_port_text_changed"]
 [connection signal="pressed" from="join_menu/join_game" to="." method="_on_join_button_down"]
+[connection signal="pressed" from="singleplayer" to="." method="_on_singleplayer_pressed"]
 [connection signal="timeout" from="Timer" to="." method="update_broadcast_data"]

@@ -15,8 +15,10 @@ signal changed_info
 	set(n):
 		moves = n
 		changed_info.emit()
+## This is what panel that will be used if the claim is alive. See [member ClaimDataPanel.fallback_panel] and [member ClaimDataPanel.dead_panel]
 @export var claim_panel : Texture
-
+## If multiplayer is active, then is makes sure that players don't control other players.
+@export var claim_mp_ip_linked : int
 @export_group("Unused info")
 ##@deprecated: This will never apear in game and is used only as to give me thoughts on how they work.
 @export_multiline var info : String

@@ -1,6 +1,9 @@
 extends BoxContainer
 class_name game_manger
 
+signal mp_back_to_lobby()
+
+
 #mp Used to lookup pc and npc claims
 ## Used to lookup pc and npc claims
 @export var claim_lookup : claim_lookup_table
@@ -47,6 +50,11 @@ func _ready():
 		if Global.claim_list[i] == 2:
 			claims[i] = claim_lookup.pc_claim_data[i]
 			claims[i].name = Global.claim_names[i] if Global.claim_names[i] != "" or Global.claim_names.filter(func(_names): return _names == Global.claim_names[i]).size() <= 1 else claims[i].name
+			if Global.mp_enabled:
+				for x in Global.mp_player_list.keys():
+					if i == Global.mp_player_list[x].current_claim - 1:
+						claims[i].name = Global.mp_player_list[x].name
+						claims[i].claim_mp_ip_linked = x
 		else:
 			claims[i] = claim_lookup.npc_claim_data[i]
 		panels[i].claim = claims[i]
@@ -63,8 +71,11 @@ func _ready():
 var continue_turn = false
 ## Records what move where taken.
 var done_moves : Array[Vector2i]
+@rpc("any_peer")
 ## Goes to next turn and goes though all the AI's
-func on_next_turn():
+func on_next_turn(mp_player_source=true):
+	if Global.mp_enabled and mp_player_source:
+		on_next_turn.rpc(false)
 	active_player.claim_had_turn = true
 	next_turn.disabled = true
 	continue_turn = false
@@ -82,30 +93,33 @@ func on_next_turn():
 				claim.claim_had_turn = true
 				# Scans the available moves
 				var colection : Array[tile_data] = board_ui.get_all_avalable_tiles(claim.claim_colour)
-				
-				# Loops through untill it has no more moves
-				while claim.moves > 0:
-					var target : tile_data = claim.claim_surounding_tiles(colection)
-					if target != null and claim.moves > 0:
-						colection.erase(target)
-						done_moves.append_array(
-							colection.filter(
-								func(thing:tile_data) -> bool: return true if not thing.coords in done_moves else false).map(
-								func(thing:tile_data) -> Vector2i: return thing.coords))
-						#print(done_moves)
-						board_ui.on_claim_tile(target.coords,claim.claim_colour)
-						colection.append_array(board_ui.get_all_local_avalable_tiles(target.coords,claim.claim_colour,done_moves))
-						active_player.moves -= 1
-						claim.moves -= 1
-					else:
-						active_player.moves = 0
-						claim.moves = 0
-					gui_board_events()
-					clock.start()
-					await clock.timeout
-				
-				claim.claim_active = false
-				done_moves.clear()
+				# Only the host should give the ai movement.
+				if Global.mp_enabled and not Global.mp_host:
+					pass
+				else:
+					# Loops through untill it has no more moves
+					while claim.moves > 0:
+						var target : tile_data = claim.claim_surounding_tiles(colection)
+						if target != null and claim.moves > 0:
+							colection.erase(target)
+							done_moves.append_array(
+								colection.filter(
+									func(thing:tile_data) -> bool: return true if not thing.coords in done_moves else false).map(
+									func(thing:tile_data) -> Vector2i: return thing.coords))
+							#print(done_moves)
+							board_ui.on_claim_tile(target.coords,claim.claim_colour)
+							colection.append_array(board_ui.get_all_local_avalable_tiles(target.coords,claim.claim_colour,done_moves))
+							active_player.moves -= 1
+							claim.moves -= 1
+						else:
+							active_player.moves = 0
+							claim.moves = 0
+						gui_board_events()
+						clock.start()
+						await clock.timeout
+					
+					claim.claim_active = false
+					done_moves.clear()
 			#mp If it reads a player, it gives them a turn if they haven't had one.
 			elif claim is PlayerClaim:
 				claim.claim_active = true
@@ -172,6 +186,9 @@ func game_state_changed(refresh=false):
 		
 		if active_player.moves == 0 or active_player is NonPlayerClaim:
 			board_ui.off_input = true
+		elif Global.mp_enabled and active_player.claim_mp_ip_linked != Global.mp_player_id:
+			board_ui.off_input = true
+			next_turn.disabled = true
 		else:
 			board_ui.off_input = false
 	
@@ -185,12 +202,23 @@ func game_state_changed(refresh=false):
 
 # EXTRA ACTIONS
 @onready var game_event_recorder = %game_event_recorder
+@onready var chat_mode = %chat_mode
+@onready var chat_input = %chat_input
 var game_event_text = ""
-@rpc("any_peer","call_local")
-func print_data_to_game(_str):
+@rpc("any_peer")
+func print_data_to_game(_str,mp_player_source=true):
+	if Global.mp_enabled and mp_player_source:
+		print_data_to_game.rpc(_str,false)
 	game_event_text += _str+"\n"
 	game_event_recorder.text = game_event_text
 
+
+func _on_chat_input_text_submitted(new_text):
+	if Global.mp_enabled:
+		print_data_to_game("{0}: {1}".format([Global.mp_player_list[Global.mp_player_id].name,new_text]))
+	else:
+		print_data_to_game("{0}: {1}".format([Global.claim_names[active_player.claim_colour-1],new_text]))
+	chat_input.text = ""
 
 ## This currently oprates the move panel animation.
 func gui_board_events():
@@ -201,8 +229,11 @@ func _on_board_tile_info(data:tile_data):
 	tile_info.text = data.get_info()
 	game_info.text = turn_text.format([turn])
 
+@rpc("any_peer")
 ## This changes the scene back to the main menu.
-func new_game():
+func new_game(mp_player_source=true):
+	if Global.mp_enabled and mp_player_source:
+		new_game.rpc(false)
 	fade_anim.play("fade_out")
 	var tween = get_tree().create_tween()
 	tween.tween_property(music,"volume_linear",0.0,3.0)
@@ -210,4 +241,7 @@ func new_game():
 
 func _on_fade_anim_animation_finished(anim_name):
 	if anim_name == "fade_out":
-		get_tree().change_scene_to_file("res://levels/menu.tscn")
+		if Global.mp_enabled:
+			mp_back_to_lobby.emit()
+		else:
+			get_tree().change_scene_to_file("res://levels/menu.tscn")
