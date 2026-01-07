@@ -224,6 +224,7 @@ func _on_mouse_entered():
 func _on_mouse_exited():
 	hovered = false
 
+## Fires for any click on the board.
 func _on_gui_input(event):
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and not event.pressed and not (lock_mode or off_input):

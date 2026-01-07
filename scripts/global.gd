@@ -3,6 +3,7 @@ extends Node
 const app_id = 0xF3459
 
 
+
 # PREGENRATION
 ## Which map will be played.
 var map_type = 1
@@ -22,6 +23,19 @@ var cap_list = [1,1,1,1]
 ## 0: disable claim,[br]1: enable claim as a bot,[br]2: enable claim as a player.
 var claim_list : Array[int] = [2,1,1,1]
 var claim_names : Array[String] = ["","","",""]
+## Each name is so have a more clear indcator of who is who.
+enum claim_name_num {
+	## This is 0 or with some arrays -1, this means they are not a player.[br] MP Exlusive.
+	SPECTATOR, 
+	## 1 or in an array: 0.
+	GREENWICH, 
+	## 2 or in an array: 1.
+	PLUM_VALLEY, 
+	## 3 or in an array: 2.
+	YORK_STREET, 
+	## 4 or in an array: 3.
+	RIVER_SOLME, 
+}
 ## Removes player if disabled[br]
 ##@deprecated: Use [member claim_list] instead.
 var player_enabled = true
@@ -61,10 +75,23 @@ var lms_enabled = true
 var bran_enabled = false
 
 #multiplayer
+signal mp_player_list_changed()
+
 var mp_enabled = false
 var mp_host = false
 var mp_player_id = 0
-var mp_player_list = {} # peer_id:peer_data={
+var mp_player_list = {}: # peer_id:peer_data={
 			#"name": _name,
 			#"id": id,
 			#"current_claim": 0}
+			set(i):
+				mp_player_list = i
+				mp_player_list_changed.emit()
+
+const mp_claims_colours = {
+	claim_name_num.SPECTATOR: 	Color(0.44, 0.44, 0.44, 1.0),
+	claim_name_num.GREENWICH: 	Color(0.403, 0.65, 0.28, 1.0),
+	claim_name_num.PLUM_VALLEY: Color(0.568, 0.371, 0.64, 1.0),
+	claim_name_num.YORK_STREET: Color(0.75, 0.722, 0.322, 1.0),
+	claim_name_num.RIVER_SOLME: Color(0.74, 0.355, 0.426, 1.0)
+}

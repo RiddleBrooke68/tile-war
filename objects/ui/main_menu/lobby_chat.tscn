@@ -1,0 +1,44 @@
+[gd_scene load_steps=2 format=3 uid="uid://cp7aln2bcefjd"]
+
+[ext_resource type="Script" uid="uid://c1jg3fkj01u08" path="res://scripts/object/lobby_chat.gd" id="1_hi1yn"]
+
+[node name="lobby_chat" type="BoxContainer"]
+vertical = true
+script = ExtResource("1_hi1yn")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+text = "Lobby Chat"
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="chat_box" type="RichTextLabel" parent="PanelContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+bbcode_enabled = true
+scroll_following = true
+
+[node name="chat_input_divider" type="HSeparator" parent="."]
+layout_mode = 2
+
+[node name="input_chat" type="BoxContainer" parent="."]
+layout_mode = 2
+
+[node name="chat_mode" type="OptionButton" parent="input_chat"]
+unique_name_in_owner = true
+layout_mode = 2
+selected = 0
+item_count = 1
+popup/item_0/text = "global"
+popup/item_0/id = 0
+
+[node name="chat_input" type="LineEdit" parent="input_chat"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "chat input"
+
+[connection signal="text_submitted" from="input_chat/chat_input" to="." method="_on_chat_input_text_submitted"]

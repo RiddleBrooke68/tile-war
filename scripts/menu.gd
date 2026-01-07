@@ -1,3 +1,6 @@
+
+## This controls the menu that the player uses for single and hot seat.
+## However can be use for multiplayer. See [menu_mp_class]
 extends Control
 class_name menu_class
 
@@ -5,11 +8,11 @@ class_name menu_class
 
 @onready var map_setting = %map_setting
 
-@onready var wall_text = %wall_text
-@onready var wall_slider = %WallSlider
-@onready var fuel_text = $BoxContainer/GridContainer/fuel_settings/Label
-@onready var fuel_slider = $BoxContainer/GridContainer/fuel_settings/FuelSlider
-@onready var ai_level : OptionButton = $BoxContainer/BoxContainer/ai_level_setting
+@onready var wall_text : Label = %wall_text
+@onready var wall_slider : Slider = %WallSlider
+@onready var fuel_text : Label = %fuel_text
+@onready var fuel_slider : Slider = %FuelSlider
+@onready var ai_level : OptionButton = %ai_level_setting
 
 # Claims and their control.
 @onready var green_claim_type : OptionButton = %green_claim_type
@@ -17,38 +20,38 @@ class_name menu_class
 @onready var yellow_claim_type : OptionButton = %yellow_claim_type
 @onready var red_claim_type : OptionButton = %red_claim_type
 
-@onready var green_name = %green_name
-@onready var purple_name = %purple_name
-@onready var yellow_name = %yellow_name
-@onready var red_name = %red_name
+@onready var green_name : LineEdit = %green_name
+@onready var purple_name : LineEdit = %purple_name
+@onready var yellow_name : LineEdit = %yellow_name
+@onready var red_name : LineEdit = %red_name
 
-##@deprecated
-@onready var player_setting = $BoxContainer/GridContainer/player_setting
-##@deprecated
-@onready var purple_setting = $BoxContainer/GridContainer/purple_setting
-##@deprecated
-@onready var yellow_setting = $BoxContainer/GridContainer/yellow_setting
-##@deprecated
-@onready var red_setting = $BoxContainer/GridContainer/red_setting
+#@deprecated
+#@onready var player_setting = $BoxContainer/GridContainer/player_setting
+#@deprecated
+#@onready var purple_setting = $BoxContainer/GridContainer/purple_setting
+#@deprecated
+#@onready var yellow_setting = $BoxContainer/GridContainer/yellow_setting
+#@deprecated
+#@onready var red_setting = $BoxContainer/GridContainer/red_setting
 
-@onready var green_cap = %green_cap
-@onready var plum_cap = %plum_cap
-@onready var york_cap = %york_cap
-@onready var river_cap = %river_cap
-@onready var cap_list = [green_cap,plum_cap,york_cap,river_cap]
+@onready var green_cap : OptionButton = %green_cap
+@onready var plum_cap : OptionButton  = %plum_cap
+@onready var york_cap : OptionButton = %york_cap
+@onready var river_cap : OptionButton = %river_cap
+@onready var cap_list : Array[OptionButton] = [green_cap,plum_cap,york_cap,river_cap]
 
 @onready var music_type : OptionButton = $"BoxContainer3/BoxContainer/Music type/music_type_setting"
 @onready var music_slider = $BoxContainer3/BoxContainer/music_settings/MusicSlider
 @onready var sfx_slider = $BoxContainer3/BoxContainer/sfx_settings/SfxSlider
 
-@onready var lms_setting = $BoxContainer/BoxContainer2/lms_setting
-@onready var bran_setting = $BoxContainer/BoxContainer3/bran_setting
+@onready var lms_setting : CheckBox = %lms_setting
+@onready var bran_setting : CheckBox = %bran_setting
 
 
 ## For game sounds. (CURRENTLY USING SOUNDS FROM GOD MACHINE)
 var sound : AudioStreamPlayer
 
-func _ready():
+func _ready(mp_is_updating=false):
 	sound = AudioStreamPlayer.new()
 	add_child(sound)
 	sound_play()
@@ -86,9 +89,10 @@ func _ready():
 	music_type.selected = Global.music_type
 	music_slider.value = Global.music_vol
 	sfx_slider.value = Global.SFX_vol
-	# Remove Multiplayer
-	Global.mp_enabled = false
-	Global.mp_player_list = {}
+	if not mp_is_updating:
+		# Remove Multiplayer
+		Global.mp_enabled = false
+		Global.mp_player_list = {}
 
 
 func sound_play(use_drag=false):
@@ -332,6 +336,7 @@ func _on_sfx_slider_value_changed(value):
 func _on_lms_setting_toggled(toggled_on,mp_player_source=true):
 	if Global.mp_enabled and mp_player_source:
 		_on_lms_setting_toggled.rpc(toggled_on,false)
+	lms_setting.button_pressed = toggled_on
 	Global.lms_enabled = toggled_on
 	sound_play()
 
@@ -339,5 +344,14 @@ func _on_lms_setting_toggled(toggled_on,mp_player_source=true):
 func _on_bran_setting_toggled(toggled_on,mp_player_source=true):
 	if Global.mp_enabled and mp_player_source:
 		_on_bran_setting_toggled.rpc(toggled_on,false)
+	bran_setting.button_pressed = toggled_on
 	Global.bran_enabled = toggled_on
 	sound_play()
+
+@onready var extra_setting_animator = $Extra_options/extra_setting_animator
+
+func _on_open_and_close_extra_settings_button_toggled(toggled_on):
+	if toggled_on:
+		extra_setting_animator.play("open_extra_settings")
+	else:
+		extra_setting_animator.play("close_extra_settings")

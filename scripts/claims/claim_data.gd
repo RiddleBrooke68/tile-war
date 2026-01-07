@@ -18,7 +18,7 @@ signal changed_info
 ## This is what panel that will be used if the claim is alive. See [member ClaimDataPanel.fallback_panel] and [member ClaimDataPanel.dead_panel]
 @export var claim_panel : Texture
 ## If multiplayer is active, then is makes sure that players don't control other players.
-@export var claim_mp_ip_linked : int
+@export var claim_mp_ip_linked : int = 0
 @export_group("Unused info")
 ##@deprecated: This will never apear in game and is used only as to give me thoughts on how they work.
 @export_multiline var info : String
@@ -47,9 +47,10 @@ var claim_had_turn = false:
 		claim_had_turn = n
 		changed_info.emit()
 
-func refresh(turn_num):
+func refresh(turn_num) -> int:
 	@warning_ignore("integer_division", "narrowing_conversion")
 	moves = mini(tile_size / 2,maxi(tile_size / 10,15)) + fuel_count + turn_num # + pow(tile_size,1/2)
+	return moves
 
 func print_data():
 	print("\n------------------")

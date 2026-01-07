@@ -64,8 +64,6 @@ func _ready():
 	music.stream = load(Global.music_list[Global.music_type]) as AudioStream
 	music.play()
 	game_state_changed(true)
-	moves_plate.number = active_player.moves
-	moves_plate.update_plate_display()
 
 
 var continue_turn = false
@@ -85,6 +83,8 @@ func on_next_turn(mp_player_source=true):
 		print(claim.get_data())
 		claim.claim_dead = board_ui.check_claim_captatal(claim.claim_colour).is_empty()
 		if claim.claim_dead == false and claim.claim_had_turn == false and claim.name != active_player.name:
+			
+			
 			if claim is NonPlayerClaim and claim.claim_dead == false:
 				claim.claim_active = true
 				active_player = claim.duplicate()
@@ -94,11 +94,9 @@ func on_next_turn(mp_player_source=true):
 				# Scans the available moves
 				var colection : Array[tile_data] = board_ui.get_all_avalable_tiles(claim.claim_colour)
 				# Only the host should give the ai movement.
-				if Global.mp_enabled and not Global.mp_host:
-					pass
-				else:
 					# Loops through untill it has no more moves
-					while claim.moves > 0:
+				while claim.moves > 0:
+					if not Global.mp_enabled or (Global.mp_enabled and Global.mp_host):
 						var target : tile_data = claim.claim_surounding_tiles(colection)
 						if target != null and claim.moves > 0:
 							colection.erase(target)
@@ -111,15 +109,20 @@ func on_next_turn(mp_player_source=true):
 							colection.append_array(board_ui.get_all_local_avalable_tiles(target.coords,claim.claim_colour,done_moves))
 							active_player.moves -= 1
 							claim.moves -= 1
+							mp_sync_movement.rpc(claims.find(claim),claim.moves,true)
 						else:
 							active_player.moves = 0
 							claim.moves = 0
+							mp_sync_movement.rpc(claims.find(claim),claim.moves,true)
+						print(active_player.moves)
 						gui_board_events()
-						clock.start()
-						await clock.timeout
+					clock.start()
+					await clock.timeout
 					
-					claim.claim_active = false
-					done_moves.clear()
+				claim.claim_active = false
+				done_moves.clear()
+			
+			
 			#mp If it reads a player, it gives them a turn if they haven't had one.
 			elif claim is PlayerClaim:
 				claim.claim_active = true
@@ -128,18 +131,34 @@ func on_next_turn(mp_player_source=true):
 				moves_plate.colour = claim.claim_colour - 1
 				continue_turn = true
 				break
+		
+		
 		elif claim.claim_dead == false and claim.claim_had_turn == false and claim.name == active_player.name:
 			claim.claim_had_turn = active_player.claim_had_turn
 			claim.claim_active = false
+	
+	
 	next_turn.disabled = false
 	if not continue_turn:
 		game_state_changed(true)
-		moves_plate.number = active_player.moves
-		moves_plate.update_plate_display()
 	else:
 		game_state_changed()
-		moves_plate.number = active_player.moves
-		moves_plate.update_plate_display()
+
+@rpc("any_peer")
+func mp_sync_movement(claim:int,moves : int,active_afected=false):
+	if claims[claim].moves != moves:
+		claims[claim].moves = moves
+		#print("{0} client has been told by host that claim {1} has: {2} number of moves".format([Global.mp_player_list[Global.mp_player_id].name,claims[claim].name,claims[claim].moves]))
+		gui_board_events()
+	if active_player == claims[claim]:
+		active_player = claims[claim]
+	if active_afected and active_player.moves != moves:
+		active_player.moves = moves
+	game_state_changed(false,false)
+
+@rpc("any_peer")
+func mp_sync_host(id:int,claim:int):
+	mp_sync_movement.rpc_id(id,claim,claims[claim].moves,true)
 
 #bran removes a move if set to true
 var failed_move = false
@@ -147,7 +166,7 @@ var failed_move = false
 ## See [member Global.lms_enabled] and [method game_manger.game_state_changed]
 var dead_number = 0
 ## Updates the game when something happens.
-func game_state_changed(refresh=false):
+func game_state_changed(refresh=false,set_active=true):
 	#claims_info.clear()
 	if refresh:
 		active_player = null
@@ -162,8 +181,13 @@ func game_state_changed(refresh=false):
 			claim.capatal_tile = board_ui.check_claim_captatal(claim.claim_colour).duplicate() 
 			if refresh:
 				claim.claim_had_turn = false
-				claim.refresh(turn)
-			if claim is PlayerClaim: #mp 
+				if Global.mp_enabled and Global.mp_host:
+					mp_sync_movement.rpc(claims.find(claim),claim.refresh(turn))
+				elif not Global.mp_enabled:
+					claim.refresh(turn)
+				#if Global.mp_enabled:
+					#print("{0} client belives this claim {1} has: {2} number of moves".format([Global.mp_player_list[Global.mp_player_id].name,claim.name,claim.moves]))
+			if claim is PlayerClaim and set_active: #mp 
 				if ((claim.claim_had_turn == false and active_player == null) or active_player.name == claim.name): # and (active_player.name == claim.name or active_player == null):
 					if active_player == null or refresh:
 						claim.claim_active = true
@@ -174,19 +198,25 @@ func game_state_changed(refresh=false):
 						failed_move = false
 						active_player.moves -= 1
 						claim.moves -= 1
+						if Global.mp_enabled and Global.mp_host:
+							mp_sync_movement.rpc(claims.find(claim),claim.moves,true)
+						elif Global.mp_enabled:
+							mp_sync_host.rpc_id(1,Global.mp_player_id,claims.find(claim))
 	if refresh:
 		turn += 1
-		if active_player == null:
+		if active_player == null and not Global.mp_enabled:
 			active_player = PlayerClaim.new()
 	#mp should be fine.
 	if active_player != null: 
+		if Global.mp_enabled and Global.mp_host:
+			mp_sync_movement.rpc(claims.find(active_player),active_player.moves,true)
 		claim_text += "----------\nYou have {0} moves left".format([active_player.moves])
 		#%test_player_data.claim = player_claim
 		#%test_player_data.update()
 		
 		if active_player.moves == 0 or active_player is NonPlayerClaim:
 			board_ui.off_input = true
-		elif Global.mp_enabled and active_player.claim_mp_ip_linked != Global.mp_player_id:
+		elif Global.mp_enabled and not active_player.claim_mp_ip_linked in [Global.mp_player_id,0]:
 			board_ui.off_input = true
 			next_turn.disabled = true
 		else:
@@ -197,6 +227,8 @@ func game_state_changed(refresh=false):
 		next_turn.disabled = true
 	else:
 		dead_number = 0
+	moves_plate.number = active_player.moves
+	moves_plate.update_plate_display()
 
 
 
@@ -214,10 +246,11 @@ func print_data_to_game(_str,mp_player_source=true):
 
 
 func _on_chat_input_text_submitted(new_text):
+	var colour_claim = Global.mp_claims_colours[Global.mp_player_list[Global.mp_player_id].current_claim].to_html()
 	if Global.mp_enabled:
-		print_data_to_game("{0}: {1}".format([Global.mp_player_list[Global.mp_player_id].name,new_text]))
+		print_data_to_game("[color={2}][b]{0}:[/b][/color] {1}".format([Global.mp_player_list[Global.mp_player_id].name,new_text,colour_claim]))
 	else:
-		print_data_to_game("{0}: {1}".format([Global.claim_names[active_player.claim_colour-1],new_text]))
+		print_data_to_game("[color={2}][b]{0}:[/b][/color] {1}".format([Global.claim_names[active_player.claim_colour-1],new_text,colour_claim]))
 	chat_input.text = ""
 
 ## This currently oprates the move panel animation.
@@ -232,6 +265,14 @@ func _on_board_tile_info(data:tile_data):
 @rpc("any_peer")
 ## This changes the scene back to the main menu.
 func new_game(mp_player_source=true):
+	for claim in claims:
+		claim.tile_size = 0
+		claim.fuel_count = 0
+		claim.capatal_tile = []
+		claim.claim_dead = false
+		claim.claim_active = false
+		claim.claim_had_turn = false
+		claim.moves = 0
 	if Global.mp_enabled and mp_player_source:
 		new_game.rpc(false)
 	fade_anim.play("fade_out")

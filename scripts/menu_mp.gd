@@ -1,12 +1,19 @@
+## MULTIPAYER ONLY.
 extends menu_class
-
+class_name menu_mp_class
 # LOCAL MULTIPLAYER SHIT
 # IDK
 @export var game_mp : PackedScene
 @export var server_join : PackedScene
+@export var player_plate : PackedScene
+## This is the address that a player will connect to, or, if they are hosting, the address players will need.
 @export var address = "192.168.17.140"
+## (Used only when hosting)[br]
+## Broadcast the IP to the lan through this IP, it also 
 var address_broadcast = "192.168.17.255"
 @export var port = 65535
+##@deprecated Sort of. See [member Global.mp_host] for why.[br]
+## This is set to true when the player hits host.
 var is_hosting = false
 var is_joining = false
 var server_name = ""
@@ -23,13 +30,16 @@ var peerUDP : PacketPeerUDP
 @onready var host_menu = $host_menu
 @onready var join_menu = $join_menu
 @onready var server_browser = $join_menu/avalable_servers/BoxContainer/ScrollContainer/server_browser
+@onready var player_browser = %player_browser
 
 func _ready(is_updating=false):
-	super()
+	super(is_updating)
+	
+	# In the main menu, the ready function makes sure this is set to false, 
+	# so after we run the class ready function, we make this true.
+	Global.mp_enabled = true
 	if not is_updating:
-		# In the main menu, the ready function makes sure this is set to false, 
-		# so after we run the class ready function, we make this true.
-		Global.mp_enabled = true
+		Global.mp_player_list_changed.connect(set_lobby_player_list)
 		# Broadcasting
 		peerUDP = PacketPeerUDP.new()
 		peerUDP.bind(4444)
@@ -44,11 +54,19 @@ func _ready(is_updating=false):
 		server_label.text = server_name
 		client_label.text = client_name
 		
+		# Sets the port and ip
 		set_id() # IP.resolve_hostname(str(OS.get_environment("COMPUTERNAME")),IP.TYPE_IPV4)
-		port = randi_range(1,65535)
+		port = randi_range(1024,65535)
 		server_ip_label.text = address
 		server_port_label.text = str(port)
 
+func set_lobby_player_list():
+	for i in get_tree().get_nodes_in_group("mp_lobby_name_plate"):
+		player_browser.remove_child(i)
+	for s in Global.mp_player_list.keys():
+		var player_plate_inst = player_plate.instantiate()
+		player_browser.add_child(player_plate_inst)
+		player_plate_inst.set_nameplate(Global.mp_player_list[s].name,Global.mp_claims_colours[Global.mp_player_list[s].current_claim])
 
 @onready var green_picker = %green_picker
 @onready var purple_picker = %purple_picker
@@ -57,7 +75,8 @@ func _ready(is_updating=false):
 @onready var claims_picker_list = [green_picker,purple_picker,yellow_picker,red_picker]
 
 @rpc("any_peer")
-func _on_green_picker_toggled(toggled_on,mp_player_source=true,mp_name="",mp_id=""):
+## MULTIPAYER ONLY.
+func _on_green_picker_toggled(toggled_on,mp_player_source=true,mp_name="",mp_id=0):
 	if mp_player_source:
 		if toggled_on:
 			print(client_name," asining player to claim green: " + str(multiplayer.get_unique_id()))
@@ -84,8 +103,10 @@ func _on_green_picker_toggled(toggled_on,mp_player_source=true,mp_name="",mp_id=
 			green_claim_type.disabled = false
 			green_name.text = ""
 			green_picker.disabled = false
+	set_lobby_player_list()
 
 @rpc("any_peer")
+## MULTIPAYER ONLY.
 func _on_purple_picker_toggled(toggled_on,mp_player_source=true,mp_name="",mp_id=""):
 	if mp_player_source:
 		if toggled_on:
@@ -113,8 +134,10 @@ func _on_purple_picker_toggled(toggled_on,mp_player_source=true,mp_name="",mp_id
 			purple_claim_type.disabled = false
 			purple_name.text = ""
 			purple_picker.disabled = false
+	set_lobby_player_list()
 
 @rpc("any_peer")
+## MULTIPAYER ONLY.
 func _on_yellow_picker_toggled(toggled_on,mp_player_source=true,mp_name="",mp_id=""):
 	if mp_player_source:
 		if toggled_on:
@@ -142,8 +165,10 @@ func _on_yellow_picker_toggled(toggled_on,mp_player_source=true,mp_name="",mp_id
 			yellow_claim_type.disabled = false
 			yellow_name.text = ""
 			yellow_picker.disabled = false
+	set_lobby_player_list()
 
 @rpc("any_peer")
+## MULTIPAYER ONLY.
 func _on_red_picker_toggled(toggled_on,mp_player_source=true,mp_name="",mp_id=""):
 	if mp_player_source:
 		if toggled_on:
@@ -171,6 +196,7 @@ func _on_red_picker_toggled(toggled_on,mp_player_source=true,mp_name="",mp_id=""
 			red_claim_type.disabled = false
 			red_name.text = ""
 			red_picker.disabled = false
+	set_lobby_player_list()
 
 
 func set_id(ip=""):
@@ -211,57 +237,12 @@ func _on_server_ip_text_changed(new_text):
 
 ## Sets the player Port.
 func _on_server_port_text_changed(new_text:String):
-	if new_text.to_int() in range(1,65535):
+	if new_text.to_int() in range(1024,65535):
 		port = new_text.to_int()
 	else:
 		server_port_label.text = str(port)
 
-## When it starts reading a signal it will atempt to read it.
-var resiving_mesge = false
-## This counts what part of the signal that is being resive is.
-var resive_digit = 0
-## The resived Game Id, see [member Global.app_id] for what that number is.
-var svr_mp_game_id = ""
-## The resived name of the server that is being detected.
-var svr_mp_name = ""
-## The resived address of which the server derives from.
-var svr_mp_address = ""
-## The resived port of which the server derives from.
-var svr_mp_port = ""
-func _process(_delta):
-	if not is_hosting and not is_joining:
-		var _s = peerUDP.get_available_packet_count()
-		if peerUDP.get_available_packet_count() > 0:
-			var array_bytes = peerUDP.get_packet()
-			var game_id = array_bytes.get_string_from_ascii()
-			print("Received message: ", game_id)
-			if game_id.to_int() == Global.app_id and resive_digit == 0:
-				resiving_mesge = true
-				svr_mp_game_id = game_id
-			var list_of_servers = [""]
-			for i in get_tree().get_nodes_in_group("server_connection"):
-				list_of_servers.append(i.server_name)
-			if not game_id in list_of_servers and resive_digit == 1:
-				svr_mp_name = game_id
-			if game_id.is_valid_ip_address() and resive_digit == 2:
-				svr_mp_address = game_id
-			if game_id.to_int() in range(1,65535) and resive_digit == 3:
-				svr_mp_port = game_id
-			if svr_mp_game_id.to_int() == Global.app_id and not svr_mp_name in list_of_servers and svr_mp_address.is_valid_ip_address() and svr_mp_port.to_int() in range(1,65535):
-				var server_panel = server_join.instantiate()
-				server_panel.server_name = svr_mp_name
-				server_panel.server_address = svr_mp_address
-				server_panel.server_port = svr_mp_port.to_int()
-				server_browser.add_child(server_panel)
-				server_panel.selected_server.connect(select_server)
-			resive_digit += 1
-		elif resiving_mesge:
-			resiving_mesge = false
-			resive_digit = 0
-			svr_mp_game_id = ""
-			svr_mp_name = ""
-			svr_mp_address = ""
-			svr_mp_port = ""
+
 
 # MP BUTTONS
 ## Called when a player connects to a server, regadless of client or  server
@@ -298,6 +279,7 @@ func connected_to_server():
 		i.show()
 	Global.mp_player_id = multiplayer.get_unique_id()
 	send_player_data.rpc_id(1,client_label.text,Global.mp_player_id)
+	request_global_data.rpc_id(1,Global.mp_player_id)
 
 ## Called when the client fails connects to the server.
 func connection_failed():
@@ -326,6 +308,7 @@ func send_player_data(_name,id,current_claim=0):
 			"id": id,
 			"current_claim": current_claim
 		}
+		set_lobby_player_list()
 		if Global.mp_player_list[id].current_claim != 0:
 			claims_picker_list[Global.mp_player_list[id].current_claim-1].emit_signal("toggled",true,false,Global.mp_player_list[id].name,Global.mp_player_list[id].id)
 	if multiplayer.is_server():
@@ -333,6 +316,18 @@ func send_player_data(_name,id,current_claim=0):
 			send_player_data.rpc(Global.mp_player_list[i].name, i)
 
 @rpc("any_peer")
+func request_global_data(id):
+	if Global.mp_host:
+		update_global_data.rpc_id(id,
+					Global.map_type,
+					Global.wall_count,Global.fuel_count,
+					Global.cap_list,Global.claim_list,Global.ai_level,
+					Global.music_type,
+					Global.lms_enabled,Global.bran_enabled,
+					Global.mp_player_list)
+
+@rpc("any_peer")
+## This seems to break the setting setting the host as both and nether priorty. And desyncs everyone.
 func update_global_data(...arr):
 	# map type
 	if arr[0] is int:
@@ -361,9 +356,13 @@ func update_global_data(...arr):
 	# Bran setting
 	if arr[8] is bool:
 		Global.bran_enabled = arr[8]
+	_ready(true)
 	if Global.mp_player_list.is_same_typed_value(arr[9]):
 		Global.mp_player_list = arr[9]
-	_ready(true)
+		set_lobby_player_list()
+		for i in Global.mp_player_list.keys():
+			if Global.mp_player_list[i].current_claim != 0:
+				claims_picker_list[Global.mp_player_list[i].current_claim-1].emit_signal("toggled",true,false,Global.mp_player_list[i].name,Global.mp_player_list[i].id)
 
 func remove_player_data(id):
 	if Global.mp_player_list.has(id):
@@ -412,9 +411,8 @@ func _on_host_button_down():
 	
 	is_hosting = true
 	peerUDP.set_broadcast_enabled(true)
-	update_broadcast_data()
+	update_broadcast_server_staius()
 	timer.start()
-
 
 
 func _on_join_button_down():
@@ -432,21 +430,172 @@ func _on_start_button_down():
 		start_game.rpc()
 
 func _on_singleplayer_pressed():
-	get_tree().change_scene_to_file("res://levels/menu.tscn")
+	Global.mp_player_list_changed.disconnect(set_lobby_player_list)
+	#if is_hosting:
+		#multiplayer.
+	super()
 
+
+# BROADCASTING AND RESIVING
+
+# UNUSED BUT IMPORTENT INFO
+## The begining of any signal from a server, it WILL always start with this for any broadcast.
+enum broadcast_form_start {
+	## The resived Game Id, see [member Global.app_id] for what that number is.
+	BRDCST_GAME_ID,
+	## The resived name of the server that is being detected.
+	BRDCST_SERVER_NAME,
+	## The resived address of which the server derives from.
+	BRDCST_SERVER_ADDRESS,
+	## The resived port of which the server derives from.
+	BRDCST_SERVER_PORT
+}
+
+## This simply starts the signal of a broadcast, and is requred before sending anything else.
+## See [enum menu_mp_class.broadcast_form_start]
+func broadcast_start_signal():
+	peerUDP.put_packet(str(Global.app_id).to_utf8_buffer()) # First part of the a signal, the app_id.
+	peerUDP.put_packet(server_name.to_utf8_buffer()) # Second part of a signal, the name of the server.
+	peerUDP.put_packet(address.to_utf8_buffer())
+	peerUDP.put_packet(str(port).to_utf8_buffer())
+
+## This timer basicly just does a update server staius
 @onready var timer = $Timer
 
-## This is like starting a host. How ever is ment to send data to those who are just now needing to see its data.[br]
-## Its practaly updating its statis.
-func update_broadcast_data():
+##
+enum broadcast_form_staius {
+	## The resived Game Id, see [member Global.app_id] for what that number is.
+	BRDCST_GAME_ID,
+	## The resived name of the server that is being detected.
+	BRDCST_SERVER_NAME,
+	## The resived address of which the server derives from.
+	BRDCST_SERVER_ADDRESS,
+	## The resived port of which the server derives from.
+	BRDCST_SERVER_PORT,
+	## The resived lobby size, meaning how meny player are in a server.
+	BRDCST_SERVER_LOBBY_SIZE
+}
+
+## This is like starting a host. However is ment to send data to those who are just now needing to see its data.[br]
+## Its practaly updating its staius.
+## Uses [enum menu_mp_class.broadcast_form_start] as its framework for how it sends this info.
+func update_broadcast_server_staius():
 	peerUDP.set_dest_address("255.255.255.255",4444)
-	peerUDP.put_packet(str(Global.app_id).to_utf8_buffer())
-	peerUDP.put_packet(server_name.to_utf8_buffer())
-	peerUDP.put_packet(address.to_utf8_buffer())
-	peerUDP.put_packet(str(port).to_utf8_buffer())
+	broadcast_start_signal()
+	peerUDP.put_packet("{0} Players".format([Global.mp_player_list.size()]).to_utf8_buffer())
 	
 	peerUDP.set_dest_address(address_broadcast,4444)
-	peerUDP.put_packet(str(Global.app_id).to_utf8_buffer())
-	peerUDP.put_packet(server_name.to_utf8_buffer())
-	peerUDP.put_packet(address.to_utf8_buffer())
-	peerUDP.put_packet(str(port).to_utf8_buffer())
+	broadcast_start_signal()
+	peerUDP.put_packet("{0} Players".format([Global.mp_player_list.size()]).to_utf8_buffer())
+
+
+
+
+
+func update_broadcast_server_closed():
+	peerUDP.set_dest_address("255.255.255.255",4444)
+	broadcast_start_signal()
+	
+	peerUDP.set_dest_address(address_broadcast,4444)
+	broadcast_start_signal()
+
+
+# Read server signals.
+## When it starts reading a signal it will atempt to read it.
+var resiving_mesge = false
+## This counts what part of the signal that is being resive is.
+var resive_digit = 0
+
+# Start broadcast info.
+## See [enum menu_mp_class.broadcast_form_start]
+var svr_mp_game_id = ""
+## See [enum menu_mp_class.broadcast_form_start]
+var svr_mp_name = ""
+## See [enum menu_mp_class.broadcast_form_start]
+var svr_mp_address = ""
+## See [enum menu_mp_class.broadcast_form_start]
+var svr_mp_port = ""
+
+
+var svr_mp_lobby_size = ""
+## This only is checking for server signals it seems.
+func _process(_delta):
+	if not is_hosting and not is_joining:
+		#var _s = peerUDP.get_available_packet_count()
+		if peerUDP.get_available_packet_count() > 0:
+			var array_bytes = peerUDP.get_packet()
+			var game_id = array_bytes.get_string_from_ascii()
+			print("Received message: ", game_id)
+			# BASIC DATA
+			# The first part of a server signal.
+			# This tells us if the signal is coming from
+			if game_id.to_int() == Global.app_id and resive_digit == broadcast_form_start.BRDCST_GAME_ID:
+				resiving_mesge = true
+				svr_mp_game_id = game_id
+			
+			# The second part of a server signal.
+			# Check if the server is currently being seen.
+			var list_of_servers_names = [""]
+			for i in get_tree().get_nodes_in_group("server_connection"):
+				list_of_servers_names.append(i.server_name)
+			# The name of the server.
+			if resive_digit == broadcast_form_start.BRDCST_SERVER_NAME:
+				svr_mp_name = game_id
+			
+			# The third part of a server signal.
+			# Check if the server is currently being seen.
+			var list_of_servers_ip = [""]
+			for i in get_tree().get_nodes_in_group("server_connection"):
+				list_of_servers_ip.append(i.server_address)
+			# The address of the server
+			if game_id.is_valid_ip_address() and resive_digit == broadcast_form_start.BRDCST_SERVER_ADDRESS:
+				svr_mp_address = game_id
+			
+			# The fourth part of a server signal.
+			# Check if the server is currently being seen.
+			var list_of_servers_port = [""]
+			for i in get_tree().get_nodes_in_group("server_connection"):
+				list_of_servers_port.append(i.server_port)
+			if game_id.to_int() in range(1024,65535) and resive_digit == broadcast_form_start.BRDCST_SERVER_PORT:
+				svr_mp_port = game_id
+			
+			# The fith part of a server signal, and also where we start seeing a drift in the data depending on how it its.
+			# This is if the signal is updating the server info.
+			if game_id != "" and resive_digit == broadcast_form_staius.BRDCST_SERVER_LOBBY_SIZE:
+				svr_mp_lobby_size = game_id
+			
+			
+			if svr_mp_game_id.to_int() == Global.app_id:
+				# If this server signal matches a hosting signal shape, then it is a open server to join to.
+				if (	not (svr_mp_name in list_of_servers_names or svr_mp_address in list_of_servers_ip and svr_mp_port.to_int() in list_of_servers_port) # ALL DATA MUST MATCH ANOTHER SERVER TO NOT FIRE
+						and svr_mp_address.is_valid_ip_address() 
+						and svr_mp_port.to_int() in range(1024,65535) 
+						and svr_mp_lobby_size != ""
+						):
+					var server_panel = server_join.instantiate()
+					server_panel.server_name = svr_mp_name
+					server_panel.server_address = svr_mp_address
+					server_panel.server_port = svr_mp_port.to_int()
+					server_browser.add_child(server_panel)
+					server_panel.selected_server.connect(select_server)
+				
+				# If the server exists in the browser
+				elif (	(svr_mp_name in list_of_servers_names or svr_mp_address in list_of_servers_ip and svr_mp_port.to_int() in list_of_servers_port) 
+						and svr_mp_lobby_size != ""
+						):
+					var server_panel 
+					for i in get_tree().get_nodes_in_group("server_connection"):
+						if svr_mp_name == i.server_name and svr_mp_address == i.server_address and svr_mp_port.to_int() == i.server_port:
+							server_panel = i
+					if server_panel != null:
+						server_panel.server_lobby_size = svr_mp_lobby_size
+			
+			resive_digit += 1
+		elif resiving_mesge:
+			resiving_mesge = false
+			resive_digit = 0
+			svr_mp_game_id = ""
+			svr_mp_name = ""
+			svr_mp_address = ""
+			svr_mp_port = ""
+			svr_mp_lobby_size = ""

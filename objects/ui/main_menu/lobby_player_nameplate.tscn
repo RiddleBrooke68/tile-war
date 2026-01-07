@@ -1,0 +1,26 @@
+[gd_scene load_steps=2 format=3 uid="uid://c0mjtcv61d7f8"]
+
+[ext_resource type="Script" uid="uid://bvvbxoccr4qt6" path="res://scripts/object/lobby_player_nameplate.gd" id="1_28cr5"]
+
+[node name="lobby_player_nameplate" type="BoxContainer" groups=["mp_lobby_name_plate"]]
+custom_minimum_size = Vector2(20, 30)
+offset_right = 128.0
+offset_bottom = 64.0
+size_flags_horizontal = 3
+vertical = true
+script = ExtResource("1_28cr5")
+
+[node name="HSeparator" type="HSeparator" parent="."]
+layout_mode = 2
+
+[node name="name" type="RichTextLabel" parent="."]
+unique_name_in_owner = true
+clip_contents = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "player"
+scroll_active = false
+horizontal_alignment = 1
+vertical_alignment = 1

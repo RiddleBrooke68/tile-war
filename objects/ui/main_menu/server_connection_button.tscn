@@ -1,32 +1,61 @@
-[gd_scene load_steps=2 format=3 uid="uid://bjhedtnkrakw6"]
+[gd_scene load_steps=3 format=3 uid="uid://bjhedtnkrakw6"]
 
+[ext_resource type="Theme" uid="uid://dxveohgc0uce2" path="res://themes/default_theme.tres" id="1_gnm20"]
 [ext_resource type="Script" uid="uid://dpv3psu230nrw" path="res://scripts/main_ui/server_conection_button.gd" id="1_x8df4"]
 
 [node name="server_connection_button" type="BoxContainer" groups=["server_connection"]]
+clip_contents = true
+offset_right = 256.0
+offset_bottom = 66.0
 size_flags_horizontal = 3
-size_flags_vertical = 3
-vertical = true
+theme = ExtResource("1_gnm20")
 script = ExtResource("1_x8df4")
 
-[node name="server_connect_point" type="Button" parent="."]
+[node name="Main_data" type="BoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+vertical = true
+
+[node name="server_connect_point" type="Button" parent="Main_data"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "SERVER NAME"
 alignment = 0
 
-[node name="server_input" type="BoxContainer" parent="."]
+[node name="server_input" type="BoxContainer" parent="Main_data"]
 layout_mode = 2
 
-[node name="server_ip" type="LineEdit" parent="server_input"]
+[node name="server_ip" type="LineEdit" parent="Main_data/server_input"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "server ip"
 editable = false
 
-[node name="server_port" type="LineEdit" parent="server_input"]
+[node name="server_port" type="LineEdit" parent="Main_data/server_input"]
+unique_name_in_owner = true
 layout_mode = 2
 placeholder_text = "port"
 editable = false
 virtual_keyboard_type = 2
 
-[connection signal="pressed" from="server_connect_point" to="." method="selected"]
+[node name="Server_special_data" type="Panel" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.38
+
+[node name="server_lobby_size" type="Label" parent="Server_special_data"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+text = "0 players"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="pressed" from="Main_data/server_connect_point" to="." method="selected"]

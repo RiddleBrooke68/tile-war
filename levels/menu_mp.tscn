@@ -1,8 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://cqj63olmuv65h"]
+[gd_scene load_steps=13 format=3 uid="uid://cqj63olmuv65h"]
 
 [ext_resource type="Script" uid="uid://c8gqgkxqt2ucn" path="res://scripts/menu_mp.gd" id="1_l6f4p"]
 [ext_resource type="PackedScene" uid="uid://bjhedtnkrakw6" path="res://objects/ui/main_menu/server_connection_button.tscn" id="2_pb0ft"]
 [ext_resource type="PackedScene" uid="uid://bojd4turtuu7f" path="res://levels/main_ui.tscn" id="2_us8tt"]
+[ext_resource type="PackedScene" uid="uid://c0mjtcv61d7f8" path="res://objects/ui/main_menu/lobby_player_nameplate.tscn" id="4_16mcp"]
+[ext_resource type="PackedScene" uid="uid://cp7aln2bcefjd" path="res://objects/ui/main_menu/lobby_chat.tscn" id="4_iwfhx"]
 
 [sub_resource type="Gradient" id="Gradient_n3ddt"]
 colors = PackedColorArray(0.13544941, 0.09605298, 0.041523762, 1, 0.06992452, 0.019128133, 0.020676874, 1)
@@ -10,6 +12,96 @@ colors = PackedColorArray(0.13544941, 0.09605298, 0.041523762, 1, 0.06992452, 0.
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_l6f4p"]
 gradient = SubResource("Gradient_n3ddt")
 fill_from = Vector2(0, 1)
+
+[sub_resource type="Theme" id="Theme_us8tt"]
+Button/font_sizes/font_size = 14
+Label/font_sizes/font_size = 14
+LineEdit/font_sizes/font_size = 14
+OptionButton/font_sizes/font_size = 14
+
+[sub_resource type="Animation" id="Animation_kfbsc"]
+resource_name = "open_extra_settings"
+step = 0.083333336
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0, 2),
+"points": PackedFloat32Array(-448, -0.25, 0, 0.33333334, -138.7182, 0, -0.417, 0, 0, 0),
+"times": PackedFloat32Array(0, 1)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:position:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0, 2),
+"points": PackedFloat32Array(64, -0.25, 0, 0.25, 0, 64, -0.16666667, 0, 0, 0),
+"times": PackedFloat32Array(0, 1)
+}
+
+[sub_resource type="Animation" id="Animation_gbx6r"]
+length = 0.001
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(-448, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:position:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(64, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+
+[sub_resource type="Animation" id="Animation_bvm7p"]
+resource_name = "close_extra_settings"
+step = 0.083333336
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0, 2),
+"points": PackedFloat32Array(0, -0.25, 0, 0.333, 0, -448, -0.46592462, -78.94385, 0, 0),
+"times": PackedFloat32Array(0, 1)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:position:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0, 2),
+"points": PackedFloat32Array(64, -0.25, 0, 0.25, 0, 64, -0.16666667, 0, 0, 0),
+"times": PackedFloat32Array(0, 1)
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_2fskk"]
+_data = {
+&"RESET": SubResource("Animation_gbx6r"),
+&"close_extra_settings": SubResource("Animation_bvm7p"),
+&"open_extra_settings": SubResource("Animation_kfbsc")
+}
 
 [node name="menu_mp" type="Control"]
 layout_mode = 3
@@ -21,19 +113,20 @@ grow_vertical = 2
 script = ExtResource("1_l6f4p")
 game_mp = ExtResource("2_us8tt")
 server_join = ExtResource("2_pb0ft")
+player_plate = ExtResource("4_16mcp")
 
 [node name="back_ground" type="Sprite2D" parent="."]
-position = Vector2(576, 325)
-scale = Vector2(18, 10.09375)
+position = Vector2(576, 324)
+scale = Vector2(18, 10.125)
 texture = SubResource("GradientTexture2D_l6f4p")
 
 [node name="lobby_player_list" type="PanelContainer" parent="." groups=["menu_settings_ui"]]
 visible = false
 layout_mode = 0
-offset_left = 832.0
-offset_top = 64.0
+offset_left = 768.0
+offset_top = 16.0
 offset_right = 1152.0
-offset_bottom = 576.0
+offset_bottom = 640.0
 
 [node name="BoxContainer" type="BoxContainer" parent="lobby_player_list"]
 layout_mode = 2
@@ -41,27 +134,46 @@ vertical = true
 
 [node name="Label" type="Label" parent="lobby_player_list/BoxContainer"]
 layout_mode = 2
-size_flags_vertical = 6
 theme_override_font_sizes/font_size = 24
 text = "lobby"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="green_settings" type="BoxContainer" parent="lobby_player_list/BoxContainer"]
+[node name="lobby_container" type="BoxContainer" parent="lobby_player_list/BoxContainer"]
+layout_mode = 2
+
+[node name="Claims" type="BoxContainer" parent="lobby_player_list/BoxContainer/lobby_container"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 1.5
+theme = SubResource("Theme_us8tt")
+vertical = true
+
+[node name="Label" type="Label" parent="lobby_player_list/BoxContainer/lobby_container/Claims"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 20
+text = "Claims"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="lobby_player_list/BoxContainer/lobby_container/Claims"]
+layout_mode = 2
+
+[node name="green_settings" type="BoxContainer" parent="lobby_player_list/BoxContainer/lobby_container/Claims"]
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 vertical = true
 
-[node name="green_mode" type="BoxContainer" parent="lobby_player_list/BoxContainer/green_settings"]
+[node name="green_mode" type="BoxContainer" parent="lobby_player_list/BoxContainer/lobby_container/Claims/green_settings"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="lobby_player_list/BoxContainer/green_settings/green_mode"]
+[node name="Label" type="Label" parent="lobby_player_list/BoxContainer/lobby_container/Claims/green_settings/green_mode"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Greenwich"
 
-[node name="green_claim_type" type="OptionButton" parent="lobby_player_list/BoxContainer/green_settings/green_mode"]
+[node name="green_claim_type" type="OptionButton" parent="lobby_player_list/BoxContainer/lobby_container/Claims/green_settings/green_mode"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "This controls who is at play and if they are a player or not."
@@ -74,34 +186,34 @@ popup/item_1/id = 1
 popup/item_2/text = "player"
 popup/item_2/id = 2
 
-[node name="green_picker" type="Button" parent="lobby_player_list/BoxContainer/green_settings"]
+[node name="green_picker" type="Button" parent="lobby_player_list/BoxContainer/lobby_container/Claims/green_settings"]
 unique_name_in_owner = true
 layout_mode = 2
 toggle_mode = true
 text = "pick as you"
 
-[node name="green_name" type="LineEdit" parent="lobby_player_list/BoxContainer/green_settings"]
+[node name="green_name" type="LineEdit" parent="lobby_player_list/BoxContainer/lobby_container/Claims/green_settings"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "This sets the name of the claim in game if controled by a player."
 placeholder_text = "Greenwich"
 editable = false
 
-[node name="purple_settings" type="BoxContainer" parent="lobby_player_list/BoxContainer"]
+[node name="purple_settings" type="BoxContainer" parent="lobby_player_list/BoxContainer/lobby_container/Claims"]
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 vertical = true
 
-[node name="purple_mode" type="BoxContainer" parent="lobby_player_list/BoxContainer/purple_settings"]
+[node name="purple_mode" type="BoxContainer" parent="lobby_player_list/BoxContainer/lobby_container/Claims/purple_settings"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="lobby_player_list/BoxContainer/purple_settings/purple_mode"]
+[node name="Label" type="Label" parent="lobby_player_list/BoxContainer/lobby_container/Claims/purple_settings/purple_mode"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Plum Valley"
 
-[node name="purple_claim_type" type="OptionButton" parent="lobby_player_list/BoxContainer/purple_settings/purple_mode"]
+[node name="purple_claim_type" type="OptionButton" parent="lobby_player_list/BoxContainer/lobby_container/Claims/purple_settings/purple_mode"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "This controls who is at play and if they are a player or not."
@@ -114,34 +226,34 @@ popup/item_1/id = 1
 popup/item_2/text = "player"
 popup/item_2/id = 2
 
-[node name="purple_picker" type="Button" parent="lobby_player_list/BoxContainer/purple_settings"]
+[node name="purple_picker" type="Button" parent="lobby_player_list/BoxContainer/lobby_container/Claims/purple_settings"]
 unique_name_in_owner = true
 layout_mode = 2
 toggle_mode = true
 text = "pick as you"
 
-[node name="purple_name" type="LineEdit" parent="lobby_player_list/BoxContainer/purple_settings"]
+[node name="purple_name" type="LineEdit" parent="lobby_player_list/BoxContainer/lobby_container/Claims/purple_settings"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "This sets the name of the claim in game if controled by a player."
 placeholder_text = "Plum Valley"
 editable = false
 
-[node name="yellow_settings" type="BoxContainer" parent="lobby_player_list/BoxContainer"]
+[node name="yellow_settings" type="BoxContainer" parent="lobby_player_list/BoxContainer/lobby_container/Claims"]
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 vertical = true
 
-[node name="yellow_mode" type="BoxContainer" parent="lobby_player_list/BoxContainer/yellow_settings"]
+[node name="yellow_mode" type="BoxContainer" parent="lobby_player_list/BoxContainer/lobby_container/Claims/yellow_settings"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="lobby_player_list/BoxContainer/yellow_settings/yellow_mode"]
+[node name="Label" type="Label" parent="lobby_player_list/BoxContainer/lobby_container/Claims/yellow_settings/yellow_mode"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "York Street"
 
-[node name="yellow_claim_type" type="OptionButton" parent="lobby_player_list/BoxContainer/yellow_settings/yellow_mode"]
+[node name="yellow_claim_type" type="OptionButton" parent="lobby_player_list/BoxContainer/lobby_container/Claims/yellow_settings/yellow_mode"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "This controls who is at play and if they are a player or not."
@@ -154,34 +266,34 @@ popup/item_1/id = 1
 popup/item_2/text = "player"
 popup/item_2/id = 2
 
-[node name="yellow_picker" type="Button" parent="lobby_player_list/BoxContainer/yellow_settings"]
+[node name="yellow_picker" type="Button" parent="lobby_player_list/BoxContainer/lobby_container/Claims/yellow_settings"]
 unique_name_in_owner = true
 layout_mode = 2
 toggle_mode = true
 text = "pick as you"
 
-[node name="yellow_name" type="LineEdit" parent="lobby_player_list/BoxContainer/yellow_settings"]
+[node name="yellow_name" type="LineEdit" parent="lobby_player_list/BoxContainer/lobby_container/Claims/yellow_settings"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "This sets the name of the claim in game if controled by a player."
 placeholder_text = "York Street"
 editable = false
 
-[node name="red_settings" type="BoxContainer" parent="lobby_player_list/BoxContainer"]
+[node name="red_settings" type="BoxContainer" parent="lobby_player_list/BoxContainer/lobby_container/Claims"]
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 vertical = true
 
-[node name="red_mode" type="BoxContainer" parent="lobby_player_list/BoxContainer/red_settings"]
+[node name="red_mode" type="BoxContainer" parent="lobby_player_list/BoxContainer/lobby_container/Claims/red_settings"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="lobby_player_list/BoxContainer/red_settings/red_mode"]
+[node name="Label" type="Label" parent="lobby_player_list/BoxContainer/lobby_container/Claims/red_settings/red_mode"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "River Solme"
 
-[node name="red_claim_type" type="OptionButton" parent="lobby_player_list/BoxContainer/red_settings/red_mode"]
+[node name="red_claim_type" type="OptionButton" parent="lobby_player_list/BoxContainer/lobby_container/Claims/red_settings/red_mode"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "This controls who is at play and if they are a player or not."
@@ -194,26 +306,60 @@ popup/item_1/id = 1
 popup/item_2/text = "player"
 popup/item_2/id = 2
 
-[node name="red_picker" type="Button" parent="lobby_player_list/BoxContainer/red_settings"]
+[node name="red_picker" type="Button" parent="lobby_player_list/BoxContainer/lobby_container/Claims/red_settings"]
 unique_name_in_owner = true
 layout_mode = 2
 toggle_mode = true
 text = "pick as you"
 
-[node name="red_name" type="LineEdit" parent="lobby_player_list/BoxContainer/red_settings"]
+[node name="red_name" type="LineEdit" parent="lobby_player_list/BoxContainer/lobby_container/Claims/red_settings"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "This sets the name of the claim in game if controled by a player."
 placeholder_text = "River Solme"
 editable = false
 
+[node name="VSeparator" type="VSeparator" parent="lobby_player_list/BoxContainer/lobby_container"]
+layout_mode = 2
+
+[node name="player_list" type="BoxContainer" parent="lobby_player_list/BoxContainer/lobby_container"]
+layout_mode = 2
+size_flags_horizontal = 3
+vertical = true
+
+[node name="Label" type="Label" parent="lobby_player_list/BoxContainer/lobby_container/player_list"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 20
+text = "Players"
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="lobby_player_list/BoxContainer/lobby_container/player_list"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="player_browser" type="BoxContainer" parent="lobby_player_list/BoxContainer/lobby_container/player_list/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+vertical = true
+
+[node name="HSeparator" type="HSeparator" parent="lobby_player_list/BoxContainer"]
+layout_mode = 2
+
+[node name="lobby_chat" parent="lobby_player_list/BoxContainer" instance=ExtResource("4_iwfhx")]
+layout_mode = 2
+size_flags_vertical = 3
+
 [node name="BoxContainer" type="BoxContainer" parent="." groups=["menu_settings_ui"]]
 visible = false
 layout_mode = 0
-offset_left = 384.0
-offset_top = 72.0
-offset_right = 768.0
-offset_bottom = 584.0
+offset_left = 352.0
+offset_top = 96.0
+offset_right = 736.0
+offset_bottom = 336.0
 vertical = true
 
 [node name="Label" type="Label" parent="BoxContainer"]
@@ -261,243 +407,13 @@ popup/item_2/id = 2
 popup/item_3/text = "Surrounded"
 popup/item_3/id = 3
 
-[node name="GridContainer" type="GridContainer" parent="BoxContainer"]
-layout_mode = 2
-columns = 2
-
-[node name="wall_settings" type="BoxContainer" parent="BoxContainer/GridContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-vertical = true
-
-[node name="wall_text" type="Label" parent="BoxContainer/GridContainer/wall_settings"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Wall count:"
-
-[node name="WallSlider" type="HSlider" parent="BoxContainer/GridContainer/wall_settings"]
-unique_name_in_owner = true
-layout_mode = 2
-tooltip_text = "Controls the number of Wall tiles there will be added in grenrating a map."
-max_value = 160.0
-rounded = true
-
-[node name="fuel_settings" type="BoxContainer" parent="BoxContainer/GridContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-vertical = true
-
-[node name="Label" type="Label" parent="BoxContainer/GridContainer/fuel_settings"]
-layout_mode = 2
-text = "fuel count:"
-
-[node name="FuelSlider" type="HSlider" parent="BoxContainer/GridContainer/fuel_settings"]
-layout_mode = 2
-tooltip_text = "Controls the number of fuel tiles there will be added in grenrating a map."
-max_value = 76.0
-value = 16.0
-rounded = true
-
-[node name="player_setting" type="CheckButton" parent="BoxContainer/GridContainer"]
-visible = false
-layout_mode = 2
-button_pressed = true
-text = "Have Player"
-
-[node name="purple_setting" type="CheckButton" parent="BoxContainer/GridContainer"]
-visible = false
-layout_mode = 2
-button_pressed = true
-text = "Have plum valey"
-
-[node name="yellow_setting" type="CheckButton" parent="BoxContainer/GridContainer"]
-visible = false
-layout_mode = 2
-button_pressed = true
-text = "Have york street"
-
-[node name="red_setting" type="CheckButton" parent="BoxContainer/GridContainer"]
-visible = false
-layout_mode = 2
-button_pressed = true
-text = "Have river solme"
-
-[node name="BoxContainer" type="BoxContainer" parent="BoxContainer"]
-layout_mode = 2
-
-[node name="Button" type="Label" parent="BoxContainer/BoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Ai level"
-
-[node name="ai_level_setting" type="OptionButton" parent="BoxContainer/BoxContainer"]
-layout_mode = 2
-button_pressed = true
-selected = 1
-item_count = 3
-popup/item_0/text = "level 1"
-popup/item_0/id = 0
-popup/item_1/text = "level 2"
-popup/item_1/id = 1
-popup/item_2/text = "level 3"
-popup/item_2/id = 2
-
-[node name="BoxContainer2" type="BoxContainer" parent="BoxContainer"]
-layout_mode = 2
-
-[node name="Button" type="Label" parent="BoxContainer/BoxContainer2"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Last man standing"
-
-[node name="lms_setting" type="CheckBox" parent="BoxContainer/BoxContainer2"]
-layout_mode = 2
-button_pressed = true
-
-[node name="BoxContainer3" type="BoxContainer" parent="BoxContainer"]
-layout_mode = 2
-
-[node name="Button" type="Label" parent="BoxContainer/BoxContainer3"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Battle random results"
-
-[node name="bran_setting" type="CheckBox" parent="BoxContainer/BoxContainer3"]
-layout_mode = 2
-
-[node name="BoxContainer2" type="BoxContainer" parent="." groups=["menu_settings_ui"]]
-visible = false
-layout_mode = 0
-offset_left = 64.0
-offset_top = 64.0
-offset_right = 320.0
-offset_bottom = 320.0
-vertical = true
-
-[node name="Control" type="Label" parent="BoxContainer2"]
-layout_mode = 2
-text = "Capital numbers"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="BoxContainer" type="GridContainer" parent="BoxContainer2"]
-layout_mode = 2
-columns = 2
-
-[node name="green_number" type="BoxContainer" parent="BoxContainer2/BoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-vertical = true
-
-[node name="Label" type="Label" parent="BoxContainer2/BoxContainer/green_number"]
-layout_mode = 2
-text = "Player has"
-
-[node name="green_cap" type="OptionButton" parent="BoxContainer2/BoxContainer/green_number"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 3
-selected = 0
-item_count = 4
-popup/item_0/text = "1 capital"
-popup/item_0/id = 0
-popup/item_1/text = "2 capital's"
-popup/item_1/id = 1
-popup/item_2/text = "3 capital's"
-popup/item_2/id = 2
-popup/item_3/text = "4 capital's"
-popup/item_3/id = 3
-
-[node name="plum_number" type="BoxContainer" parent="BoxContainer2/BoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-vertical = true
-
-[node name="Label" type="Label" parent="BoxContainer2/BoxContainer/plum_number"]
-layout_mode = 2
-text = "Plum Valey has"
-
-[node name="plum_cap" type="OptionButton" parent="BoxContainer2/BoxContainer/plum_number"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 3
-selected = 0
-item_count = 4
-popup/item_0/text = "1 capital"
-popup/item_0/id = 0
-popup/item_1/text = "2 capital's"
-popup/item_1/id = 1
-popup/item_2/text = "3 capital's"
-popup/item_2/id = 2
-popup/item_3/text = "4 capital's"
-popup/item_3/id = 3
-
-[node name="york_number" type="BoxContainer" parent="BoxContainer2/BoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-vertical = true
-
-[node name="Label" type="Label" parent="BoxContainer2/BoxContainer/york_number"]
-layout_mode = 2
-text = "York  Street has"
-
-[node name="york_cap" type="OptionButton" parent="BoxContainer2/BoxContainer/york_number"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 3
-selected = 0
-item_count = 4
-popup/item_0/text = "1 capital"
-popup/item_0/id = 0
-popup/item_1/text = "2 capital's"
-popup/item_1/id = 1
-popup/item_2/text = "3 capital's"
-popup/item_2/id = 2
-popup/item_3/text = "4 capital's"
-popup/item_3/id = 3
-
-[node name="river_number" type="BoxContainer" parent="BoxContainer2/BoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-vertical = true
-
-[node name="Label" type="Label" parent="BoxContainer2/BoxContainer/river_number"]
-layout_mode = 2
-text = "River Solme has"
-
-[node name="river_cap" type="OptionButton" parent="BoxContainer2/BoxContainer/river_number"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 3
-selected = 0
-item_count = 4
-popup/item_0/text = "1 capital"
-popup/item_0/id = 0
-popup/item_1/text = "2 capital's"
-popup/item_1/id = 1
-popup/item_2/text = "3 capital's"
-popup/item_2/id = 2
-popup/item_3/text = "4 capital's"
-popup/item_3/id = 3
-
-[node name="RichTextLabel" type="RichTextLabel" parent="BoxContainer2"]
-layout_mode = 2
-size_flags_vertical = 3
-bbcode_enabled = true
-text = "[center][b]CAREFUL WITH THESE SETTINGS[/b][/center]
-They can crash your game."
-
 [node name="BoxContainer3" type="BoxContainer" parent="." groups=["menu_settings_ui"]]
 visible = false
 layout_mode = 0
-offset_left = 96.0
-offset_top = 320.0
-offset_right = 296.0
-offset_bottom = 576.0
+offset_left = 416.0
+offset_top = 351.0
+offset_right = 672.0
+offset_bottom = 607.0
 vertical = true
 
 [node name="Label" type="Label" parent="BoxContainer3"]
@@ -560,6 +476,308 @@ layout_mode = 2
 max_value = 10.0
 value = 10.0
 rounded = true
+
+[node name="Extra_options" type="Panel" parent="." groups=["menu_settings_ui"]]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -448.0
+offset_top = 64.0
+offset_right = -1151.9999
+offset_bottom = -72.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BoxContainer" type="BoxContainer" parent="Extra_options"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 440.0
+offset_bottom = 504.0
+vertical = true
+
+[node name="Label" type="Label" parent="Extra_options/BoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Extra Game
+Settings"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Extra_options/BoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="BoxContainer" type="BoxContainer" parent="Extra_options/BoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+vertical = true
+
+[node name="HSeparator" type="HSeparator" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer"]
+layout_mode = 2
+
+[node name="claim settings" type="BoxContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer"]
+layout_mode = 2
+vertical = true
+
+[node name="Label" type="Label" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Claim Settings"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GridContainer" type="GridContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings"]
+layout_mode = 2
+columns = 2
+
+[node name="wall_settings" type="BoxContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+vertical = true
+
+[node name="wall_text" type="Label" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/GridContainer/wall_settings"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Wall count:"
+
+[node name="WallSlider" type="HSlider" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/GridContainer/wall_settings"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Controls the number of Wall tiles there will be added in grenrating a map."
+max_value = 160.0
+rounded = true
+
+[node name="fuel_settings" type="BoxContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+vertical = true
+
+[node name="fuel_text" type="Label" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/GridContainer/fuel_settings"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "fuel count:"
+
+[node name="FuelSlider" type="HSlider" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/GridContainer/fuel_settings"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Controls the number of fuel tiles there will be added in grenrating a map."
+max_value = 76.0
+value = 16.0
+rounded = true
+
+[node name="player_setting" type="CheckButton" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/GridContainer"]
+visible = false
+layout_mode = 2
+button_pressed = true
+text = "Have Player"
+
+[node name="purple_setting" type="CheckButton" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/GridContainer"]
+visible = false
+layout_mode = 2
+button_pressed = true
+text = "Have plum valey"
+
+[node name="yellow_setting" type="CheckButton" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/GridContainer"]
+visible = false
+layout_mode = 2
+button_pressed = true
+text = "Have york street"
+
+[node name="red_setting" type="CheckButton" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/GridContainer"]
+visible = false
+layout_mode = 2
+button_pressed = true
+text = "Have river solme"
+
+[node name="BoxContainer" type="BoxContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings"]
+layout_mode = 2
+
+[node name="Button" type="Label" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Ai level"
+
+[node name="ai_level_setting" type="OptionButton" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/BoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+button_pressed = true
+selected = 1
+item_count = 3
+popup/item_0/text = "level 1"
+popup/item_0/id = 0
+popup/item_1/text = "level 2"
+popup/item_1/id = 1
+popup/item_2/text = "level 3"
+popup/item_2/id = 2
+
+[node name="BoxContainer2" type="BoxContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings"]
+layout_mode = 2
+
+[node name="Button" type="Label" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/BoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Last man standing"
+
+[node name="lms_setting" type="CheckBox" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/BoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+button_pressed = true
+
+[node name="BoxContainer3" type="BoxContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings"]
+layout_mode = 2
+
+[node name="Button" type="Label" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/BoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Battle random results"
+
+[node name="bran_setting" type="CheckBox" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/BoxContainer3"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer"]
+layout_mode = 2
+
+[node name="BoxContainer2" type="BoxContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer"]
+layout_mode = 2
+vertical = true
+
+[node name="Control" type="Label" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer2"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Capital numbers"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BoxContainer" type="GridContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer2"]
+layout_mode = 2
+columns = 2
+
+[node name="green_number" type="BoxContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer2/BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+vertical = true
+
+[node name="Label" type="Label" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer2/BoxContainer/green_number"]
+layout_mode = 2
+text = "Player has"
+
+[node name="green_cap" type="OptionButton" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer2/BoxContainer/green_number"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+selected = 0
+item_count = 4
+popup/item_0/text = "1 capital"
+popup/item_0/id = 0
+popup/item_1/text = "2 capital's"
+popup/item_1/id = 1
+popup/item_2/text = "3 capital's"
+popup/item_2/id = 2
+popup/item_3/text = "4 capital's"
+popup/item_3/id = 3
+
+[node name="plum_number" type="BoxContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer2/BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+vertical = true
+
+[node name="Label" type="Label" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer2/BoxContainer/plum_number"]
+layout_mode = 2
+text = "Plum Valey has"
+
+[node name="plum_cap" type="OptionButton" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer2/BoxContainer/plum_number"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+selected = 0
+item_count = 4
+popup/item_0/text = "1 capital"
+popup/item_0/id = 0
+popup/item_1/text = "2 capital's"
+popup/item_1/id = 1
+popup/item_2/text = "3 capital's"
+popup/item_2/id = 2
+popup/item_3/text = "4 capital's"
+popup/item_3/id = 3
+
+[node name="york_number" type="BoxContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer2/BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+vertical = true
+
+[node name="Label" type="Label" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer2/BoxContainer/york_number"]
+layout_mode = 2
+text = "York  Street has"
+
+[node name="york_cap" type="OptionButton" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer2/BoxContainer/york_number"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+selected = 0
+item_count = 4
+popup/item_0/text = "1 capital"
+popup/item_0/id = 0
+popup/item_1/text = "2 capital's"
+popup/item_1/id = 1
+popup/item_2/text = "3 capital's"
+popup/item_2/id = 2
+popup/item_3/text = "4 capital's"
+popup/item_3/id = 3
+
+[node name="river_number" type="BoxContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer2/BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+vertical = true
+
+[node name="Label" type="Label" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer2/BoxContainer/river_number"]
+layout_mode = 2
+text = "River Solme has"
+
+[node name="river_cap" type="OptionButton" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer2/BoxContainer/river_number"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+selected = 0
+item_count = 4
+popup/item_0/text = "1 capital"
+popup/item_0/id = 0
+popup/item_1/text = "2 capital's"
+popup/item_1/id = 1
+popup/item_2/text = "3 capital's"
+popup/item_2/id = 2
+popup/item_3/text = "4 capital's"
+popup/item_3/id = 3
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "[center][b]CAREFUL WITH THESE SETTINGS[/b][/center]
+They can crash your game."
+fit_content = true
+
+[node name="Open and close Extra Settings button" type="Button" parent="Extra_options"]
+layout_mode = 0
+offset_left = 480.0
+offset_right = 544.0
+offset_bottom = 32.0
+rotation = 1.5707964
+toggle_mode = true
+text = "Open and close Extra Settings"
+
+[node name="extra_setting_animator" type="AnimationPlayer" parent="Extra_options"]
+libraries = {
+&"": SubResource("AnimationLibrary_2fskk")
+}
 
 [node name="host_menu" type="BoxContainer" parent="." groups=["menu_mp"]]
 layout_mode = 0
@@ -672,32 +890,33 @@ text = "Singleplayer/hot Seat"
 [node name="Timer" type="Timer" parent="."]
 wait_time = 5.0
 
-[connection signal="item_selected" from="lobby_player_list/BoxContainer/green_settings/green_mode/green_claim_type" to="." method="_on_green_claim_type_item_selected"]
-[connection signal="toggled" from="lobby_player_list/BoxContainer/green_settings/green_picker" to="." method="_on_green_picker_toggled"]
-[connection signal="text_changed" from="lobby_player_list/BoxContainer/green_settings/green_name" to="." method="_on_green_name_text_submitted"]
-[connection signal="item_selected" from="lobby_player_list/BoxContainer/purple_settings/purple_mode/purple_claim_type" to="." method="_on_purple_claim_type_item_selected"]
-[connection signal="toggled" from="lobby_player_list/BoxContainer/purple_settings/purple_picker" to="." method="_on_purple_picker_toggled"]
-[connection signal="text_changed" from="lobby_player_list/BoxContainer/purple_settings/purple_name" to="." method="_on_purple_name_text_submitted"]
-[connection signal="item_selected" from="lobby_player_list/BoxContainer/yellow_settings/yellow_mode/yellow_claim_type" to="." method="_on_yellow_claim_type_item_selected"]
-[connection signal="toggled" from="lobby_player_list/BoxContainer/yellow_settings/yellow_picker" to="." method="_on_yellow_picker_toggled"]
-[connection signal="text_changed" from="lobby_player_list/BoxContainer/yellow_settings/yellow_name" to="." method="_on_yellow_name_text_submitted"]
-[connection signal="item_selected" from="lobby_player_list/BoxContainer/red_settings/red_mode/red_claim_type" to="." method="_on_red_claim_type_item_selected"]
-[connection signal="toggled" from="lobby_player_list/BoxContainer/red_settings/red_picker" to="." method="_on_red_picker_toggled"]
-[connection signal="text_changed" from="lobby_player_list/BoxContainer/red_settings/red_name" to="." method="_on_red_name_text_submitted"]
+[connection signal="item_selected" from="lobby_player_list/BoxContainer/lobby_container/Claims/green_settings/green_mode/green_claim_type" to="." method="_on_green_claim_type_item_selected"]
+[connection signal="toggled" from="lobby_player_list/BoxContainer/lobby_container/Claims/green_settings/green_picker" to="." method="_on_green_picker_toggled"]
+[connection signal="text_changed" from="lobby_player_list/BoxContainer/lobby_container/Claims/green_settings/green_name" to="." method="_on_green_name_text_submitted"]
+[connection signal="item_selected" from="lobby_player_list/BoxContainer/lobby_container/Claims/purple_settings/purple_mode/purple_claim_type" to="." method="_on_purple_claim_type_item_selected"]
+[connection signal="toggled" from="lobby_player_list/BoxContainer/lobby_container/Claims/purple_settings/purple_picker" to="." method="_on_purple_picker_toggled"]
+[connection signal="text_changed" from="lobby_player_list/BoxContainer/lobby_container/Claims/purple_settings/purple_name" to="." method="_on_purple_name_text_submitted"]
+[connection signal="item_selected" from="lobby_player_list/BoxContainer/lobby_container/Claims/yellow_settings/yellow_mode/yellow_claim_type" to="." method="_on_yellow_claim_type_item_selected"]
+[connection signal="toggled" from="lobby_player_list/BoxContainer/lobby_container/Claims/yellow_settings/yellow_picker" to="." method="_on_yellow_picker_toggled"]
+[connection signal="text_changed" from="lobby_player_list/BoxContainer/lobby_container/Claims/yellow_settings/yellow_name" to="." method="_on_yellow_name_text_submitted"]
+[connection signal="item_selected" from="lobby_player_list/BoxContainer/lobby_container/Claims/red_settings/red_mode/red_claim_type" to="." method="_on_red_claim_type_item_selected"]
+[connection signal="toggled" from="lobby_player_list/BoxContainer/lobby_container/Claims/red_settings/red_picker" to="." method="_on_red_picker_toggled"]
+[connection signal="text_changed" from="lobby_player_list/BoxContainer/lobby_container/Claims/red_settings/red_name" to="." method="_on_red_name_text_submitted"]
 [connection signal="pressed" from="BoxContainer/start_game" to="." method="_on_start_button_down"]
 [connection signal="item_selected" from="BoxContainer/map/map_setting" to="." method="_on_map_setting_item_selected"]
-[connection signal="value_changed" from="BoxContainer/GridContainer/wall_settings/WallSlider" to="." method="_on_wall_slider_value_changed"]
-[connection signal="value_changed" from="BoxContainer/GridContainer/fuel_settings/FuelSlider" to="." method="_on_fuel_slider_value_changed"]
-[connection signal="item_selected" from="BoxContainer/BoxContainer/ai_level_setting" to="." method="_on_change_ai_level"]
-[connection signal="toggled" from="BoxContainer/BoxContainer2/lms_setting" to="." method="_on_lms_setting_toggled"]
-[connection signal="toggled" from="BoxContainer/BoxContainer3/bran_setting" to="." method="_on_bran_setting_toggled"]
-[connection signal="item_selected" from="BoxContainer2/BoxContainer/green_number/green_cap" to="." method="_on_green_cap_item_selected"]
-[connection signal="item_selected" from="BoxContainer2/BoxContainer/plum_number/plum_cap" to="." method="_on_plum_cap_item_selected"]
-[connection signal="item_selected" from="BoxContainer2/BoxContainer/york_number/york_cap" to="." method="_on_york_cap_item_selected"]
-[connection signal="item_selected" from="BoxContainer2/BoxContainer/river_number/river_cap" to="." method="_on_river_cap_item_selected"]
 [connection signal="item_selected" from="BoxContainer3/BoxContainer/Music type/music_type_setting" to="." method="_on_music_type_setting_item_selected"]
 [connection signal="value_changed" from="BoxContainer3/BoxContainer/music_settings/MusicSlider" to="." method="_on_music_slider_value_changed"]
 [connection signal="value_changed" from="BoxContainer3/BoxContainer/sfx_settings/SfxSlider" to="." method="_on_sfx_slider_value_changed"]
+[connection signal="value_changed" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/GridContainer/wall_settings/WallSlider" to="." method="_on_wall_slider_value_changed"]
+[connection signal="value_changed" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/GridContainer/fuel_settings/FuelSlider" to="." method="_on_fuel_slider_value_changed"]
+[connection signal="item_selected" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/BoxContainer/ai_level_setting" to="." method="_on_change_ai_level"]
+[connection signal="toggled" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/BoxContainer2/lms_setting" to="." method="_on_lms_setting_toggled"]
+[connection signal="toggled" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/BoxContainer3/bran_setting" to="." method="_on_bran_setting_toggled"]
+[connection signal="item_selected" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer2/BoxContainer/green_number/green_cap" to="." method="_on_green_cap_item_selected"]
+[connection signal="item_selected" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer2/BoxContainer/plum_number/plum_cap" to="." method="_on_plum_cap_item_selected"]
+[connection signal="item_selected" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer2/BoxContainer/york_number/york_cap" to="." method="_on_york_cap_item_selected"]
+[connection signal="item_selected" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer2/BoxContainer/river_number/river_cap" to="." method="_on_river_cap_item_selected"]
+[connection signal="toggled" from="Extra_options/Open and close Extra Settings button" to="." method="_on_open_and_close_extra_settings_button_toggled"]
 [connection signal="pressed" from="host_menu/host_game" to="." method="_on_host_button_down"]
 [connection signal="text_changed" from="host_menu/server_name" to="." method="_on_server_name_text_changed"]
 [connection signal="text_changed" from="host_menu/client_settings/client_name" to="." method="_on_client_name_text_changed"]
@@ -705,4 +924,4 @@ wait_time = 5.0
 [connection signal="text_changed" from="host_menu/client_settings/server_input/server_port" to="." method="_on_server_port_text_changed"]
 [connection signal="pressed" from="join_menu/join_game" to="." method="_on_join_button_down"]
 [connection signal="pressed" from="singleplayer" to="." method="_on_singleplayer_pressed"]
-[connection signal="timeout" from="Timer" to="." method="update_broadcast_data"]
+[connection signal="timeout" from="Timer" to="." method="update_broadcast_server_staius"]

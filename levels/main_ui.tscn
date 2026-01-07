@@ -191,8 +191,8 @@ grow_vertical = 2
 theme = ExtResource("1_gha74")
 
 [node name="back_ground" type="Sprite2D" parent="."]
-position = Vector2(576, 325)
-scale = Vector2(18, 10.09375)
+position = Vector2(576, 324)
+scale = Vector2(18, 10.125)
 texture = SubResource("GradientTexture2D_alpnb")
 
 [node name="game" type="BoxContainer" parent="." node_paths=PackedStringArray("panels")]
@@ -300,6 +300,7 @@ layout_mode = 2
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 128)
 layout_mode = 2
+bbcode_enabled = true
 scroll_following = true
 
 [node name="chat_input_divider" type="HSeparator" parent="game/input border/BoxContainer2/BoxContainer/inputs/game_chat"]
@@ -335,6 +336,7 @@ theme_override_font_sizes/normal_font_size = 12
 bbcode_enabled = true
 text = "Game Text
 "
+scroll_following = true
 
 [node name="claims_data" type="BoxContainer" parent="game/input border/BoxContainer2/BoxContainer/Data"]
 layout_mode = 2
