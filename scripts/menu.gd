@@ -46,6 +46,16 @@ class_name menu_class
 
 @onready var lms_setting : CheckBox = %lms_setting
 @onready var bran_setting : CheckBox = %bran_setting
+@onready var cdan_setting : CheckBox = %cdan_setting
+
+@onready var tile_int_lim_input : LineEdit = %tile_int_lim_input
+@onready var tile_int_reduct_input : LineEdit = %tile_int_reduct_input
+@onready var tile_sec_lim_input : LineEdit = %tile_sec_lim_input
+@onready var tile_sec_reduct_input : LineEdit = %tile_sec_reduct_input
+@onready var fuel_lim_input : LineEdit = %fuel_lim_input
+@onready var fuel_reduct_input : LineEdit = %fuel_reduct_input
+@onready var turn_lim_input : LineEdit = %turn_lim_input
+@onready var turn_reduct_input : LineEdit = %turn_reduct_input
 
 
 ## For game sounds. (CURRENTLY USING SOUNDS FROM GOD MACHINE)
@@ -81,10 +91,25 @@ func _ready(mp_is_updating=false):
 	# Cap number
 	for i in range(0,4):
 		cap_list[i].selected = Global.cap_list[i] - 1
+	
+	
 	# Lms
 	lms_setting.button_pressed = Global.lms_enabled
 	# Bran
 	bran_setting.button_pressed = Global.bran_enabled
+	# Cdan
+	cdan_setting.button_pressed = Global.cdan_enabled
+	
+	# movement
+	tile_int_lim_input.text = str(Global.moves_tile_int_lim_boost)
+	tile_int_reduct_input.text = str(Global.moves_tile_int_reduction_boost)
+	tile_sec_lim_input.text = str(Global.moves_tile_second_lim_boost)
+	tile_sec_reduct_input.text = str(Global.moves_tile_second_reduction_boost)
+	fuel_lim_input.text = str(Global.moves_fuel_lim_boost)
+	fuel_reduct_input.text = str(Global.moves_fuel_reduction_boost)
+	turn_lim_input.text = str(Global.moves_turn_lim_boost)
+	turn_reduct_input.text = str(Global.moves_turn_reduction_boost)
+	
 	# Music
 	music_type.selected = Global.music_type
 	music_slider.value = Global.music_vol
@@ -347,6 +372,116 @@ func _on_bran_setting_toggled(toggled_on,mp_player_source=true):
 	bran_setting.button_pressed = toggled_on
 	Global.bran_enabled = toggled_on
 	sound_play()
+
+@rpc("any_peer")
+func _on_cdan_setting_toggled(toggled_on,mp_player_source=true):
+	if Global.mp_enabled and mp_player_source:
+		_on_cdan_setting_toggled.rpc(toggled_on,false)
+	cdan_setting.button_pressed = toggled_on
+	Global.cdan_enabled = toggled_on
+	sound_play()
+
+## Basic, this is just so I can mange ALL THE FLIPIN MOVEMENT SETTING IN ONE PLACE.[br]
+## This, took so much time, and my hands hurt because of it. 
+enum movement_edits {
+	## Tile Initial limit
+	ti_lim,
+	## Tile Initial reduction
+	ti_red,
+	## Tile Second limit
+	ts_lim,
+	## Tile Second Reduction
+	ts_red,
+	## Fuel tile limit
+	fl_lim,
+	## Fuel tile reduction
+	fl_red,
+	## Turn moves limit
+	tn_lim,
+	## Turn moves reduction
+	tn_red
+}
+
+
+#tile_int_lim_input.text = Global.moves_tile_int_lim_boost
+#tile_int_reduct_input.text = Global.moves_tile_int_reduction_boost
+#tile_sec_lim_input.text = Global.moves_tile_second_lim_boost
+#tile_sec_reduct_input.text = Global.moves_tile_second_reduction_boost
+#fuel_lim_input.text = Global.moves_fuel_lim_boost
+#fuel_reduct_input.text = Global.moves_fuel_reduction_boost
+#turn_lim_input.text = Global.moves_turn_lim_boost
+#turn_reduct_input.text = Global.moves_turn_reduction_boost
+
+## This funels the Movement setting into one place so I don't need to worry about a fuck ton of functions. Exuse my langage.[br][br]
+## After it finds what its orign is, it sets its corisponding value. See [member menu_class.movement_edits]
+@rpc("any_peer")
+func _on_movement_setting_changed(new_text:String,origin:movement_edits,mp_player_source=true):
+	if Global.mp_enabled and mp_player_source:
+		_on_movement_setting_changed.rpc(new_text,origin,false)
+	if new_text.is_valid_int():
+		if new_text != str(new_text.to_int()):
+			mp_player_source = false
+			new_text = str(new_text.to_int())
+		match origin:
+			movement_edits.ti_lim:
+				if not mp_player_source:
+					tile_int_lim_input.text = new_text
+				if new_text.to_int() < 0:
+					new_text = "99999"
+				Global.moves_tile_int_lim_boost = new_text.to_int()
+			movement_edits.ti_red:
+				if new_text.to_int() != 0:
+					if not mp_player_source:
+						tile_int_reduct_input.text = new_text
+					Global.moves_tile_int_reduction_boost = new_text.to_int()
+				else:
+					_on_movement_setting_changed("1",origin,false)
+			
+			movement_edits.ts_lim:
+				if not mp_player_source:
+					tile_sec_lim_input.text = new_text
+				if new_text.to_int() < 0:
+					new_text = "99999"
+				Global.moves_tile_second_lim_boost = new_text.to_int()
+			movement_edits.ts_red:
+				if new_text.to_int() != 0:
+					if not mp_player_source:
+						tile_sec_reduct_input.text = new_text
+					Global.moves_tile_second_reduction_boost = new_text.to_int()
+				else:
+					_on_movement_setting_changed("1",origin,false)
+			
+			movement_edits.fl_lim:
+				if not mp_player_source:
+					fuel_lim_input.text = new_text
+				if new_text.to_int() < 0:
+					new_text = "99999"
+				Global.moves_fuel_lim_boost = new_text.to_int()
+			movement_edits.fl_red:
+				if new_text.to_int() != 0:
+					if not mp_player_source:
+						fuel_reduct_input.text = new_text
+					Global.moves_fuel_reduction_boost = new_text.to_int()
+				else:
+					_on_movement_setting_changed("1",origin,false)
+			
+			movement_edits.tn_lim:
+				if not mp_player_source:
+					turn_lim_input.text = new_text
+				if new_text.to_int() < 0:
+					new_text = "99999"
+				Global.moves_turn_lim_boost = new_text.to_int()
+			movement_edits.tn_red:
+				if new_text.to_int() != 0:
+					if not mp_player_source:
+						turn_reduct_input.text = new_text
+					Global.moves_turn_reduction_boost = new_text.to_int()
+				else:
+					_on_movement_setting_changed("1",origin,false)
+		sound_play()
+	else:
+		_on_movement_setting_changed("0",origin,false)
+
 
 @onready var extra_setting_animator = $Extra_options/extra_setting_animator
 

@@ -7,5 +7,5 @@
 script = ExtResource("1_xyyt4")
 name = "york street"
 claim_colour = 3
-claim_panel = ExtResource("1_gshy8")
+claim_panel_normal = ExtResource("1_gshy8")
 metadata/_custom_type_script = "uid://cioo3en61w18o"

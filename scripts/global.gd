@@ -61,7 +61,11 @@ var dist = 2
 # MUSIC OPTIONS
 ## Which type of music is it.
 var music_type = 0
-const music_list = ["res://audio/music/warning siren/warning siren.ogg","res://audio/music/wolfquest sounding ass/wolfquest.ogg"]
+const music_list = [
+	"res://audio/music/warning siren/warning siren.ogg",
+	"res://audio/music/wolfquest sounding ass/wolfquest.ogg",
+	"res://audio/music/33 thousand tiles under the blue/33 thousand tiles under the blue.ogg"
+	]
 var music_vol = 10.0
 var SFX_vol = 10.0
 # MISC OPTIONS
@@ -69,10 +73,36 @@ var SFX_vol = 10.0
 ## This makes it so if there is only one claim, the game will finaly end.
 var lms_enabled = true
 #Bran when there is something like the start of this line, then it involess this thing.
-#Brian THANKS DAD.
+#Brian: THANKS DAD.
 ## Battle random result[br]
 ## When enabled, the game will roll a d20 that has 
 var bran_enabled = false
+## Capatial Protection[br]
+## When enabled, the game will make it block any attept of taking any more tiles from a claim who lost a capital, that is untill after they get a turn.
+var cdan_enabled = true
+
+# Moves settings
+# Tiles
+## This divides the intial moves gained by tiles claimed.
+var moves_tile_int_reduction_boost = 2
+## This is the limit to stop the intial boost from going too high.
+var moves_tile_int_lim_boost = 15
+## This divides the second moves gained by tiles claimed. 
+var moves_tile_second_reduction_boost = 10
+## This limits the the second boost to moves gained by tiles claimed.
+var moves_tile_second_lim_boost = 30
+# FUEL
+## This divides the intial moves gained by tiles claimed.
+var moves_fuel_reduction_boost = 1
+## This is the limit to stop the intial boost from going too high.
+var moves_fuel_lim_boost = 10
+# TURNS
+## This divides the intial moves gained by tiles claimed.
+var moves_turn_reduction_boost = 1
+## This is the limit to stop the intial boost from going too high.
+var moves_turn_lim_boost = 10
+
+
 
 #multiplayer
 signal mp_player_list_changed()

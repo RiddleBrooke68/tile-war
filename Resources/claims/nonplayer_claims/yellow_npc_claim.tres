@@ -13,5 +13,5 @@ capital_beeline = 2
 wall_beeline = 2
 name = "york street"
 claim_colour = 3
-claim_panel = ExtResource("1_bkfqs")
+claim_panel_normal = ExtResource("1_bkfqs")
 metadata/_custom_type_script = "uid://bmkjamamvf3ie"

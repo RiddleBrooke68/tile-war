@@ -34,8 +34,8 @@ func update():
 		claim_tiles.text = str(claim.tile_size)
 		claim_fuel.text = str(claim.fuel_count)
 		claim_capitals.text = str(claim.capatal_tile.size())
-		if not claim.claim_dead and claim.claim_panel != null:
-			panel.texture = claim.claim_panel
+		if not claim.claim_dead and claim.claim_panel_normal != null:
+			panel.texture = claim.claim_panel_normal
 		elif claim.claim_dead and dead_panel != null:
 			panel.texture = dead_panel
 		else:

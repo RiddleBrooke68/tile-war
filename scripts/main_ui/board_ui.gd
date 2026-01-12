@@ -254,18 +254,19 @@ func on_claim_tile(coords,claim:int,type:int=-1,update=true,terain=false,force_d
 		if picked_tile != null:
 			var changed = true
 			var did_claim = false
-			var tile
+			var tile : tile_data = check_tile_claimably(coords,claim,false,true)
 			var ran_attacker
 			var ran_defender
 			var mp_start_type = type
 			#bran So when bran is active this has to check if its takeable or not and then will check if it needs to make a roll or not.
 			if Global.bran_enabled and not force_do and check_tile_claimably(coords,claim):
-				tile = check_tile_claimably(coords,claim,false,true)
 				if mp_did_claim or did_claim:
 					ran_attacker = mp_ran_results[0]
 					ran_defender = mp_ran_results[1]
 				else:
+					@warning_ignore("incompatible_ternary")
 					ran_attacker = randi_range(0,10)+tile.points+tile.fuel if tile.type == 1 else null
+					@warning_ignore("incompatible_ternary")
 					ran_defender = randi_range(0,10)+tile.oppose_points+tile.oppose_fuel if tile.type == 1 else null
 					did_claim = true
 				if tile.type == 1 and ran_attacker < ran_defender:
@@ -276,6 +277,8 @@ func on_claim_tile(coords,claim:int,type:int=-1,update=true,terain=false,force_d
 				#changed = false
 			if changed:
 				if picked_tile.get_custom_data("type") == 1 and type == -1:
+					if Global.cdan_enabled and picked_tile.get_custom_data("ownership") != 0:
+						tile.opposite_claim_data.claim_dangered = true
 					type = 1
 				elif picked_tile.get_custom_data("type") == 2 and type in [1,3]:
 					type = 2
@@ -381,7 +384,8 @@ func check_tile_claimably(coords:Vector2i,claim:int,test_suroundings=false,wants
 		# The most messest ways to write this, it work though.
 		var oppose_claim = picked_tile.get_custom_data("ownership")
 		tile.type = 1
-		tile.opposite_claim = game.claims[oppose_claim-1].name
+		tile.opposite_claim_data = game.claims[oppose_claim-1]
+		tile.opposite_claim = tile.opposite_claim_data.name
 		# Positive and you can claim, else its unclaimable.
 		var count = 1
 		var neighbors = main_grid.get_surrounding_cells(coords)
@@ -443,7 +447,10 @@ func check_tile_claimably(coords:Vector2i,claim:int,test_suroundings=false,wants
 				#cap_buff += 1 if find_linked_tiles(tile.coords,[x],oppose_claim) else 0
 				#print(cap_buff)
 			# If the tile isn't conected to a capital, then it gets a -10 debuff to reward cutting off areas.
-			if cap_debuff == 0:
+			if Global.cdan_enabled and tile.opposite_claim_data.claim_dangered:
+				tile.oppose_points += 20
+				count -= 20
+			if cap_debuff == 0 and not (Global.cdan_enabled and tile.opposite_claim_data.claim_dangered):
 				tile.oppose_points -= 10
 				count += 10
 			#elif cap_buff >= 2:

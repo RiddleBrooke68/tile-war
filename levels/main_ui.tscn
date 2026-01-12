@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=4 uid="uid://bojd4turtuu7f"]
+[gd_scene load_steps=33 format=4 uid="uid://bojd4turtuu7f"]
 
 [ext_resource type="Texture2D" uid="uid://c8dqm2t52mlvy" path="res://sprites/tilemaps/tile_captures/tile_ui.png" id="1_7wffp"]
 [ext_resource type="Script" uid="uid://d3656qxysmfyq" path="res://scripts/main_ui/board_ui.gd" id="1_fhnlk"]
@@ -15,6 +15,7 @@
 [ext_resource type="Texture2D" uid="uid://bqlx5sj8aytaj" path="res://sprites/ui/buttons/next_turn_button/next_turn_button_clicked.png" id="10_1fjtt"]
 [ext_resource type="Texture2D" uid="uid://fag70sjvwby0" path="res://sprites/ui/buttons/next_turn_button/next_turn_button_locked.png" id="11_gha74"]
 [ext_resource type="PackedScene" uid="uid://cj0c3ub7bgeqa" path="res://objects/ui/claim_data_panel.tscn" id="12_1fjtt"]
+[ext_resource type="Theme" uid="uid://cedkvwvts0evs" path="res://themes/extra_setting_theame.tres" id="16_sowik"]
 
 [sub_resource type="Gradient" id="Gradient_n3ddt"]
 colors = PackedColorArray(0.13544941, 0.09605298, 0.041523762, 1, 0.06992452, 0.019128133, 0.020676874, 1)
@@ -144,6 +145,63 @@ keycode = 4194309
 
 [sub_resource type="Shortcut" id="Shortcut_alpnb"]
 events = [SubResource("InputEventKey_n3ddt")]
+
+[sub_resource type="Animation" id="Animation_gew3o"]
+resource_name = "win"
+step = 0.083333336
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0, 2),
+"points": PackedFloat32Array(24, -0.25, 0, 0.25, 0, 24, -0.16666667, 0, 0, 0),
+"times": PackedFloat32Array(0, 1)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:position:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0, 0, 2),
+"points": PackedFloat32Array(-600, -0.25, 0, 0.33333334, -352.30847, 32, -0.16666663, 230.99634, 0.08333337, -31.543594, 34, -0.08333331, -48.73357, 0, 0),
+"times": PackedFloat32Array(0, 0.8333333, 1)
+}
+
+[sub_resource type="Animation" id="Animation_sowik"]
+length = 0.001
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(2),
+"points": PackedFloat32Array(24, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:position:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(2),
+"points": PackedFloat32Array(-592, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_6d2wa"]
+_data = {
+&"RESET": SubResource("Animation_sowik"),
+&"win": SubResource("Animation_gew3o")
+}
 
 [sub_resource type="Animation" id="Animation_7p6mn"]
 length = 0.001
@@ -374,6 +432,42 @@ position = Vector2(-14, -39)
 unique_name_in_owner = true
 wait_time = 0.3
 one_shot = true
+
+[node name="win_screen" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 24.0
+offset_top = -592.0
+offset_right = 616.0
+theme = ExtResource("16_sowik")
+
+[node name="Label" type="Label" parent="win_screen"]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 272.0
+offset_right = 552.0
+offset_bottom = 368.0
+theme_override_font_sizes/font_size = 64
+text = "Has Won!!!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="winers name" type="Label" parent="win_screen"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 40.0
+offset_top = 208.0
+offset_right = 552.0
+offset_bottom = 272.0
+theme_override_font_sizes/font_size = 42
+text = "Player"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="win_animiate" type="AnimationPlayer" parent="win_screen"]
+unique_name_in_owner = true
+libraries = {
+&"": SubResource("AnimationLibrary_6d2wa")
+}
 
 [node name="fade" type="Sprite2D" parent="."]
 modulate = Color(1, 1, 1, 0)

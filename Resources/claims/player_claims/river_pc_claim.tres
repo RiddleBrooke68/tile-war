@@ -7,5 +7,5 @@
 script = ExtResource("1_yj83x")
 name = "river solme"
 claim_colour = 4
-claim_panel = ExtResource("1_f6hx0")
+claim_panel_normal = ExtResource("1_f6hx0")
 metadata/_custom_type_script = "uid://cioo3en61w18o"

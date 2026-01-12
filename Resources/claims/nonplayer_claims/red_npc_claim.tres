@@ -12,5 +12,5 @@ teratory_beeline = 2
 capital_beeline = 1
 name = "river solme"
 claim_colour = 4
-claim_panel = ExtResource("1_d62tg")
+claim_panel_normal = ExtResource("1_d62tg")
 metadata/_custom_type_script = "uid://bmkjamamvf3ie"

@@ -9,6 +9,7 @@ class_name tile_data
 @export var tile_type = "claim"
 @export var available = false
 
+@export var opposite_claim_data : ClaimData
 @export var opposite_claim = ""
 @export var oppose_points = 0
 @export var oppose_fuel = 0

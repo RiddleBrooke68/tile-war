@@ -1,7 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://dgvl0kruj60fy"]
+[gd_scene load_steps=10 format=3 uid="uid://dgvl0kruj60fy"]
 
 [ext_resource type="Script" uid="uid://cdggui00f6ndm" path="res://scripts/menu.gd" id="1_cnlwo"]
 [ext_resource type="Theme" uid="uid://dxveohgc0uce2" path="res://themes/default_theme.tres" id="1_kfbsc"]
+[ext_resource type="Theme" uid="uid://cedkvwvts0evs" path="res://themes/extra_setting_theame.tres" id="3_gbx6r"]
 
 [sub_resource type="Gradient" id="Gradient_n3ddt"]
 colors = PackedColorArray(0.13544941, 0.09605298, 0.041523762, 1, 0.06992452, 0.019128133, 0.020676874, 1)
@@ -9,32 +10,6 @@ colors = PackedColorArray(0.13544941, 0.09605298, 0.041523762, 1, 0.06992452, 0.
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_cnlwo"]
 gradient = SubResource("Gradient_n3ddt")
 fill_from = Vector2(0, 1)
-
-[sub_resource type="Animation" id="Animation_kfbsc"]
-resource_name = "open_extra_settings"
-step = 0.083333336
-tracks/0/type = "bezier"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:position:x")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"handle_modes": PackedInt32Array(0, 2),
-"points": PackedFloat32Array(-448, -0.25, 0, 0.33333334, -138.7182, 0, -0.417, 0, 0, 0),
-"times": PackedFloat32Array(0, 1)
-}
-tracks/1/type = "bezier"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath(".:position:y")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"handle_modes": PackedInt32Array(0, 2),
-"points": PackedFloat32Array(64, -0.25, 0, 0.25, 0, 64, -0.16666667, 0, 0, 0),
-"times": PackedFloat32Array(0, 1)
-}
 
 [sub_resource type="Animation" id="Animation_gbx6r"]
 length = 0.001
@@ -73,6 +48,32 @@ tracks/0/loop_wrap = true
 tracks/0/keys = {
 "handle_modes": PackedInt32Array(0, 2),
 "points": PackedFloat32Array(0, -0.25, 0, 0.333, 0, -448, -0.46592462, -78.94385, 0, 0),
+"times": PackedFloat32Array(0, 1)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:position:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0, 2),
+"points": PackedFloat32Array(64, -0.25, 0, 0.25, 0, 64, -0.16666667, 0, 0, 0),
+"times": PackedFloat32Array(0, 1)
+}
+
+[sub_resource type="Animation" id="Animation_kfbsc"]
+resource_name = "open_extra_settings"
+step = 0.083333336
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0, 2),
+"points": PackedFloat32Array(-448, -0.25, 0, 0.33333334, -138.7182, 0, -0.417, 0, 0, 0),
 "times": PackedFloat32Array(0, 1)
 }
 tracks/1/type = "bezier"
@@ -164,9 +165,9 @@ popup/item_3/id = 3
 
 [node name="BoxContainer3" type="BoxContainer" parent="." groups=["menu_settings_ui"]]
 layout_mode = 0
-offset_left = 480.0
+offset_left = 432.0
 offset_top = 352.0
-offset_right = 672.0
+offset_right = 720.0
 offset_bottom = 608.0
 vertical = true
 
@@ -194,12 +195,15 @@ text = "Music type"
 [node name="music_type_setting" type="OptionButton" parent="BoxContainer3/BoxContainer/Music type"]
 layout_mode = 2
 button_pressed = true
+alignment = 1
 selected = 0
-item_count = 2
+item_count = 3
 popup/item_0/text = "warning siren"
 popup/item_0/id = 0
 popup/item_1/text = "wolfquest"
 popup/item_1/id = 1
+popup/item_2/text = "33 thousand tiles under the blue"
+popup/item_2/id = 2
 
 [node name="music_settings" type="BoxContainer" parent="BoxContainer3/BoxContainer"]
 layout_mode = 2
@@ -244,6 +248,7 @@ layout_mode = 0
 offset_left = -448.0
 offset_top = 64.0
 offset_bottom = 576.0
+theme = ExtResource("3_gbx6r")
 
 [node name="BoxContainer" type="BoxContainer" parent="Extra_options"]
 layout_mode = 0
@@ -540,6 +545,20 @@ text = "Battle random results"
 unique_name_in_owner = true
 layout_mode = 2
 
+[node name="BoxContainer4" type="BoxContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings"]
+layout_mode = 2
+
+[node name="Button" type="Label" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/BoxContainer4"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Capital Protection"
+
+[node name="cdan_setting" type="CheckBox" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/BoxContainer4"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "This makes it so, if you have a capital taken, none can take your tiles untill after you have a turn. "
+button_pressed = true
+
 [node name="HSeparator2" type="HSeparator" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer"]
 layout_mode = 2
 
@@ -666,6 +685,174 @@ text = "[center][b]CAREFUL WITH THESE SETTINGS[/b][/center]
 They can crash your game."
 fit_content = true
 
+[node name="HSeparator3" type="HSeparator" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer"]
+layout_mode = 2
+
+[node name="BoxContainer" type="BoxContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer"]
+layout_mode = 2
+vertical = true
+
+[node name="Label" type="Label" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Movement Settings"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GridContainer" type="GridContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer"]
+layout_mode = 2
+columns = 2
+
+[node name="tile_int_settings" type="BoxContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+vertical = true
+
+[node name="tile_int_text" type="Label" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/tile_int_settings"]
+layout_mode = 2
+text = "tile initial
+movement boost:"
+
+[node name="tile_int_lim" type="BoxContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/tile_int_settings"]
+layout_mode = 2
+
+[node name="tile_int_lim_text" type="Label" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/tile_int_settings/tile_int_lim"]
+layout_mode = 2
+text = "Limit:"
+
+[node name="tile_int_lim_input" type="LineEdit" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/tile_int_settings/tile_int_lim"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "The max amount of moves you can get initially from claimed tiles."
+virtual_keyboard_type = 2
+
+[node name="tile_int_reduct" type="BoxContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/tile_int_settings"]
+layout_mode = 2
+
+[node name="tile_int_reduct_text" type="Label" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/tile_int_settings/tile_int_reduct"]
+layout_mode = 2
+text = "Threshold:"
+
+[node name="tile_int_reduct_input" type="LineEdit" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/tile_int_settings/tile_int_reduct"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "This sets how meny tiles you need to claim to get a extra move initially."
+virtual_keyboard_type = 2
+
+[node name="tile_sec_settings" type="BoxContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+vertical = true
+
+[node name="tile_sec_text" type="Label" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/tile_sec_settings"]
+layout_mode = 2
+text = "tile secondary
+movement boost:"
+
+[node name="tile_sec_lim" type="BoxContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/tile_sec_settings"]
+layout_mode = 2
+
+[node name="tile_sec_lim_text" type="Label" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/tile_sec_settings/tile_sec_lim"]
+layout_mode = 2
+text = "Limit:"
+
+[node name="tile_sec_lim_input" type="LineEdit" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/tile_sec_settings/tile_sec_lim"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "The max amount of moves you can get from claimed tiles. "
+virtual_keyboard_type = 2
+
+[node name="tile_sec_reduct" type="BoxContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/tile_sec_settings"]
+layout_mode = 2
+
+[node name="tile_sec_reduct_text" type="Label" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/tile_sec_settings/tile_sec_reduct"]
+layout_mode = 2
+text = "Threshold:"
+
+[node name="tile_sec_reduct_input" type="LineEdit" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/tile_sec_settings/tile_sec_reduct"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "This sets how meny tiles you need to claim to get a extra move. This boost shows up when it is higher than the initial limit."
+virtual_keyboard_type = 2
+
+[node name="fuel_settings" type="BoxContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+vertical = true
+
+[node name="fuel_text" type="Label" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/fuel_settings"]
+layout_mode = 2
+text = "fuel movement boost:"
+
+[node name="fuel_lim" type="BoxContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/fuel_settings"]
+layout_mode = 2
+
+[node name="fuel_lim_text" type="Label" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/fuel_settings/fuel_lim"]
+layout_mode = 2
+text = "Limit:"
+
+[node name="fuel_lim_input" type="LineEdit" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/fuel_settings/fuel_lim"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "The max amount of moves you can get from claimed fuel tiles."
+virtual_keyboard_type = 2
+
+[node name="fuel_reduct" type="BoxContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/fuel_settings"]
+layout_mode = 2
+
+[node name="fuel_reduct_text" type="Label" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/fuel_settings/fuel_reduct"]
+layout_mode = 2
+text = "Threshold:"
+
+[node name="fuel_reduct_input" type="LineEdit" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/fuel_settings/fuel_reduct"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "This sets how meny fuel tiles you need to claim to get a extra move."
+virtual_keyboard_type = 2
+
+[node name="turn_settings" type="BoxContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+vertical = true
+
+[node name="turn_text" type="Label" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/turn_settings"]
+layout_mode = 2
+text = "turn movement boost:"
+
+[node name="turn_lim" type="BoxContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/turn_settings"]
+layout_mode = 2
+
+[node name="turn_lim_text" type="Label" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/turn_settings/turn_lim"]
+layout_mode = 2
+text = "Limit:"
+
+[node name="turn_lim_input" type="LineEdit" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/turn_settings/turn_lim"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "The max amount of moves you can get from the current turn number."
+virtual_keyboard_type = 2
+
+[node name="turn_reduct" type="BoxContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/turn_settings"]
+layout_mode = 2
+
+[node name="turn_reduct_text" type="Label" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/turn_settings/turn_reduct"]
+layout_mode = 2
+text = "Threshold:"
+
+[node name="turn_reduct_input" type="LineEdit" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/turn_settings/turn_reduct"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "This sets how meny turns  you need to get a extra move."
+virtual_keyboard_type = 2
+
 [node name="Open and close Extra Settings button" type="Button" parent="Extra_options"]
 layout_mode = 0
 offset_left = 480.0
@@ -701,8 +888,17 @@ libraries = {
 [connection signal="item_selected" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/BoxContainer/ai_level_setting" to="." method="_on_change_ai_level"]
 [connection signal="toggled" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/BoxContainer2/lms_setting" to="." method="_on_lms_setting_toggled"]
 [connection signal="toggled" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/BoxContainer3/bran_setting" to="." method="_on_bran_setting_toggled"]
+[connection signal="toggled" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/BoxContainer4/cdan_setting" to="." method="_on_cdan_setting_toggled"]
 [connection signal="item_selected" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer2/BoxContainer/green_number/green_cap" to="." method="_on_green_cap_item_selected"]
 [connection signal="item_selected" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer2/BoxContainer/plum_number/plum_cap" to="." method="_on_plum_cap_item_selected"]
 [connection signal="item_selected" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer2/BoxContainer/york_number/york_cap" to="." method="_on_york_cap_item_selected"]
 [connection signal="item_selected" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer2/BoxContainer/river_number/river_cap" to="." method="_on_river_cap_item_selected"]
+[connection signal="text_changed" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/tile_int_settings/tile_int_lim/tile_int_lim_input" to="." method="_on_movement_setting_changed" binds= [0]]
+[connection signal="text_changed" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/tile_int_settings/tile_int_reduct/tile_int_reduct_input" to="." method="_on_movement_setting_changed" binds= [1]]
+[connection signal="text_changed" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/tile_sec_settings/tile_sec_lim/tile_sec_lim_input" to="." method="_on_movement_setting_changed" binds= [2]]
+[connection signal="text_changed" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/tile_sec_settings/tile_sec_reduct/tile_sec_reduct_input" to="." method="_on_movement_setting_changed" binds= [3]]
+[connection signal="text_changed" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/fuel_settings/fuel_lim/fuel_lim_input" to="." method="_on_movement_setting_changed" binds= [4]]
+[connection signal="text_changed" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/fuel_settings/fuel_reduct/fuel_reduct_input" to="." method="_on_movement_setting_changed" binds= [5]]
+[connection signal="text_changed" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/turn_settings/turn_lim/turn_lim_input" to="." method="_on_movement_setting_changed" binds= [6]]
+[connection signal="text_changed" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/turn_settings/turn_reduct/turn_reduct_input" to="." method="_on_movement_setting_changed" binds= [7]]
 [connection signal="toggled" from="Extra_options/Open and close Extra Settings button" to="." method="_on_open_and_close_extra_settings_button_toggled"]

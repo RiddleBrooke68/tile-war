@@ -7,5 +7,5 @@
 script = ExtResource("1_nsd1r")
 name = "plum valley"
 claim_colour = 2
-claim_panel = ExtResource("1_ynru8")
+claim_panel_normal = ExtResource("1_ynru8")
 metadata/_custom_type_script = "uid://cioo3en61w18o"

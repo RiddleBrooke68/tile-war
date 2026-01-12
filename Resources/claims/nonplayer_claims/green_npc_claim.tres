@@ -9,5 +9,5 @@ fuel_beeline = 1
 teratory_beeline = 1
 capital_beeline = 1
 name = "Greenwich"
-claim_panel = ExtResource("1_061gr")
+claim_panel_normal = ExtResource("1_061gr")
 metadata/_custom_type_script = "uid://wjguspviu1q"

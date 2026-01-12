@@ -16,7 +16,9 @@ signal changed_info
 		moves = n
 		changed_info.emit()
 ## This is what panel that will be used if the claim is alive. See [member ClaimDataPanel.fallback_panel] and [member ClaimDataPanel.dead_panel]
-@export var claim_panel : Texture
+@export var claim_panel_normal : Texture
+## Use when the player is in danger mode, where one their capatials have been taken. If left empty, it will defaut to [member ClaimData.claim_panel_normal], see that also for more info.
+@export var claim_panel_danged : Texture
 ## If multiplayer is active, then is makes sure that players don't control other players.
 @export var claim_mp_ip_linked : int = 0
 @export_group("Unused info")
@@ -42,14 +44,33 @@ var claim_active = false:
 	set(n):
 		claim_active = n
 		changed_info.emit()
+var claim_dangered = false:
+	set(n):
+		claim_dangered = n
+		changed_info.emit()
 var claim_had_turn = false:
 	set(n):
 		claim_had_turn = n
 		changed_info.emit()
 
+## This is where movement is calulated. 
 func refresh(turn_num) -> int:
 	@warning_ignore("integer_division", "narrowing_conversion")
-	moves = mini(tile_size / 2,maxi(tile_size / 10,15)) + fuel_count + turn_num # + pow(tile_size,1/2)
+	moves = (
+		mini(
+			tile_size / Global.moves_tile_int_reduction_boost, # With default settings. For every two tiles you own, you gain +1 moves.
+			maxi(
+				mini(
+					tile_size / Global.moves_tile_second_reduction_boost, # With default settings. For every ten tiles you own, you gain +1 moves.
+					Global.moves_tile_second_lim_boost), # With a max of 30
+				Global.moves_tile_int_lim_boost)) # With a max of 15
+		+ mini(
+			fuel_count/Global.moves_fuel_reduction_boost, # With default settings. For every fuel tile you own, you gain +1 moves.
+			Global.moves_fuel_lim_boost) # With a max of 10
+		+ mini(
+			turn_num/Global.moves_turn_reduction_boost, # With default settings. Every turn you gain +1 moves.
+			Global.moves_turn_lim_boost)) # With a max of 10
+	print("{0} has: {1}".format([name,moves]))
 	return moves
 
 func print_data():
