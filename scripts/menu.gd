@@ -47,6 +47,8 @@ class_name menu_class
 @onready var lms_setting : CheckBox = %lms_setting
 @onready var bran_setting : CheckBox = %bran_setting
 @onready var cdan_setting : CheckBox = %cdan_setting
+@onready var cdan_text : Label = %cdan_text
+@onready var cdan_slider : Slider = %CdanSlider
 
 @onready var tile_int_lim_input : LineEdit = %tile_int_lim_input
 @onready var tile_int_reduct_input : LineEdit = %tile_int_reduct_input
@@ -67,12 +69,14 @@ func _ready(mp_is_updating=false):
 	sound_play()
 	# Pregenration
 	map_setting.selected = Global.map_type
-	_on_map_setting_item_selected(map_setting.selected)
+	_on_map_setting_item_selected(map_setting.selected,true,false)
 	# Genration
 	wall_slider.value = Global.wall_count
 	_on_wall_slider_value_changed(wall_slider.value)
 	fuel_slider.value = Global.fuel_count
 	_on_fuel_slider_value_changed(fuel_slider.value)
+	cdan_slider.value = Global.cdan_duration
+	_on_cdan_slider_value_changed(cdan_slider.value)
 	# Ai
 	ai_level.selected = Global.ai_level
 	# Active players
@@ -133,36 +137,37 @@ func drag_ended(value):
 	drag = value
 
 @rpc("any_peer")
-func _on_map_setting_item_selected(index,mp_player_source=true):
+func _on_map_setting_item_selected(index,mp_player_source=true,block=false):
 	if Global.mp_enabled and mp_player_source:
 		_on_map_setting_item_selected.rpc(index,false)
 	map_setting.selected = index
 	Global.map_type = index
-	for i in range(0,4):
-		if index == 0:
-			cap_list[i].selected = 0
-			Global.cap_list[i] = 1
-			cap_list[i].set_item_disabled(1,false)
-			cap_list[i].set_item_disabled(2,false)
-			cap_list[i].set_item_disabled(3,true)
-		elif index == 1:
-			cap_list[i].selected = 1
-			Global.cap_list[i] = 2
-			cap_list[i].set_item_disabled(1,false)
-			cap_list[i].set_item_disabled(2,false)
-			cap_list[i].set_item_disabled(3,false)
-		elif index == 2:
-			cap_list[i].selected = 1
-			Global.cap_list[i] = 2
-			cap_list[i].set_item_disabled(1,false)
-			cap_list[i].set_item_disabled(2,true)
-			cap_list[i].set_item_disabled(3,true)
-		elif index == 3:
-			cap_list[i].selected = 1
-			Global.cap_list[i] = 2
-			cap_list[i].set_item_disabled(1,false)
-			cap_list[i].set_item_disabled(2,true)
-			cap_list[i].set_item_disabled(3,true)
+	if not block:
+		for i in range(0,4):
+			if index == 0:
+				cap_list[i].selected = 0
+				Global.cap_list[i] = 1
+				cap_list[i].set_item_disabled(1,false)
+				cap_list[i].set_item_disabled(2,false)
+				cap_list[i].set_item_disabled(3,true)
+			elif index == 1:
+				cap_list[i].selected = 1
+				Global.cap_list[i] = 2
+				cap_list[i].set_item_disabled(1,false)
+				cap_list[i].set_item_disabled(2,false)
+				cap_list[i].set_item_disabled(3,false)
+			elif index == 2:
+				cap_list[i].selected = 1
+				Global.cap_list[i] = 2
+				cap_list[i].set_item_disabled(1,false)
+				cap_list[i].set_item_disabled(2,true)
+				cap_list[i].set_item_disabled(3,true)
+			elif index == 3:
+				cap_list[i].selected = 1
+				Global.cap_list[i] = 2
+				cap_list[i].set_item_disabled(1,false)
+				cap_list[i].set_item_disabled(2,true)
+				cap_list[i].set_item_disabled(3,true)
 	sound_play()
 
 @rpc("any_peer")
@@ -276,7 +281,7 @@ func _on_green_cap_item_selected(index,mp_player_source=true):
 	if Global.mp_enabled and mp_player_source:
 		_on_green_cap_item_selected.rpc(index,false)
 	green_cap.selected = index
-	Global.cap_list[0] = index + 1
+	Global.cap_list[0] = index + 1 
 	sound_play()
 
 @rpc("any_peer")
@@ -380,6 +385,22 @@ func _on_cdan_setting_toggled(toggled_on,mp_player_source=true):
 	cdan_setting.button_pressed = toggled_on
 	Global.cdan_enabled = toggled_on
 	sound_play()
+
+@rpc("any_peer")
+func _on_cdan_slider_value_changed(value,mp_player_source=true):
+	# Multiplayer parts.cdan_slider.value
+	if Global.mp_enabled and mp_player_source and Global.cdan_duration != int(value):
+		cdan_text.text = "Capital protection duration: {0}".format([int(value)])
+		Global.cdan_duration = int(value)
+		_on_cdan_slider_value_changed.rpc(value,false)
+	elif Global.mp_enabled and cdan_slider.value != int(value):
+		cdan_text.text = "Capital protection duration: {0}".format([int(value)])
+		Global.cdan_duration = int(value)
+		cdan_slider.value = value
+	else:
+		cdan_text.text = "Capital protection duration: {0}".format([int(value)])
+		Global.cdan_duration = int(value)
+	sound_play(true)
 
 ## Basic, this is just so I can mange ALL THE FLIPIN MOVEMENT SETTING IN ONE PLACE.[br]
 ## This, took so much time, and my hands hurt because of it. 

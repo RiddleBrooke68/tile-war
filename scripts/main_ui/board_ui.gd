@@ -278,7 +278,7 @@ func on_claim_tile(coords,claim:int,type:int=-1,update=true,terain=false,force_d
 			if changed:
 				if picked_tile.get_custom_data("type") == 1 and type == -1:
 					if Global.cdan_enabled and picked_tile.get_custom_data("ownership") != 0:
-						tile.opposite_claim_data.claim_dangered = true
+						tile.opposite_claim_data.claim_dangered = 5 * (Global.cdan_duration+1)
 					type = 1
 				elif picked_tile.get_custom_data("type") == 2 and type in [1,3]:
 					type = 2
@@ -447,15 +447,18 @@ func check_tile_claimably(coords:Vector2i,claim:int,test_suroundings=false,wants
 				#cap_buff += 1 if find_linked_tiles(tile.coords,[x],oppose_claim) else 0
 				#print(cap_buff)
 			# If the tile isn't conected to a capital, then it gets a -10 debuff to reward cutting off areas.
-			if Global.cdan_enabled and tile.opposite_claim_data.claim_dangered:
-				tile.oppose_points += 20
-				count -= 20
-			if cap_debuff == 0 and not (Global.cdan_enabled and tile.opposite_claim_data.claim_dangered):
+			if cap_debuff == 0: #  and not (Global.cdan_enabled and tile.opposite_claim_data.claim_dangered)
 				tile.oppose_points -= 10
 				count += 10
+			elif Global.cdan_enabled and tile.opposite_claim_data.claim_dangered > 0:
+				tile.oppose_points += tile.opposite_claim_data.claim_dangered
+				count -= tile.opposite_claim_data.claim_dangered
 			#elif cap_buff >= 2:
 				#tile.oppose_points += 1
 				#count += 1
+		elif Global.cdan_enabled and tile.opposite_claim_data.claim_dangered > 0:
+			tile.oppose_points += tile.opposite_claim_data.claim_dangered
+			count -= tile.opposite_claim_data.claim_dangered
 		@warning_ignore("integer_division")
 		tile.fuel = mini(4,(check_claim_fuel_tile_count(claim)/2))
 		tile.oppose_fuel = mini(4,(check_claim_fuel_tile_count(oppose_claim)))

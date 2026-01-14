@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="PlayerClaim" load_steps=3 format=3 uid="uid://bd3og0up2dygu"]
+[gd_resource type="Resource" script_class="PlayerClaim" load_steps=4 format=3 uid="uid://bd3og0up2dygu"]
 
 [ext_resource type="Texture2D" uid="uid://d1fnd65wn40ro" path="res://sprites/ui/claim_data/claim_alined_panels/claim_builders_data_panel.png" id="1_dy22r"]
+[ext_resource type="Texture2D" uid="uid://cihbhtakpcr1m" path="res://sprites/ui/claim_data/claim_alined_panels/dangered/claim_builders_dangered_data_panel.png" id="1_qpwfq"]
 [ext_resource type="Script" uid="uid://cioo3en61w18o" path="res://scripts/claims/player_claim.gd" id="2_qpwfq"]
 
 [resource]
@@ -8,6 +9,7 @@ script = ExtResource("2_qpwfq")
 name = "Builders Leage"
 claim_colour = 5
 claim_panel_normal = ExtResource("1_dy22r")
+claim_panel_danged = ExtResource("1_qpwfq")
 info = "This is a funny 5th claim that I wanted to add, but didn't get time to do it, only acts as a refrence to Team Fortres 2, and acts as Unused content. How you were suposed to see it was through naming a player ether, [Builders, Builders League, or Blu] and start the game, and that player would be replaced by this.
 
 So if your reading this... Hi, I hope you've injoyed this game that you'd data mine it.

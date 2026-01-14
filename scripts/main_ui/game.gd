@@ -86,12 +86,13 @@ func on_next_turn(mp_player_source=true):
 			
 			
 			if claim is NonPlayerClaim and claim.claim_dead == false:
-				if Global.cdan_enabled and claim.claim_dangered:
-					claim.claim_dangered = false
-				claim.claim_active = true
-				active_player = claim.duplicate()
-				active_player.tile_size = claim.tile_size
-				moves_plate.colour = claim.claim_colour
+				set_active_player(claim)
+				#if Global.cdan_enabled and claim.claim_dangered:
+					#claim.claim_dangered = false
+				#claim.claim_active = true
+				#active_player = claim.duplicate()
+				#active_player.tile_size = claim.tile_size
+				#moves_plate.colour = claim.claim_colour
 				claim.claim_had_turn = true
 				# Scans the available moves
 				var colection : Array[tile_data] = board_ui.get_all_avalable_tiles(claim.claim_colour)
@@ -127,12 +128,13 @@ func on_next_turn(mp_player_source=true):
 			
 			#mp If it reads a player, it gives them a turn if they haven't had one.
 			elif claim is PlayerClaim:
-				if Global.cdan_enabled and claim.claim_dangered:
-					claim.claim_dangered = false
-				claim.claim_active = true
-				active_player = claim.duplicate()
-				active_player.tile_size = claim.tile_size
-				moves_plate.colour = claim.claim_colour
+				set_active_player(claim)
+				#if Global.cdan_enabled and claim.claim_dangered:
+					#claim.claim_dangered = false
+				#claim.claim_active = true
+				#active_player = claim.duplicate()
+				#active_player.tile_size = claim.tile_size
+				#moves_plate.colour = claim.claim_colour
 				continue_turn = true
 				break
 		
@@ -184,7 +186,9 @@ func game_state_changed(refresh=false,set_active=true):
 			claim.tile_size = board_ui.check_claim_tile_count(claim.claim_colour)
 			claim.fuel_count = board_ui.check_claim_fuel_tile_count(claim.claim_colour)
 			claim_text += claim.get_data()
-			claim.capatal_tile = board_ui.check_claim_captatal(claim.claim_colour).duplicate() 
+			claim.capatal_tile = board_ui.check_claim_captatal(claim.claim_colour).duplicate()
+			if not active_player == null:
+				link_up_active_player(claim)
 			if refresh:
 				#if Global.cdan_enabled and claim.claim_dangered:
 					#claim.claim_dangered = false
@@ -198,12 +202,13 @@ func game_state_changed(refresh=false,set_active=true):
 			if claim is PlayerClaim and set_active: #mp 
 				if ((claim.claim_had_turn == false and active_player == null) or active_player.name == claim.name) and not bot_first_in_turn_order: # and (active_player.name == claim.name or active_player == null):
 					if active_player == null or refresh:
-						if Global.cdan_enabled and claim.claim_dangered:
-							claim.claim_dangered = false
-						claim.claim_active = true
-						active_player = claim.duplicate()
-						active_player.tile_size = claim.tile_size
-						moves_plate.colour = claim.claim_colour
+						set_active_player(claim)
+						#if Global.cdan_enabled and claim.claim_dangered:
+							#claim.claim_dangered = false
+						#claim.claim_active = true
+						#active_player = claim.duplicate()
+						#active_player.tile_size = claim.tile_size
+						#moves_plate.colour = claim.claim_colour
 					if (active_player.tile_size != claim.tile_size or failed_move) and active_player.moves > 0:
 						failed_move = false
 						active_player.moves -= 1
@@ -313,3 +318,18 @@ func _on_fade_anim_animation_finished(anim_name):
 			mp_back_to_lobby.emit()
 		else:
 			get_tree().change_scene_to_file("res://levels/menu.tscn")
+
+func set_active_player(claim:ClaimData):
+	if not active_player == null:
+		for i in active_player.move_made.get_connections():
+			active_player.move_made.disconnect(i.callable)
+	#if Global.cdan_enabled and claim.claim_dangered:
+		#claim.claim_dangered = false
+	claim.claim_active = true
+	active_player = claim.duplicate()
+	active_player.tile_size = claim.tile_size
+	moves_plate.colour = claim.claim_colour
+
+func link_up_active_player(claim:ClaimData):
+	if not active_player.move_made.is_connected(claim.depleate_danger_value):
+		active_player.move_made.connect(claim.depleate_danger_value)

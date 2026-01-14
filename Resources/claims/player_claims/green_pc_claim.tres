@@ -1,5 +1,6 @@
-[gd_resource type="Resource" script_class="PlayerClaim" load_steps=3 format=3 uid="uid://ej04cfpihcpx"]
+[gd_resource type="Resource" script_class="PlayerClaim" load_steps=4 format=3 uid="uid://ej04cfpihcpx"]
 
+[ext_resource type="Texture2D" uid="uid://d4f86vcyjxj6a" path="res://sprites/ui/claim_data/claim_alined_panels/dangered/claim_greenwich_dangered_data_panel.png" id="1_366fs"]
 [ext_resource type="Texture2D" uid="uid://dafx8oi54lgki" path="res://sprites/ui/claim_data/claim_alined_panels/claim_greenwich_data_panel.png" id="1_yxuxr"]
 [ext_resource type="Script" uid="uid://cioo3en61w18o" path="res://scripts/claims/player_claim.gd" id="2_366fs"]
 
@@ -7,5 +8,6 @@
 script = ExtResource("2_366fs")
 name = "Greenwich"
 claim_panel_normal = ExtResource("1_yxuxr")
+claim_panel_danged = ExtResource("1_366fs")
 info = "Early on, this was the only player."
 metadata/_custom_type_script = "uid://cioo3en61w18o"

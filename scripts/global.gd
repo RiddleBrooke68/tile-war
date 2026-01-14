@@ -15,6 +15,7 @@ var fuel_count = 16
 ## Defines how meny capital of each claim that will be spwaned in, or removed.
 var cap_list = [1,1,1,1]
 
+
 # AI SETTINGS
 #mp I want to make it so this is a choice between 0: disable claim, 1: enable claim as a bot, 2: enable claim as a player.
 #mp [code] var claim_list = [2,1,1,1] [/code] this would be clean,
@@ -80,6 +81,9 @@ var bran_enabled = false
 ## Capatial Protection[br]
 ## When enabled, the game will make it block any attept of taking any more tiles from a claim who lost a capital, that is untill after they get a turn.
 var cdan_enabled = true
+## Capatial Protection Duration
+var cdan_duration = 5
+
 
 # Moves settings
 # Tiles
@@ -88,17 +92,17 @@ var moves_tile_int_reduction_boost = 2
 ## This is the limit to stop the intial boost from going too high.
 var moves_tile_int_lim_boost = 15
 ## This divides the second moves gained by tiles claimed. 
-var moves_tile_second_reduction_boost = 10
+var moves_tile_second_reduction_boost = 5
 ## This limits the the second boost to moves gained by tiles claimed.
-var moves_tile_second_lim_boost = 30
+var moves_tile_second_lim_boost = 20
 # FUEL
 ## This divides the intial moves gained by tiles claimed.
-var moves_fuel_reduction_boost = 1
+var moves_fuel_reduction_boost = 2
 ## This is the limit to stop the intial boost from going too high.
-var moves_fuel_lim_boost = 10
+var moves_fuel_lim_boost = 5
 # TURNS
 ## This divides the intial moves gained by tiles claimed.
-var moves_turn_reduction_boost = 1
+var moves_turn_reduction_boost = 2
 ## This is the limit to stop the intial boost from going too high.
 var moves_turn_lim_boost = 10
 

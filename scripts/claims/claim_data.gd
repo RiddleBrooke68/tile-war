@@ -2,6 +2,7 @@ extends Resource
 class_name ClaimData
 
 signal changed_info
+signal move_made
 
 ## What will game present as their defualt name
 @export var name = "":
@@ -13,6 +14,8 @@ signal changed_info
 ## How meny moves do they get.
 @export var moves = 0:
 	set(n):
+		if n == moves - 1:
+			move_made.emit()
 		moves = n
 		changed_info.emit()
 ## This is what panel that will be used if the claim is alive. See [member ClaimDataPanel.fallback_panel] and [member ClaimDataPanel.dead_panel]
@@ -44,7 +47,7 @@ var claim_active = false:
 	set(n):
 		claim_active = n
 		changed_info.emit()
-var claim_dangered = false:
+var claim_dangered = 0:
 	set(n):
 		claim_dangered = n
 		changed_info.emit()
@@ -52,6 +55,14 @@ var claim_had_turn = false:
 	set(n):
 		claim_had_turn = n
 		changed_info.emit()
+#var claim_made_move = false:
+	#set(n):
+		#claim_made_move = n
+		#changed_info.emit()
+
+func depleate_danger_value():
+	if claim_dangered - 5 >= 0:
+		claim_dangered -= 5
 
 ## This is where movement is calulated. 
 func refresh(turn_num) -> int:

@@ -1,5 +1,6 @@
-[gd_resource type="Resource" script_class="PlayerClaim" load_steps=3 format=3 uid="uid://gysd337x8xhh"]
+[gd_resource type="Resource" script_class="PlayerClaim" load_steps=4 format=3 uid="uid://gysd337x8xhh"]
 
+[ext_resource type="Texture2D" uid="uid://cvhqo5cxdof0f" path="res://sprites/ui/claim_data/claim_alined_panels/dangered/claim_york_dangered_data_panel.png" id="1_6wkl6"]
 [ext_resource type="Texture2D" uid="uid://furaa0nu5dm6" path="res://sprites/ui/claim_data/claim_alined_panels/claim_york_data_panel.png" id="1_gshy8"]
 [ext_resource type="Script" uid="uid://cioo3en61w18o" path="res://scripts/claims/player_claim.gd" id="1_xyyt4"]
 
@@ -8,4 +9,5 @@ script = ExtResource("1_xyyt4")
 name = "york street"
 claim_colour = 3
 claim_panel_normal = ExtResource("1_gshy8")
+claim_panel_danged = ExtResource("1_6wkl6")
 metadata/_custom_type_script = "uid://cioo3en61w18o"
