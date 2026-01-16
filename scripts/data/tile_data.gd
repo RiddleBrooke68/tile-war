@@ -7,6 +7,7 @@ class_name tile_data
 @export var type = 0
 ## Just so the player knows what is a tile, fuel, or cappital
 @export var tile_type = "claim"
+## This makes it so the player can or cannot get this tile.
 @export var available = false
 
 @export var opposite_claim_data : ClaimData
@@ -30,7 +31,6 @@ var player_compile = ""
 var boost_compile = ""
 var score_compile = ""
 var reach_compile = ""
-
 
 const empty_text = "This is a empty {tile_type} tile\n"
 const enemy_text = "This is a enemy claim from:\n[b]{opposite_claim}[/b]\nThey get:\n      [b]{oppose_points} surrounding points[/b]\n      [b]{oppose_fuel} fuel points[/b]\n"

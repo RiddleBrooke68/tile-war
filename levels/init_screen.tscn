@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://cn0cvbx27lh26"]
+
+[ext_resource type="Script" uid="uid://2v3c3di88ogc" path="res://scripts/init_screen.gd" id="1_dhfb1"]
+
+[node name="init_screen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_dhfb1")

@@ -481,6 +481,7 @@ libraries = {
 &"": SubResource("AnimationLibrary_bsnyx")
 }
 
+[connection signal="board_decrese_move_count" from="game/board border/board" to="game" method="remove_active_player_moves"]
 [connection signal="game_state_change" from="game/board border/board" to="game" method="game_state_changed"]
 [connection signal="gui_input" from="game/board border/board" to="game/board border/board" method="_on_gui_input"]
 [connection signal="mouse_entered" from="game/board border/board" to="game/board border/board" method="_on_mouse_entered"]

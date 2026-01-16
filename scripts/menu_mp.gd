@@ -33,11 +33,19 @@ var peerUDP : PacketPeerUDP
 @onready var player_browser = %player_browser
 
 func _ready(is_updating=false):
+	Global.mp_enabled = true
 	super(is_updating)
 	
+	if "mp_name" in cmd_args.keys():
+		client_name = cmd_args["mp_name"] 
+	if "mp_svr_name" in cmd_args.keys():
+		server_name = cmd_args["mp_svr_name"]
+	if "mp_start_server" in cmd_args.keys():
+		if client_name == "":
+			client_name = "Host"
 	# In the main menu, the ready function makes sure this is set to false, 
 	# so after we run the class ready function, we make this true.
-	Global.mp_enabled = true
+	
 	if not is_updating:
 		Global.mp_player_list_changed.connect(set_lobby_player_list)
 		# Broadcasting
@@ -50,7 +58,8 @@ func _ready(is_updating=false):
 		multiplayer.connection_failed.connect(connection_failed)
 		multiplayer.server_disconnected.connect(server_disconnected)
 		
-		server_name = str(OS.get_environment("COMPUTERNAME"))
+		if server_name == "":
+			server_name = str(OS.get_environment("COMPUTERNAME"))
 		server_label.text = server_name
 		client_label.text = client_name
 		
@@ -59,6 +68,9 @@ func _ready(is_updating=false):
 		port = randi_range(1024,65535)
 		server_ip_label.text = address
 		server_port_label.text = str(port)
+	
+	if "mp_start_server" in cmd_args.keys():
+		_on_host_button_down()
 
 func set_lobby_player_list():
 	for i in get_tree().get_nodes_in_group("mp_lobby_name_plate"):
@@ -438,6 +450,7 @@ func _on_singleplayer_pressed():
 
 # BROADCASTING AND RESIVING
 
+
 # UNUSED BUT IMPORTENT INFO
 ## The begining of any signal from a server, it WILL always start with this for any broadcast.
 enum broadcast_form_start {
@@ -487,9 +500,6 @@ func update_broadcast_server_staius():
 	peerUDP.set_dest_address(address_broadcast,4444)
 	broadcast_start_signal()
 	peerUDP.put_packet("{0} Players".format([Global.mp_player_list.size()]).to_utf8_buffer())
-
-
-
 
 
 func update_broadcast_server_closed():

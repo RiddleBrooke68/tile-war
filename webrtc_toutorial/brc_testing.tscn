@@ -1,0 +1,88 @@
+[gd_scene load_steps=3 format=3 uid="uid://chs0qm3olm5un"]
+
+[ext_resource type="Script" uid="uid://edt2eyg247b6" path="res://webrtc_toutorial/brc_client.gd" id="1_0ahej"]
+[ext_resource type="Script" uid="uid://b2mqyefs41scv" path="res://webrtc_toutorial/brc_server.gd" id="2_asjtf"]
+
+[node name="brc_testing" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Client" type="Node" parent="."]
+script = ExtResource("1_0ahej")
+
+[node name="lobby_join_button" type="Button" parent="Client"]
+offset_left = 832.0
+offset_top = 256.0
+offset_right = 960.0
+offset_bottom = 320.0
+text = "Join Lobby"
+
+[node name="lobby_name_line" type="LineEdit" parent="Client"]
+offset_left = 608.0
+offset_top = 256.0
+offset_right = 800.0
+offset_bottom = 287.0
+placeholder_text = "Lobby name"
+
+[node name="player_name" type="LineEdit" parent="Client"]
+offset_left = 672.0
+offset_top = 128.0
+offset_right = 800.0
+offset_bottom = 159.0
+placeholder_text = "Your Name"
+
+[node name="Server" type="Node" parent="."]
+script = ExtResource("2_asjtf")
+
+[node name="ClientButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 832.0
+offset_top = 128.0
+offset_right = 960.0
+offset_bottom = 192.0
+text = "Join Server"
+
+[node name="ServerButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 192.0
+offset_top = 128.0
+offset_right = 320.0
+offset_bottom = 192.0
+text = "Start Server"
+
+[node name="test" type="Button" parent="."]
+layout_mode = 0
+offset_left = 832.0
+offset_top = 384.0
+offset_right = 960.0
+offset_bottom = 448.0
+text = "Test packet"
+
+[node name="test2" type="Button" parent="."]
+layout_mode = 0
+offset_left = 192.0
+offset_top = 256.0
+offset_right = 320.0
+offset_bottom = 320.0
+disabled = true
+text = "Test packet"
+
+[node name="VSlider" type="VSlider" parent="."]
+layout_mode = 0
+offset_left = 504.0
+offset_top = 128.0
+offset_right = 520.0
+offset_bottom = 384.0
+max_value = 10.0
+
+[connection signal="button_down" from="Client/lobby_join_button" to="Client" method="_on_lobby_join_button_button_down"]
+[connection signal="text_changed" from="Client/player_name" to="Client" method="_on_player_name_text_changed"]
+[connection signal="button_down" from="ClientButton" to="Client" method="_on_client_button_button_down"]
+[connection signal="button_down" from="ServerButton" to="Server" method="_on_server_button_button_down"]
+[connection signal="button_down" from="test" to="Client" method="_on_test_button_down"]
+[connection signal="button_down" from="test2" to="Server" method="_on_test_button_down"]
+[connection signal="value_changed" from="VSlider" to="Client" method="_on_v_slider_value_changed"]

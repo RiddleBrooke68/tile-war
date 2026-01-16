@@ -27,6 +27,7 @@ signal move_made
 @export_group("Unused info")
 ##@deprecated: This will never apear in game and is used only as to give me thoughts on how they work.
 @export_multiline var info : String
+@export var orginal_claim : ClaimData
 var fuel_count = 0:
 	set(n):
 		fuel_count = n

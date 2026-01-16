@@ -224,22 +224,31 @@ func _on_mouse_entered():
 func _on_mouse_exited():
 	hovered = false
 
+
+signal board_decrese_move_count(incremts:int)
+
 ## Fires for any click on the board.
 func _on_gui_input(event):
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and not event.pressed and not (lock_mode or off_input):
+			board_decrese_move_count.emit(1)
 			on_claim_tile(grid_coords,game.active_player.claim_colour) #mp replace 1 with game.active_player.claim_colour
 			sound.stream = load("res://audio/FX/left click sound.mp3") as AudioStream
-			game.gui_board_events()
+		elif event.button_index == MOUSE_BUTTON_RIGHT and not event.pressed and not off_input:
+			if on_claim_tile(grid_coords,game.active_player.claim_colour,-1,true,false,false,true): #mp replace 1 with game.active_player.claim_colour
+				board_decrese_move_count.emit(Global.blz_move_requrement)
+				sound.stream = load("res://audio/FX/left click sound.mp3") as AudioStream
+			else:
+				sound.stream = load("res://audio/FX/right click sound.mp3") as AudioStream
 		elif (lock_mode or off_input):
 			sound.stream = load("res://audio/FX/right click sound.mp3") as AudioStream
-			game.gui_board_events()
+		game.gui_board_events()
 		sound.play()
 
 @rpc("any_peer")
 ## Fires only when there is a mpui input from other clients.
-func _on_mpui_input(coords,claim:int,type:int=-1,update=true,terain=false,force_do=false,did_claim=true,mp_ran_results=[0,0]):
-	if on_claim_tile(coords,claim,type,update,terain,force_do,false,did_claim,mp_ran_results):
+func _on_mpui_input(coords,claim:int,type:int=-1,update=true,terain=false,force_do=false,blz_fired=false,did_claim=true,mp_ran_results=[0,0]):
+	if on_claim_tile(coords,claim,type,update,terain,force_do,blz_fired,false,did_claim,mp_ran_results):
 		sound.stream = load("res://audio/FX/left click sound.mp3") as AudioStream
 	else:
 		sound.stream = load("res://audio/FX/right click sound.mp3") as AudioStream
@@ -248,18 +257,21 @@ func _on_mpui_input(coords,claim:int,type:int=-1,update=true,terain=false,force_
 
 
 ## Sets a tile on the main board.
-func on_claim_tile(coords,claim:int,type:int=-1,update=true,terain=false,force_do=false,mp_player_source=true,mp_did_claim=false,mp_ran_results=[0,0]) -> bool:
+func on_claim_tile(coords,claim:int,type:int=-1,
+					update=true,terain=false,force_do=false,blz_fired=false,
+					mp_player_source=true,mp_did_claim=false,mp_ran_results=[0,0]
+				) -> bool:
 	if coords is Vector2i:
 		var picked_tile : TileData = main_grid.get_cell_tile_data(coords)
 		if picked_tile != null:
 			var changed = true
 			var did_claim = false
-			var tile : tile_data = check_tile_claimably(coords,claim,false,true)
+			var tile : tile_data = check_tile_claimably(coords,claim,false,true,blz_fired)
 			var ran_attacker
 			var ran_defender
 			var mp_start_type = type
 			#bran So when bran is active this has to check if its takeable or not and then will check if it needs to make a roll or not.
-			if Global.bran_enabled and not force_do and check_tile_claimably(coords,claim):
+			if Global.bran_enabled and not force_do and check_tile_claimably(coords,claim,false,false,blz_fired):
 				if mp_did_claim or did_claim:
 					ran_attacker = mp_ran_results[0]
 					ran_defender = mp_ran_results[1]
@@ -273,6 +285,8 @@ func on_claim_tile(coords,claim:int,type:int=-1,update=true,terain=false,force_d
 					print("Fail, {0}, {1}".format([ran_attacker,ran_defender]))
 					game.failed_move = true
 					changed = false
+			if (not tile.available or (Global.blz_enabled and blz_fired and game.claims[claim-1].moves < Global.blz_move_requrement)) and not force_do:
+				changed = false
 			#elif Global.bran_enabled and not check_tile_claimably(coords,claim):
 				#changed = false
 			if changed:
@@ -299,29 +313,25 @@ func on_claim_tile(coords,claim:int,type:int=-1,update=true,terain=false,force_d
 			if update:
 				game_state_change.emit()
 			if not terain and not force_do:
+				var bliz_state = "bliz" if Global.blz_enabled and blz_fired else "take"
+				var roll = "\nWith a roll of: {0}Atk aganst {1}Def".format([ran_attacker,ran_defender]) if ran_attacker != null and ran_defender != null else ""
+				var result = (
+						"{0} was able to {3} this tile at: {1}{2}".format([
+							game.active_player.name,
+							coords,
+							roll,
+							bliz_state])
+						if changed else 
+						"{0} wasnt able to {3} this tile at: {1}{2}".format([
+							game.active_player.name,
+							coords,
+							roll,
+							bliz_state]))
 				if not Global.mp_enabled:
-					game.print_data_to_game(
-						"{0} was able to take this tile at: {1}{2}".format([
-							game.active_player.name,
-							coords,
-							"\nWith a roll of: {0}Atk aganst {1}Def".format([ran_attacker,ran_defender]) if ran_attacker != null and ran_defender != null else ""])
-						if changed else 
-						"{0} wasnt able to take this tile at: {1}{2}".format([
-							game.active_player.name,
-							coords,
-							"\nWith a roll of: {0}Atk aganst {1}Def".format([ran_attacker,ran_defender]) if ran_attacker != null and ran_defender != null else ""]))
+					game.print_data_to_game(result)
 				elif mp_player_source:
-					game.print_data_to_game.rpc(
-						"{0} was able to take this tile at: {1}{2}".format([
-							game.active_player.name,
-							coords,
-							"\nWith a roll of: {0}Atk aganst {1}Def".format([ran_attacker,ran_defender]) if ran_attacker != null and ran_defender != null else ""])
-						if changed else 
-						"{0} wasnt able to take this tile at: {1}{2}".format([
-							game.active_player.name,
-							coords,
-							"\nWith a roll of: {0}Atk aganst {1}Def".format([ran_attacker,ran_defender]) if ran_attacker != null and ran_defender != null else ""]))
-					_on_mpui_input.rpc(coords,claim,mp_start_type,update,terain,force_do,did_claim,[ran_attacker,ran_defender])
+					game.print_data_to_game.rpc(result)
+					_on_mpui_input.rpc(coords,claim,mp_start_type,update,terain,force_do,blz_fired,did_claim,[ran_attacker,ran_defender])
 			return changed
 		#else:
 			#print("Failed to place a tile as the coords given: {0}, are outside map boundrys".format([coords]))
@@ -330,7 +340,7 @@ func on_claim_tile(coords,claim:int,type:int=-1,update=true,terain=false,force_d
 	return false
 
 ## Checks if a tile can be claimed. Returns true if claimable.
-func check_tile_claimably(coords:Vector2i,claim:int,test_suroundings=false,wants_tile_data=false):
+func check_tile_claimably(coords:Vector2i,claim:int,test_suroundings=false,wants_tile_data=false,blz_fired=false):
 	var tile = tile_data.new()
 	var has_neighbors = find_linked_tiles(coords,check_claim_captatal(claim),claim)
 	tested_tiles = []
@@ -453,12 +463,15 @@ func check_tile_claimably(coords:Vector2i,claim:int,test_suroundings=false,wants
 			elif Global.cdan_enabled and tile.opposite_claim_data.claim_dangered > 0:
 				tile.oppose_points += tile.opposite_claim_data.claim_dangered
 				count -= tile.opposite_claim_data.claim_dangered
+			if Global.blz_enabled and blz_fired:
+				tile.points += 10
+				count += 10
 			#elif cap_buff >= 2:
 				#tile.oppose_points += 1
 				#count += 1
-		elif Global.cdan_enabled and tile.opposite_claim_data.claim_dangered > 0:
-			tile.oppose_points += tile.opposite_claim_data.claim_dangered
-			count -= tile.opposite_claim_data.claim_dangered
+		#elif Global.cdan_enabled and tile.opposite_claim_data.claim_dangered > 0:
+			#tile.oppose_points += tile.opposite_claim_data.claim_dangered
+			#count -= tile.opposite_claim_data.claim_dangered
 		@warning_ignore("integer_division")
 		tile.fuel = mini(4,(check_claim_fuel_tile_count(claim)/2))
 		tile.oppose_fuel = mini(4,(check_claim_fuel_tile_count(oppose_claim)))
@@ -507,6 +520,13 @@ func check_tile_claimably(coords:Vector2i,claim:int,test_suroundings=false,wants
 			return tile
 		tile_info.emit(tile)
 		return false
+
+#blz Was for blizing
+#func check_tile_blizablity(coords:Vector2i,claim:int,test_suroundings=false):
+	#var tile : tile_data = check_tile_claimably(coords,claim,test_suroundings,true,true)
+	#if tile.type == 2 and tile.available:
+		#pass
+
 
 ## Purely for spawning stuff in.
 func check_tile_neutralty(coords:Vector2i,ignore_2nd_neighbor=false,ignore_neighbor=false) -> bool:

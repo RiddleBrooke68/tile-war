@@ -63,7 +63,19 @@ class_name menu_class
 ## For game sounds. (CURRENTLY USING SOUNDS FROM GOD MACHINE)
 var sound : AudioStreamPlayer
 
+var cmd_args = {}
+
 func _ready(mp_is_updating=false):
+	
+	for cmdline in OS.get_cmdline_args():
+			if cmdline.contains("="):
+				var key_value = cmdline.split("=")
+				cmd_args[key_value[0].trim_prefix("--")] = key_value[1]
+			else:
+				# Options without an argument will be present in the dictionary,
+				# with the value set to an empty string.
+				cmd_args[cmdline.trim_prefix("--")] = ""
+	
 	sound = AudioStreamPlayer.new()
 	add_child(sound)
 	sound_play()

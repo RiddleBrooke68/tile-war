@@ -12,13 +12,14 @@ config_version=5
 
 config/name="tile_war"
 config/tags=PackedStringArray("official", "test")
-run/main_scene="uid://dgvl0kruj60fy"
+run/main_scene="uid://cn0cvbx27lh26"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
 Global="*res://scripts/global.gd"
+mpol="*res://webrtc_toutorial/mpol_tutorial.gd"
 
 [display]
 

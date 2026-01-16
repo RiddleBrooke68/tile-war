@@ -110,13 +110,15 @@ func on_next_turn(mp_player_source=true):
 							#print(done_moves)
 							board_ui.on_claim_tile(target.coords,claim.claim_colour)
 							colection.append_array(board_ui.get_all_local_avalable_tiles(target.coords,claim.claim_colour,done_moves))
-							active_player.moves -= 1
-							claim.moves -= 1
-							mp_sync_movement.rpc(claims.find(claim),claim.moves,true)
+							#active_player.moves -= 1
+							#claim.moves -= 1
+							#mp_sync_movement.rpc(claims.find(claim),claim.moves,true)
+							remove_active_player_moves(1,false,true)
 						else:
-							active_player.moves = 0
-							claim.moves = 0
-							mp_sync_movement.rpc(claims.find(claim),claim.moves,true)
+							#active_player.moves = 0
+							#claim.moves = 0
+							#mp_sync_movement.rpc(claims.find(claim),claim.moves,true)
+							remove_active_player_moves(0,true,true)
 						print(active_player.moves)
 						gui_board_events()
 					clock.start()
@@ -209,14 +211,15 @@ func game_state_changed(refresh=false,set_active=true):
 						#active_player = claim.duplicate()
 						#active_player.tile_size = claim.tile_size
 						#moves_plate.colour = claim.claim_colour
-					if (active_player.tile_size != claim.tile_size or failed_move) and active_player.moves > 0:
-						failed_move = false
-						active_player.moves -= 1
-						claim.moves -= 1
-						if Global.mp_enabled and Global.mp_host:
-							mp_sync_movement.rpc(claims.find(claim),claim.moves,true)
-						elif Global.mp_enabled:
-							mp_sync_host.rpc_id(1,Global.mp_player_id,claims.find(claim))
+					#if (active_player.tile_size != claim.tile_size or failed_move) and active_player.moves > 0:
+						#failed_move = false
+						#active_player.moves -= 1
+						#claim.moves -= 1
+						#if Global.mp_enabled and Global.mp_host:
+							#mp_sync_movement.rpc(claims.find(claim),claim.moves,true)
+						#elif Global.mp_enabled:
+							#mp_sync_host.rpc_id(1,Global.mp_player_id,claims.find(claim))
+						#remove_active_player_moves()
 				# Alowing bots to go first
 				elif bot_first_in_turn_order:
 					there_is_players = true
@@ -327,9 +330,28 @@ func set_active_player(claim:ClaimData):
 		#claim.claim_dangered = false
 	claim.claim_active = true
 	active_player = claim.duplicate()
+	active_player.orginal_claim = claim
 	active_player.tile_size = claim.tile_size
 	moves_plate.colour = claim.claim_colour
 
 func link_up_active_player(claim:ClaimData):
 	if not active_player.move_made.is_connected(claim.depleate_danger_value):
 		active_player.move_made.connect(claim.depleate_danger_value)
+
+func remove_active_player_moves(incremts:int=1,set_as=false,bot_only=false):
+	if active_player.moves - incremts < 0 or active_player.orginal_claim.moves - incremts < 0 or incremts < 0 and set_as:
+		return
+	failed_move = false
+	if not set_as:
+		active_player.moves -= incremts
+		active_player.orginal_claim.moves -= incremts
+	else:
+		active_player.moves = incremts
+		active_player.orginal_claim.moves = incremts
+	if not bot_only:
+		if Global.mp_enabled: #and Global.mp_host:
+			mp_sync_movement.rpc(claims.find(active_player.orginal_claim),active_player.orginal_claim.moves,true)
+		#elif Global.mp_enabled:
+			#mp_sync_host.rpc_id(1,Global.mp_player_id,claims.find(active_player.orginal_claim))
+	else:
+		mp_sync_movement.rpc(claims.find(active_player.orginal_claim),active_player.orginal_claim.moves,true)

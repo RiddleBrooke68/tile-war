@@ -83,7 +83,9 @@ var bran_enabled = false
 var cdan_enabled = true
 ## Capatial Protection Duration
 var cdan_duration = 5
-
+## Bliz attack
+var blz_enabled = true
+var blz_move_requrement = 10
 
 # Moves settings
 # Tiles
@@ -129,3 +131,20 @@ const mp_claims_colours = {
 	claim_name_num.YORK_STREET: Color(0.75, 0.722, 0.322, 1.0),
 	claim_name_num.RIVER_SOLME: Color(0.74, 0.355, 0.426, 1.0)
 }
+
+
+func _ready():
+	var cmd_args = {}
+	for cmdline in OS.get_cmdline_args():
+		if cmdline.contains("="):
+			var key_value = cmdline.split("=")
+			cmd_args[key_value[0].trim_prefix("--")] = key_value[1]
+		else:
+			# Options without an argument will be present in the dictionary,
+			# with the value set to an empty string.
+			cmd_args[cmdline.trim_prefix("--")] = ""
+	if "music_type" in cmd_args.keys():
+		if int(cmd_args["music_type"]) >= 0 and int(cmd_args["music_type"]) < music_list.size():
+			music_type = int(cmd_args["music_type"])
+	if "map_type" in cmd_args.keys():
+		map_type = cmd_args[map_type]
