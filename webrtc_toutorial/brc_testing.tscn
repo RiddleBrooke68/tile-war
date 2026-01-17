@@ -15,34 +15,55 @@ grow_vertical = 2
 script = ExtResource("1_0ahej")
 
 [node name="lobby_join_button" type="Button" parent="Client"]
-offset_left = 832.0
+offset_left = 640.0
 offset_top = 256.0
-offset_right = 960.0
+offset_right = 768.0
 offset_bottom = 320.0
 text = "Join Lobby"
 
 [node name="lobby_name_line" type="LineEdit" parent="Client"]
-offset_left = 608.0
+offset_left = 416.0
 offset_top = 256.0
-offset_right = 800.0
+offset_right = 608.0
 offset_bottom = 287.0
 placeholder_text = "Lobby name"
 
 [node name="player_name" type="LineEdit" parent="Client"]
-offset_left = 672.0
+offset_left = 480.0
 offset_top = 128.0
-offset_right = 800.0
+offset_right = 608.0
 offset_bottom = 159.0
 placeholder_text = "Your Name"
+
+[node name="colour_refresh" type="Button" parent="Client"]
+offset_left = 640.0
+offset_top = 48.0
+offset_right = 768.0
+offset_bottom = 79.0
+text = "Refresh colour"
+
+[node name="count_refresh" type="Button" parent="Client"]
+offset_left = 640.0
+offset_top = 87.0
+offset_right = 768.0
+offset_bottom = 118.0
+text = "Refresh count"
 
 [node name="Server" type="Node" parent="."]
 script = ExtResource("2_asjtf")
 
+[node name="count_refresh" type="Button" parent="Server"]
+offset_left = 192.0
+offset_top = 87.0
+offset_right = 320.0
+offset_bottom = 118.0
+text = "Refresh count"
+
 [node name="ClientButton" type="Button" parent="."]
 layout_mode = 0
-offset_left = 832.0
+offset_left = 640.0
 offset_top = 128.0
-offset_right = 960.0
+offset_right = 768.0
 offset_bottom = 192.0
 text = "Join Server"
 
@@ -56,9 +77,9 @@ text = "Start Server"
 
 [node name="test" type="Button" parent="."]
 layout_mode = 0
-offset_left = 832.0
+offset_left = 640.0
 offset_top = 384.0
-offset_right = 960.0
+offset_right = 768.0
 offset_bottom = 448.0
 text = "Test packet"
 
@@ -73,14 +94,57 @@ text = "Test packet"
 
 [node name="VSlider" type="VSlider" parent="."]
 layout_mode = 0
-offset_left = 504.0
+offset_left = 376.0
 offset_top = 128.0
-offset_right = 520.0
+offset_right = 392.0
 offset_bottom = 384.0
 max_value = 10.0
 
+[node name="join_menu" type="BoxContainer" parent="." groups=["menu_mp"]]
+layout_mode = 0
+offset_left = 800.0
+offset_top = 96.0
+offset_right = 1120.0
+offset_bottom = 487.0
+vertical = true
+
+[node name="Label" type="Label" parent="join_menu"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "Join game"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="avalable_servers" type="PanelContainer" parent="join_menu"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="BoxContainer" type="BoxContainer" parent="join_menu/avalable_servers"]
+layout_mode = 2
+vertical = true
+
+[node name="Label" type="Label" parent="join_menu/avalable_servers/BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Servers"
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="join_menu/avalable_servers/BoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="server_browser" type="BoxContainer" parent="join_menu/avalable_servers/BoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+vertical = true
+
 [connection signal="button_down" from="Client/lobby_join_button" to="Client" method="_on_lobby_join_button_button_down"]
 [connection signal="text_changed" from="Client/player_name" to="Client" method="_on_player_name_text_changed"]
+[connection signal="button_down" from="Client/colour_refresh" to="Client" method="_on_colour_refresh"]
+[connection signal="button_down" from="Client/count_refresh" to="Client" method="_on_count_refresh"]
+[connection signal="button_down" from="Server/count_refresh" to="Server" method="_on_count_refresh"]
 [connection signal="button_down" from="ClientButton" to="Client" method="_on_client_button_button_down"]
 [connection signal="button_down" from="ServerButton" to="Server" method="_on_server_button_button_down"]
 [connection signal="button_down" from="test" to="Client" method="_on_test_button_down"]

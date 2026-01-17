@@ -123,6 +123,7 @@ var mp_player_list = {}: # peer_id:peer_data={
 			set(i):
 				mp_player_list = i
 				mp_player_list_changed.emit()
+var mp_ended_sesion = false
 
 const mp_claims_colours = {
 	claim_name_num.SPECTATOR: 	Color(0.44, 0.44, 0.44, 1.0),
@@ -132,9 +133,11 @@ const mp_claims_colours = {
 	claim_name_num.RIVER_SOLME: Color(0.74, 0.355, 0.426, 1.0)
 }
 
+# START UP
+## Record what is placed into the commands on start up
+var cmd_args = {}
 
 func _ready():
-	var cmd_args = {}
 	for cmdline in OS.get_cmdline_args():
 		if cmdline.contains("="):
 			var key_value = cmdline.split("=")

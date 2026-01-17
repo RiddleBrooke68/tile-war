@@ -5,18 +5,22 @@ var cmd_args = {}
 var screen = 0
 
 func _ready():
-	for cmdline in OS.get_cmdline_args():
-			if cmdline.contains("="):
-				var key_value = cmdline.split("=")
-				cmd_args[key_value[0].trim_prefix("--")] = key_value[1]
-			else:
+	#for cmdline in OS.get_cmdline_args():
+			#if cmdline.contains("="):
+				#var key_value = cmdline.split("=")
+				#cmd_args[key_value[0].trim_prefix("--")] = key_value[1]
+			#else:
 				# Options without an argument will be present in the dictionary,
 				# with the value set to an empty string.
-				cmd_args[cmdline.trim_prefix("--")] = ""
+				#cmd_args[cmdline.trim_prefix("--")] = ""
 	
-	if "mp_start_server" in cmd_args.keys():
+	if "mp_start_server" in Global.cmd_args.keys():
 		screen = 1
-	elif "brc_testing" in cmd_args.keys():
+	# Auto open local multiplayer
+	elif Global.cmd_args.keys().any(func(num): return num in ["multiplayer","mp"]):
+		screen = 1
+	# For broadcast testing only
+	elif "brc_testing" in Global.cmd_args.keys():
 		screen = 2
 
 func _process(_delta):

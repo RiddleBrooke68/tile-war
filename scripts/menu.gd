@@ -63,25 +63,25 @@ class_name menu_class
 ## For game sounds. (CURRENTLY USING SOUNDS FROM GOD MACHINE)
 var sound : AudioStreamPlayer
 
-var cmd_args = {}
+#var cmd_args = {}
 
 func _ready(mp_is_updating=false):
 	
-	for cmdline in OS.get_cmdline_args():
-			if cmdline.contains("="):
-				var key_value = cmdline.split("=")
-				cmd_args[key_value[0].trim_prefix("--")] = key_value[1]
-			else:
+	#for cmdline in OS.get_cmdline_args():
+			#if cmdline.contains("="):
+				#var key_value = cmdline.split("=")
+				#cmd_args[key_value[0].trim_prefix("--")] = key_value[1]
+			#else:
 				# Options without an argument will be present in the dictionary,
 				# with the value set to an empty string.
-				cmd_args[cmdline.trim_prefix("--")] = ""
+				#cmd_args[cmdline.trim_prefix("--")] = ""
 	
 	sound = AudioStreamPlayer.new()
 	add_child(sound)
 	sound_play()
 	# Pregenration
 	map_setting.selected = Global.map_type
-	_on_map_setting_item_selected(map_setting.selected,true,false)
+	_on_map_setting_item_selected(map_setting.selected,false,false)
 	# Genration
 	wall_slider.value = Global.wall_count
 	_on_wall_slider_value_changed(wall_slider.value)
@@ -133,7 +133,9 @@ func _ready(mp_is_updating=false):
 	if not mp_is_updating:
 		# Remove Multiplayer
 		Global.mp_enabled = false
-		Global.mp_player_list = {}
+		Global.mp_host = false
+		Global.mp_player_id = 0
+		Global.mp_player_list.clear()
 
 
 func sound_play(use_drag=false):

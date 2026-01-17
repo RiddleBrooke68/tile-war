@@ -36,11 +36,11 @@ func _ready(is_updating=false):
 	Global.mp_enabled = true
 	super(is_updating)
 	
-	if "mp_name" in cmd_args.keys():
-		client_name = cmd_args["mp_name"] 
-	if "mp_svr_name" in cmd_args.keys():
-		server_name = cmd_args["mp_svr_name"]
-	if "mp_start_server" in cmd_args.keys():
+	if "mp_name" in Global.cmd_args.keys():
+		client_name = Global.cmd_args["mp_name"] 
+	if "mp_svr_name" in Global.cmd_args.keys():
+		server_name = Global.cmd_args["mp_svr_name"]
+	if "mp_start_server" in Global.cmd_args.keys():
 		if client_name == "":
 			client_name = "Host"
 	# In the main menu, the ready function makes sure this is set to false, 
@@ -61,7 +61,8 @@ func _ready(is_updating=false):
 		if server_name == "":
 			server_name = str(OS.get_environment("COMPUTERNAME"))
 		server_label.text = server_name
-		client_label.text = client_name
+		#client_label.text = client_name
+		_on_client_name_text_changed(client_name)
 		
 		# Sets the port and ip
 		set_id() # IP.resolve_hostname(str(OS.get_environment("COMPUTERNAME")),IP.TYPE_IPV4)
@@ -69,7 +70,7 @@ func _ready(is_updating=false):
 		server_ip_label.text = address
 		server_port_label.text = str(port)
 	
-	if "mp_start_server" in cmd_args.keys():
+	if "mp_start_server" in Global.cmd_args.keys():
 		_on_host_button_down()
 
 func set_lobby_player_list():
@@ -236,6 +237,7 @@ func _on_server_name_text_changed(new_text):
 func _on_client_name_text_changed(new_text):
 	host_button.disabled = new_text == ""
 	join_button.disabled = new_text == ""
+	client_label.text = new_text
 	client_name = new_text
 
 ## Sets the player IP.
@@ -257,7 +259,7 @@ func _on_server_port_text_changed(new_text:String):
 
 
 # MP BUTTONS
-## Called when a player connects to a server, regadless of client or  server
+## Called when a player connects to a server, regadless of client or server
 func player_connected(id):
 	Global.mp_host = is_hosting
 	if not Global.mp_player_list.is_empty():
@@ -277,6 +279,7 @@ func player_connected(id):
 				#Global.mp_player_list)
 
 ## Called when a player disconnects to a server, regadless of client or server
+@rpc("any_peer")
 func player_disconnected(id):
 	print(client_name," player disconnected: " + str(id))
 	remove_player_data(id)
@@ -298,19 +301,27 @@ func connection_failed():
 	print(client_name," Failed to connect")
 	is_joining = false
 
+@rpc("any_peer")
 func server_disconnected():
-	print_rich(client_name," [color=red][b]NET_ERROR.001:[/b] It seems that a was just disconnected from the server.[/color]")
-	OS.alert("Error: It seems that you were just disconnected from the server, try to rejoin if you can.", "NET_ERROR.001")
+	if not Global.mp_ended_sesion:
+		print_rich(client_name," [color=red][b]NET_ERROR.001:[/b] It seems that a was just disconnected from the server.[/color]")
+		OS.alert("Error: It seems that you were just disconnected from the server, try to rejoin if you can.", "NET_ERROR.001")
+	else:
+		print_rich(client_name," [color=red][b]NET_ERROR.002:[/b] You just closed the server.[/color]")
 	is_joining = false
 	peer = ENetMultiplayerPeer.new()
 	Global.mp_player_id = 0
 	Global.mp_player_list.clear()
-	for i in get_tree().get_nodes_in_group("menu_mp"):
-		i.show()
-	for i in get_tree().get_nodes_in_group("menu_settings_ui"):
-		i.hide()
+	
+	if not Global.mp_ended_sesion and get_tree() != null:
+		for i in get_tree().get_nodes_in_group("menu_mp"):
+			i.show()
+		for i in get_tree().get_nodes_in_group("menu_settings_ui"):
+			i.hide()
+	else:
+		Global.mp_ended_sesion = false
 
-
+## When a player joins, each player will send back their info.
 @rpc("any_peer")
 func send_player_data(_name,id,current_claim=0):
 	if not Global.mp_player_list.has(id):
@@ -442,9 +453,15 @@ func _on_start_button_down():
 		start_game.rpc()
 
 func _on_singleplayer_pressed():
+	if is_hosting:
+		update_broadcast_server_closed()
+		server_disconnected.rpc()
+		Global.mp_ended_sesion = true
+		multiplayer.multiplayer_peer.close()#disconnect_peer(Global.mp_player_id)
+	elif is_joining:
+		player_disconnected.rpc(Global.mp_player_id)
+		multiplayer.multiplayer_peer.close()
 	Global.mp_player_list_changed.disconnect(set_lobby_player_list)
-	#if is_hosting:
-		#multiplayer.
 	super()
 
 
@@ -502,12 +519,28 @@ func update_broadcast_server_staius():
 	peerUDP.put_packet("{0} Players".format([Global.mp_player_list.size()]).to_utf8_buffer())
 
 
+##
+enum broadcast_form_end {
+	## The resived Game Id, see [member Global.app_id] for what that number is.
+	BRDCST_GAME_ID,
+	## The resived name of the server that is being detected.
+	BRDCST_SERVER_NAME,
+	## The resived address of which the server derives from.
+	BRDCST_SERVER_ADDRESS,
+	## The resived port of which the server derives from.
+	BRDCST_SERVER_PORT,
+	## The resived for when a server ends.
+	BRDCST_SERVER_CLOSED
+}
+
 func update_broadcast_server_closed():
 	peerUDP.set_dest_address("255.255.255.255",4444)
 	broadcast_start_signal()
+	peerUDP.put_packet("closed".format([Global.mp_player_list.size()]).to_utf8_buffer())
 	
 	peerUDP.set_dest_address(address_broadcast,4444)
 	broadcast_start_signal()
+	peerUDP.put_packet("closed".format([Global.mp_player_list.size()]).to_utf8_buffer())
 
 
 # Read server signals.
@@ -528,6 +561,8 @@ var svr_mp_port = ""
 
 
 var svr_mp_lobby_size = ""
+
+var svr_mp_closed = ""
 ## This only is checking for server signals it seems.
 func _process(_delta):
 	if not is_hosting and not is_joining:
@@ -571,13 +606,15 @@ func _process(_delta):
 			
 			# The fith part of a server signal, and also where we start seeing a drift in the data depending on how it its.
 			# This is if the signal is updating the server info.
-			if game_id != "" and resive_digit == broadcast_form_staius.BRDCST_SERVER_LOBBY_SIZE:
+			if not game_id in ["","closed"] and resive_digit == broadcast_form_staius.BRDCST_SERVER_LOBBY_SIZE:
 				svr_mp_lobby_size = game_id
-			
+			elif game_id == "closed" and resive_digit == broadcast_form_end.BRDCST_SERVER_CLOSED:
+				svr_mp_closed = game_id
 			
 			if svr_mp_game_id.to_int() == Global.app_id:
 				# If this server signal matches a hosting signal shape, then it is a open server to join to.
 				if (	not (svr_mp_name in list_of_servers_names or svr_mp_address in list_of_servers_ip and svr_mp_port.to_int() in list_of_servers_port) # ALL DATA MUST MATCH ANOTHER SERVER TO NOT FIRE
+						and svr_mp_closed != "closed"
 						and svr_mp_address.is_valid_ip_address() 
 						and svr_mp_port.to_int() in range(1024,65535) 
 						and svr_mp_lobby_size != ""
@@ -591,14 +628,25 @@ func _process(_delta):
 				
 				# If the server exists in the browser
 				elif (	(svr_mp_name in list_of_servers_names or svr_mp_address in list_of_servers_ip and svr_mp_port.to_int() in list_of_servers_port) 
+						and svr_mp_closed != "closed"
 						and svr_mp_lobby_size != ""
 						):
-					var server_panel 
+					var server_panel : BoxContainer
 					for i in get_tree().get_nodes_in_group("server_connection"):
 						if svr_mp_name == i.server_name and svr_mp_address == i.server_address and svr_mp_port.to_int() == i.server_port:
 							server_panel = i
 					if server_panel != null:
 						server_panel.server_lobby_size = svr_mp_lobby_size
+				
+				elif (	(svr_mp_name in list_of_servers_names or svr_mp_address in list_of_servers_ip and svr_mp_port.to_int() in list_of_servers_port) 
+						and svr_mp_closed != "closed"
+						):
+					var server_panel : BoxContainer
+					for i in get_tree().get_nodes_in_group("server_connection"):
+						if svr_mp_name == i.server_name and svr_mp_address == i.server_address and svr_mp_port.to_int() == i.server_port:
+							server_panel = i
+					if server_panel != null:
+						server_panel.free()
 			
 			resive_digit += 1
 		elif resiving_mesge:
