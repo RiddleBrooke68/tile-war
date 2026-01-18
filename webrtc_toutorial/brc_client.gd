@@ -238,7 +238,7 @@ func msg_ice_sent(mid_name,index_name,SDP_name,id):
 
 @warning_ignore("unused_parameter")
 func connect_to_server(ip):
-	var err = peer.create_client("ws://192.168.17.140:8915")
+	var err = peer.create_client("ws://103.51.115.110:8915")
 	print_rich(client_namer()," Start client: ",err)
 
 func _on_client_button_button_down():
