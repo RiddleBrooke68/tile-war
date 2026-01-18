@@ -157,6 +157,9 @@ func mp_sync_movement(claim:int,moves : int,active_afected=false):
 	if claims[claim].moves != moves:
 		claims[claim].moves = moves
 		#print("{0} client has been told by host that claim {1} has: {2} number of moves".format([Global.mp_player_list[Global.mp_player_id].name,claims[claim].name,claims[claim].moves]))
+		if active_player == null:
+			print_rich("[color=red]ERROR: the active player hasn't been set before atempts of syncing it.[/color]")
+			set_active_player(claims[claim])
 		gui_board_events()
 	if active_player == claims[claim]:
 		active_player = claims[claim]
@@ -261,8 +264,9 @@ func game_state_changed(refresh=false,set_active=true):
 		next_turn.disabled = true
 	else:
 		dead_number = 0
-	moves_plate.number = active_player.moves
-	moves_plate.update_plate_display()
+	if active_player != null:
+		moves_plate.number = active_player.moves
+		moves_plate.update_plate_display()
 
 @onready var winers_name = %"winers name"
 @onready var win_animiate = %win_animiate

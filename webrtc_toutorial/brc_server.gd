@@ -1,4 +1,6 @@
+## @experimental
 extends Node
+class_name brc_testing_server
 
 #var cmd_args = {}
 
@@ -39,14 +41,15 @@ func _process(_delta):
 			print("\n\n----------------------------------\n\n")
 			print_rich(server_namer(),data)
 			
-			if data.msg == mpol.broadcast_msg.lobby:
+			if data.msg == brc_mpol.broadcast_msg.lobby:
 				print_rich(server_namer(),"Lobby fire")
 				join_lobby(data)
 			
-			if int(data.msg) in [mpol.broadcast_msg.offer,mpol.broadcast_msg.answer,mpol.broadcast_msg.candidate]: #[6.0,7.0,5.0]
+			if int(data.msg) in [brc_mpol.broadcast_msg.offer,brc_mpol.broadcast_msg.answer,brc_mpol.broadcast_msg.candidate]: #[6.0,7.0,5.0]
 				print_rich(server_namer(),"Soruce ID is ",data.org_peer)#," Messge data ", data.data)
 				data["server_counter"] = server_namer(false)
 				msg_peer_data(data.peer,data)
+
 
 func start_server():
 	$"../ServerButton".disabled = true
@@ -67,7 +70,7 @@ func join_lobby(user):
 		
 		svr_name = server_namer()
 		var _data = {
-			"msg": mpol.broadcast_msg.userConnected,
+			"msg": brc_mpol.broadcast_msg.userConnected,
 			"count_when_fired":user.count_when_fired,
 			"server_counter":server_namer(false),
 			"id": user.id,
@@ -80,22 +83,25 @@ func join_lobby(user):
 		else:
 			print_rich(server_namer(false),"Nope, its not doing it.")
 		
+		
 		svr_name = server_namer()
 		var data2 = {
-			"msg": mpol.broadcast_msg.userConnected,
+			"msg": brc_mpol.broadcast_msg.userConnected,
 			"count_when_fired":user.count_when_fired,
 			"server_counter":server_namer(false),
-			"id": user.id,
-			"name": user.name
+			"id": lobbies[user.lobby_value].players[p].id,
+			"name": lobbies[user.lobby_value].players[p].name
 		}
 		print_rich(svr_name,"{0} player getting data2: {1}".format([user.id,data2]))
-		print_rich(server_namer(false),"Nope, its not doing it.")
-		#print_rich(server_namer(false),"Yep, its doing it.")
-		#msg_peer_data(user.id,data2)
+		if not p == user.id:
+			print_rich(server_namer(false),"Yep, its doing it.")
+			msg_peer_data(user.id,data2)
+		else:
+			print_rich(server_namer(false),"Nope, its not doing it.")
 		
 		svr_name = server_namer()
 		var lobby_info = {
-			"msg":mpol.broadcast_msg.lobby,
+			"msg":brc_mpol.broadcast_msg.lobby,
 			"count_when_fired":user.count_when_fired,
 			"server_counter":server_namer(false),
 			"player_list":JSON.stringify(lobbies[user.lobby_value].players),
@@ -107,19 +113,19 @@ func join_lobby(user):
 	
 	svr_name = server_namer()
 	var data = {
-		"msg": mpol.broadcast_msg.userConnected,
+		"msg": brc_mpol.broadcast_msg.userConnected,
 		"count_when_fired":user.count_when_fired,
 		"server_counter":server_namer(false),
 		"id":user.id,
 		"player":lobbies[user.lobby_value].players[user.id]
 	}
-	print_rich(svr_name,"{0} player getting lobby_info: {1}".format([data.id,data]))
+	print_rich(svr_name,"{0} player getting data: {1}".format([data.id,data]))
 	print_rich(server_namer(false),"Nope, its not doing it.")
 	#msg_peer_data(data.id,data)
 	
 	svr_name = server_namer()
 	var lobby_brdcst = {
-		"msg": mpol.broadcast_msg.lobby_connection,
+		"msg": brc_mpol.broadcast_msg.lobby_connection,
 		"count_when_fired":user.count_when_fired,
 		"server_counter":server_namer(false),
 		"lobby_value":user.lobby_value,
@@ -128,7 +134,7 @@ func join_lobby(user):
 	}
 	print_rich(svr_name,"Every player getting lobby_info: {0}".format([lobby_brdcst]))
 	peer.put_packet(JSON.stringify(lobby_brdcst).to_utf8_buffer())
-	mpol.lobbies = lobbies.duplicate(true)
+	brc_mpol.lobbies = lobbies.duplicate(true)
 
 func msg_peer_data(user_id,msg):
 	peer.get_peer(user_id).put_packet(JSON.stringify(msg).to_utf8_buffer())
@@ -145,7 +151,7 @@ func peer_connected(id):
 	users[id] = {
 		"id": id,
 		"server_counter":server_namer(false),
-		"msg": mpol.broadcast_msg.id
+		"msg": brc_mpol.broadcast_msg.id
 	}
 	msg_peer_data(id,users[id])
 	pass
@@ -161,7 +167,7 @@ func _on_server_button_button_down():
 func _on_test_button_down():
 	print_rich(server_namer(),"Server Ping.")
 	var msg = {
-		"msg":mpol.broadcast_msg.checkIn,
+		"msg":brc_mpol.broadcast_msg.checkIn,
 		"server_counter":server_namer(false),
 		"data": "Test"
 	}

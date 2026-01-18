@@ -113,8 +113,28 @@ var moves_turn_lim_boost = 10
 #multiplayer
 signal mp_player_list_changed()
 
-var mp_enabled = false
+enum mp_msg {
+	id,
+	join,
+	userConnected,
+	userDisconnected,
+	lobby,
+	lobby_host,
+	lobby_join,
+	lobby_update,
+	lobby_close,
+	candidate,
+	offer,
+	answer,
+	checkIn
+}
+
+var mp_enabled = false:
+	set(i):
+		print(i)
+		mp_enabled = i
 var mp_host = false
+var mp_connected = false
 var mp_player_id = 0
 var mp_player_list = {}: # peer_id:peer_data={
 			#"name": _name,
@@ -132,6 +152,17 @@ const mp_claims_colours = {
 	claim_name_num.YORK_STREET: Color(0.75, 0.722, 0.322, 1.0),
 	claim_name_num.RIVER_SOLME: Color(0.74, 0.355, 0.426, 1.0)
 }
+
+# MULTIPLAYER ONLINE
+
+var mpol_svr_users = {}
+var mpol_svr_lobbies = {}
+## Checks if the player is the server host.
+var mpol_svr_host = false
+
+var mpol_clnt_lobbies = {}
+var mpol_clnt_connected = false
+
 
 # START UP
 ## Record what is placed into the commands on start up

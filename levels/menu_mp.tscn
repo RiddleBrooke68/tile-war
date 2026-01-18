@@ -1,17 +1,17 @@
 [gd_scene load_steps=14 format=3 uid="uid://cqj63olmuv65h"]
 
-[ext_resource type="Script" uid="uid://c8gqgkxqt2ucn" path="res://scripts/menu_mp.gd" id="1_l6f4p"]
+[ext_resource type="Script" uid="uid://c8gqgkxqt2ucn" path="res://scripts/menus/menus_mp/menu_mp.gd" id="1_l6f4p"]
 [ext_resource type="PackedScene" uid="uid://bjhedtnkrakw6" path="res://objects/ui/main_menu/server_connection_button.tscn" id="2_pb0ft"]
 [ext_resource type="PackedScene" uid="uid://bojd4turtuu7f" path="res://levels/main_ui.tscn" id="2_us8tt"]
 [ext_resource type="PackedScene" uid="uid://c0mjtcv61d7f8" path="res://objects/ui/main_menu/lobby_player_nameplate.tscn" id="4_16mcp"]
 [ext_resource type="PackedScene" uid="uid://cp7aln2bcefjd" path="res://objects/ui/main_menu/lobby_chat.tscn" id="4_iwfhx"]
 [ext_resource type="Theme" uid="uid://cedkvwvts0evs" path="res://themes/extra_setting_theame.tres" id="6_3di4p"]
 
-[sub_resource type="Gradient" id="Gradient_n3ddt"]
+[sub_resource type="Gradient" id="Gradient_3di4p"]
 colors = PackedColorArray(0.13544941, 0.09605298, 0.041523762, 1, 0.06992452, 0.019128133, 0.020676874, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_l6f4p"]
-gradient = SubResource("Gradient_n3ddt")
+gradient = SubResource("Gradient_3di4p")
 fill_from = Vector2(0, 1)
 
 [sub_resource type="Theme" id="Theme_us8tt"]

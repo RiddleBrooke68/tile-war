@@ -1,0 +1,165 @@
+[gd_scene load_steps=8 format=3 uid="uid://dlj58fno2ecsm"]
+
+[ext_resource type="Script" uid="uid://cjonrieu3d70q" path="res://scripts/menus/menus_mpol/menu_mpol_clnt.gd" id="1_dulhg"]
+[ext_resource type="PackedScene" uid="uid://bojd4turtuu7f" path="res://levels/main_ui.tscn" id="2_ct4br"]
+[ext_resource type="Script" uid="uid://c1f56yivcxn15" path="res://scripts/menus/menus_mpol/menu_mpol_svr.gd" id="2_o3svt"]
+[ext_resource type="PackedScene" uid="uid://bjhedtnkrakw6" path="res://objects/ui/main_menu/server_connection_button.tscn" id="3_3ilbs"]
+[ext_resource type="PackedScene" uid="uid://cj0c3ub7bgeqa" path="res://objects/ui/claim_data_panel.tscn" id="4_j8dkj"]
+
+[sub_resource type="Gradient" id="Gradient_n3ddt"]
+colors = PackedColorArray(0.13544941, 0.09605298, 0.041523762, 1, 0.06992452, 0.019128133, 0.020676874, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_wqbfa"]
+gradient = SubResource("Gradient_n3ddt")
+fill_from = Vector2(0, 1)
+
+[node name="menu_mpol_clnt" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_dulhg")
+game_mp = ExtResource("2_ct4br")
+server_join = ExtResource("3_3ilbs")
+player_plate = ExtResource("4_j8dkj")
+metadata/_custom_type_script = "uid://cdggui00f6ndm"
+
+[node name="back_ground" type="Sprite2D" parent="."]
+position = Vector2(576, 324)
+scale = Vector2(18, 10.125)
+texture = SubResource("GradientTexture2D_wqbfa")
+
+[node name="menu_mpol_svr" type="Node" parent="."]
+script = ExtResource("2_o3svt")
+
+[node name="host_menu" type="BoxContainer" parent="." groups=["menu_mp"]]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 64.0
+offset_right = 576.0
+offset_bottom = 448.0
+vertical = true
+
+[node name="Label" type="Label" parent="host_menu"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "Tile War
+MPOL"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="host_game" type="Button" parent="host_menu"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+disabled = true
+text = "Host"
+
+[node name="server_ip" type="LineEdit" parent="host_menu"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "server ip"
+
+[node name="join_settings" type="BoxContainer" parent="host_menu"]
+layout_mode = 2
+
+[node name="client_settings" type="BoxContainer" parent="host_menu/join_settings"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+size_flags_horizontal = 3
+vertical = true
+
+[node name="Label" type="Label" parent="host_menu/join_settings/client_settings"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Client name"
+
+[node name="client_name" type="LineEdit" parent="host_menu/join_settings/client_settings"]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "name"
+
+[node name="join_server" type="Button" parent="host_menu/join_settings/client_settings"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Join server"
+
+[node name="lobby_input" type="BoxContainer" parent="host_menu/join_settings"]
+layout_mode = 2
+size_flags_horizontal = 3
+vertical = true
+
+[node name="Label" type="Label" parent="host_menu/join_settings/lobby_input"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "lobby stuff"
+
+[node name="lobby_name" type="LineEdit" parent="host_menu/join_settings/lobby_input"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+placeholder_text = "lobby name"
+
+[node name="lobby_code" type="LineEdit" parent="host_menu/join_settings/lobby_input"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+placeholder_text = "lobby code"
+
+[node name="join_menu" type="BoxContainer" parent="." groups=["menu_mp"]]
+layout_mode = 0
+offset_left = 640.0
+offset_top = 128.0
+offset_right = 960.0
+offset_bottom = 519.0
+vertical = true
+
+[node name="Label" type="Label" parent="join_menu"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "Join game"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="join_game" type="Button" parent="join_menu"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+disabled = true
+text = "Join"
+
+[node name="avalable_servers" type="PanelContainer" parent="join_menu"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="BoxContainer" type="BoxContainer" parent="join_menu/avalable_servers"]
+layout_mode = 2
+vertical = true
+
+[node name="Label" type="Label" parent="join_menu/avalable_servers/BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Lobbys"
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="join_menu/avalable_servers/BoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="lobby_browser" type="BoxContainer" parent="join_menu/avalable_servers/BoxContainer/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+vertical = true
+
+[connection signal="text_changed" from="host_menu/join_settings/client_settings/client_name" to="." method="_on_client_name_text_changed"]
+[connection signal="button_down" from="host_menu/join_settings/client_settings/join_server" to="." method="_on_client_button_button_down"]
+[connection signal="text_changed" from="host_menu/join_settings/lobby_input/lobby_name" to="." method="_on_lobby_name_text_changed"]
+[connection signal="text_changed" from="host_menu/join_settings/lobby_input/lobby_code" to="." method="_on_lobby_code_text_changed"]
