@@ -301,8 +301,8 @@ func _on_board_tile_info(data:tile_data):
 	tile_info.text = data.get_info()
 	game_info.text = turn_text.format([turn])
 
-@rpc("any_peer")
 ## This changes the scene back to the main menu.
+@rpc("any_peer")
 func new_game(mp_player_source=true):
 	for claim in claims:
 		claim.tile_size = 0
@@ -311,6 +311,7 @@ func new_game(mp_player_source=true):
 		claim.claim_dead = false
 		claim.claim_active = false
 		claim.claim_had_turn = false
+		claim.claim_dangered = 0
 		claim.moves = 0
 	if Global.mp_enabled and mp_player_source:
 		new_game.rpc(false)

@@ -47,7 +47,7 @@ func _process(_delta):
 			
 			if int(data.msg) in [brc_mpol.broadcast_msg.offer,brc_mpol.broadcast_msg.answer,brc_mpol.broadcast_msg.candidate]: #[6.0,7.0,5.0]
 				print_rich(server_namer(),"Soruce ID is ",data.org_peer)#," Messge data ", data.data)
-				data["server_counter"] = server_namer(false)
+				data["server_counter"] = (server_namer(false)+" An offer, answer, or candidate.")
 				msg_peer_data(data.peer,data)
 
 
@@ -72,7 +72,7 @@ func join_lobby(user):
 		var _data = {
 			"msg": brc_mpol.broadcast_msg.userConnected,
 			"count_when_fired":user.count_when_fired,
-			"server_counter":server_namer(false),
+			"server_counter":(server_namer(false)+" Connected user"),
 			"id": user.id,
 			"name": user.name
 		}
@@ -88,7 +88,7 @@ func join_lobby(user):
 		var data2 = {
 			"msg": brc_mpol.broadcast_msg.userConnected,
 			"count_when_fired":user.count_when_fired,
-			"server_counter":server_namer(false),
+			"server_counter":(server_namer(false)+" Connected user"),
 			"id": lobbies[user.lobby_value].players[p].id,
 			"name": lobbies[user.lobby_value].players[p].name
 		}
@@ -103,7 +103,7 @@ func join_lobby(user):
 		var lobby_info = {
 			"msg":brc_mpol.broadcast_msg.lobby,
 			"count_when_fired":user.count_when_fired,
-			"server_counter":server_namer(false),
+			"server_counter":(server_namer(false)+" Lobby data"),
 			"player_list":JSON.stringify(lobbies[user.lobby_value].players),
 			"host":lobbies[user.lobby_value].host_id,
 			"lobby_value": user.lobby_value
@@ -115,7 +115,7 @@ func join_lobby(user):
 	var data = {
 		"msg": brc_mpol.broadcast_msg.userConnected,
 		"count_when_fired":user.count_when_fired,
-		"server_counter":server_namer(false),
+		"server_counter":(server_namer(false)+" Connected user"),
 		"id":user.id,
 		"player":lobbies[user.lobby_value].players[user.id]
 	}
@@ -127,7 +127,7 @@ func join_lobby(user):
 	var lobby_brdcst = {
 		"msg": brc_mpol.broadcast_msg.lobby_connection,
 		"count_when_fired":user.count_when_fired,
-		"server_counter":server_namer(false),
+		"server_counter":(server_namer(false)+" Lobby data"),
 		"lobby_value":user.lobby_value,
 		"lobby_preview":lobbies[user.lobby_value].players,
 		"lobby_size":"{0} players".format([lobbies[user.lobby_value].players.size()])
@@ -150,7 +150,7 @@ func peer_connected(id):
 	print_rich(server_namer(),"Peer Connected: ", id)
 	users[id] = {
 		"id": id,
-		"server_counter":server_namer(false),
+		"server_counter":(server_namer(false)+" Id"),
 		"msg": brc_mpol.broadcast_msg.id
 	}
 	msg_peer_data(id,users[id])
@@ -168,7 +168,7 @@ func _on_test_button_down():
 	print_rich(server_namer(),"Server Ping.")
 	var msg = {
 		"msg":brc_mpol.broadcast_msg.checkIn,
-		"server_counter":server_namer(false),
+		"server_counter":(server_namer(false)+" server ping"),
 		"data": "Test"
 	}
 	peer.put_packet(JSON.stringify(msg).to_utf8_buffer())

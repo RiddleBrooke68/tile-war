@@ -578,6 +578,39 @@ max_value = 30.0
 value = 1.0
 rounded = true
 
+[node name="BoxContainer5" type="BoxContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings"]
+layout_mode = 2
+
+[node name="Button" type="Label" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/BoxContainer5"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Bliz attack"
+
+[node name="blz_setting" type="CheckBox" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/BoxContainer5"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Right click, "
+button_pressed = true
+
+[node name="blz_settings2" type="BoxContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings"]
+layout_mode = 2
+size_flags_horizontal = 3
+vertical = true
+
+[node name="blz_text" type="Label" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/blz_settings2"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Bliz attack requirement:"
+
+[node name="BlzSlider" type="HSlider" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/blz_settings2"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Sets the required amount of moves to do a bliz."
+min_value = 1.0
+max_value = 30.0
+value = 1.0
+rounded = true
+
 [node name="HSeparator2" type="HSeparator" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer"]
 layout_mode = 2
 
@@ -604,7 +637,7 @@ vertical = true
 
 [node name="Label" type="Label" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer2/BoxContainer/green_number"]
 layout_mode = 2
-text = "Player has"
+text = "Greenwich has"
 
 [node name="green_cap" type="OptionButton" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer2/BoxContainer/green_number"]
 unique_name_in_owner = true
@@ -909,6 +942,8 @@ libraries = {
 [connection signal="toggled" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/BoxContainer3/bran_setting" to="." method="_on_bran_setting_toggled"]
 [connection signal="toggled" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/BoxContainer4/cdan_setting" to="." method="_on_cdan_setting_toggled"]
 [connection signal="value_changed" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/cdan_settings/CdanSlider" to="." method="_on_cdan_slider_value_changed"]
+[connection signal="toggled" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/BoxContainer5/blz_setting" to="." method="_on_blz_setting_toggled"]
+[connection signal="value_changed" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/blz_settings2/BlzSlider" to="." method="_on_blz_slider_value_changed"]
 [connection signal="item_selected" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer2/BoxContainer/green_number/green_cap" to="." method="_on_green_cap_item_selected"]
 [connection signal="item_selected" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer2/BoxContainer/plum_number/plum_cap" to="." method="_on_plum_cap_item_selected"]
 [connection signal="item_selected" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer2/BoxContainer/york_number/york_cap" to="." method="_on_york_cap_item_selected"]

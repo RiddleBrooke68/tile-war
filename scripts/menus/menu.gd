@@ -49,6 +49,9 @@ class_name menu_class
 @onready var cdan_setting : CheckBox = %cdan_setting
 @onready var cdan_text : Label = %cdan_text
 @onready var cdan_slider : Slider = %CdanSlider
+@onready var blz_setting : CheckBox = %blz_setting
+@onready var blz_text : Label = %blz_text
+@onready var blz_slider : Slider = %BlzSlider
 
 @onready var tile_int_lim_input : LineEdit = %tile_int_lim_input
 @onready var tile_int_reduct_input : LineEdit = %tile_int_reduct_input
@@ -89,6 +92,8 @@ func _ready(mp_is_updating=false):
 	_on_fuel_slider_value_changed(fuel_slider.value)
 	cdan_slider.value = Global.cdan_duration
 	_on_cdan_slider_value_changed(cdan_slider.value)
+	blz_slider.value = Global.blz_move_requrement
+	_on_blz_slider_value_changed(blz_slider.value)
 	# Ai
 	ai_level.selected = Global.ai_level
 	# Active players
@@ -115,6 +120,8 @@ func _ready(mp_is_updating=false):
 	bran_setting.button_pressed = Global.bran_enabled
 	# Cdan
 	cdan_setting.button_pressed = Global.cdan_enabled
+	# Blz
+	blz_setting.button_pressed = Global.blz_enabled
 	
 	# movement
 	tile_int_lim_input.text = str(Global.moves_tile_int_lim_boost)
@@ -414,6 +421,30 @@ func _on_cdan_slider_value_changed(value,mp_player_source=true):
 	else:
 		cdan_text.text = "Capital protection duration: {0}".format([int(value)])
 		Global.cdan_duration = int(value)
+	sound_play(true)
+
+@rpc("any_peer")
+func _on_blz_setting_toggled(toggled_on,mp_player_source=true):
+	if Global.mp_enabled and mp_player_source:
+		_on_blz_setting_toggled.rpc(toggled_on,false)
+	blz_setting.button_pressed = toggled_on
+	Global.blz_enabled = toggled_on
+	sound_play()
+
+@rpc("any_peer")
+func _on_blz_slider_value_changed(value,mp_player_source=true):
+	# Multiplayer parts.cdan_slider.value
+	if Global.mp_enabled and mp_player_source and Global.blz_move_requrement != int(value):
+		blz_text.text = "Bliz attack requirement: {0}".format([int(value)])
+		Global.blz_move_requrement = int(value)
+		_on_blz_slider_value_changed.rpc(value,false)
+	elif Global.mp_enabled and blz_slider.value != int(value):
+		blz_text.text = "Bliz attack requirement: {0}".format([int(value)])
+		Global.blz_move_requrement = int(value)
+		blz_slider.value = value
+	else:
+		blz_text.text = "Bliz attack requirement: {0}".format([int(value)])
+		Global.blz_move_requrement = int(value)
 	sound_play(true)
 
 ## Basic, this is just so I can mange ALL THE FLIPIN MOVEMENT SETTING IN ONE PLACE.[br]

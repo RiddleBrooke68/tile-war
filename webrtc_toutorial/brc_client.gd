@@ -88,7 +88,7 @@ func _process(_delta):
 				if i != "data":
 					print_rich(client_namer()," {0} = {1}".format([i,data[i]]))
 				else:
-					print_rich(client_namer()," {0} = {1}".format([i,data[i]]))
+					print_rich(client_namer()," {0} = {1}".format([i,data[i].strip_escapes()])) 
 			
 			# On joining with a dedicated server, the client will resive their id.
 			if data.msg == brc_mpol.broadcast_msg.id:
@@ -113,10 +113,10 @@ func _process(_delta):
 				var list_of_servers_names = {}
 				for i in get_tree().get_nodes_in_group("server_connection"):
 					list_of_servers_names[i.server_name] = i
-				if not data.lobby_value in list_of_servers_names.keys():
+				if not (data.lobby_value in list_of_servers_names.keys()):
 					var server_panel = server_join.instantiate()
-					#server_panel.server_name = data.lobby_value
-					server_panel.server_address = data.lobby_value
+					server_panel.server_name = data.lobby_value
+					#server_panel.server_address = data.lobby_value
 					server_browser.add_child(server_panel)
 					server_panel.server_lobby_size = data.lobby_size
 					server_panel.selected_server.connect(select_server)
@@ -221,6 +221,7 @@ func send_answer(id,data):
 
 @warning_ignore("shadowed_variable")
 func msg_ice_sent(mid_name,index_name,SDP_name,id):
+	print_rich(client_namer()," Sending ICE [{0}, {1}, {2}, {3}]".format([mid_name,index_name,SDP_name,id]))
 	var msg = {
 		"count_when_fired":client_namer(false),
 		"peer":id,
