@@ -84,7 +84,6 @@ func on_next_turn(mp_player_source=true):
 		claim.claim_dead = board_ui.check_claim_captatal(claim.claim_colour).is_empty()
 		if claim.claim_dead == false and claim.claim_had_turn == false and claim.name != active_player.name:
 			
-			
 			if claim is NonPlayerClaim and claim.claim_dead == false:
 				set_active_player(claim)
 				#if Global.cdan_enabled and claim.claim_dangered:
@@ -208,6 +207,8 @@ func game_state_changed(refresh=false,set_active=true):
 				if ((claim.claim_had_turn == false and active_player == null) or active_player.name == claim.name) and not bot_first_in_turn_order: # and (active_player.name == claim.name or active_player == null):
 					if active_player == null or refresh:
 						set_active_player(claim)
+						if Global.mp_enabled and Global.mp_host:
+							update_active_player(claim)
 						#if Global.cdan_enabled and claim.claim_dangered:
 							#claim.claim_dangered = false
 						#claim.claim_active = true
@@ -267,6 +268,10 @@ func game_state_changed(refresh=false,set_active=true):
 	if active_player != null:
 		moves_plate.number = active_player.moves
 		moves_plate.update_plate_display()
+
+func update_active_player(claim):
+	if active_player != claim:
+		set_active_player(claim)
 
 @onready var winers_name = %"winers name"
 @onready var win_animiate = %win_animiate

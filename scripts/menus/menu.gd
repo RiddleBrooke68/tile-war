@@ -324,7 +324,7 @@ func _on_york_cap_item_selected(index,mp_player_source=true):
 @rpc("any_peer")
 func _on_river_cap_item_selected(index,mp_player_source=true):
 	if Global.mp_enabled and mp_player_source:
-		_on_change_ai_level.rpc(index,false)
+		_on_river_cap_item_selected.rpc(index,false)
 	river_cap.selected = index
 	Global.cap_list[3] = index + 1
 	sound_play()

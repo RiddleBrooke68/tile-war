@@ -322,7 +322,6 @@ unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Controls the number of fuel tiles there will be added in grenrating a map."
 max_value = 76.0
-value = 16.0
 rounded = true
 
 [node name="HSeparator" type="HSeparator" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer"]
