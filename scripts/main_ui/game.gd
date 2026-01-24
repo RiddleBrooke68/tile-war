@@ -340,7 +340,7 @@ func set_active_player(claim:ClaimData):
 	moves_plate.colour = claim.claim_colour
 
 func link_up_active_player(claim:ClaimData):
-	if not active_player.move_made.is_connected(claim.depleate_danger_value):
+	if not active_player.orginal_claim == claim and not active_player.move_made.is_connected(claim.depleate_danger_value):
 		active_player.move_made.connect(claim.depleate_danger_value)
 
 func remove_active_player_moves(incremts:int=1,set_as=false,bot_only=false):

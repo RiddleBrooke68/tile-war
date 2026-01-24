@@ -77,12 +77,13 @@ func join_lobby(user):
 			"name": user.name
 		}
 		print_rich(svr_name,"{0} player getting _data: {1}".format([p,_data]))
-		if not p == user.id:
-			print_rich(server_namer(false),"Yep, its doing it.")
-			msg_peer_data(p,_data)
-		else:
-			print_rich(server_namer(false),"Nope, its not doing it.")
-		
+		print_rich(server_namer(false),"Yep, its doing it.")
+		msg_peer_data(p,_data)
+		#if not p == user.id:
+			#print_rich(server_namer(false),"Yep, its doing it.")
+			#msg_peer_data(p,_data)
+		#else:
+			#print_rich(server_namer(false),"Nope, its not doing it.")
 		
 		svr_name = server_namer()
 		var data2 = {
@@ -93,11 +94,13 @@ func join_lobby(user):
 			"name": lobbies[user.lobby_value].players[p].name
 		}
 		print_rich(svr_name,"{0} player getting data2: {1}".format([user.id,data2]))
-		if not p == user.id:
-			print_rich(server_namer(false),"Yep, its doing it.")
-			msg_peer_data(user.id,data2)
-		else:
-			print_rich(server_namer(false),"Nope, its not doing it.")
+		print_rich(server_namer(false),"Yep, its doing it.")
+		msg_peer_data(user.id,data2)
+		#if not p == user.id:
+			#print_rich(server_namer(false),"Yep, its doing it.")
+			#msg_peer_data(user.id,data2)
+		#else:
+			#print_rich(server_namer(false),"Nope, its not doing it.")
 		
 		svr_name = server_namer()
 		var lobby_info = {
@@ -120,8 +123,8 @@ func join_lobby(user):
 		"player":lobbies[user.lobby_value].players[user.id]
 	}
 	print_rich(svr_name,"{0} player getting data: {1}".format([data.id,data]))
-	print_rich(server_namer(false),"Nope, its not doing it.")
-	#msg_peer_data(data.id,data)
+	print_rich(server_namer(false),"Yep, its doing it.")
+	msg_peer_data(data.id,data)
 	
 	svr_name = server_namer()
 	var lobby_brdcst = {

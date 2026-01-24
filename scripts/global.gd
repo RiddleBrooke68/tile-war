@@ -82,7 +82,9 @@ var bran_enabled = false
 ## When enabled, the game will make it block any attept of taking any more tiles from a claim who lost a capital, that is untill after they get a turn.
 var cdan_enabled = true
 ## Capatial Protection Duration
-var cdan_duration = 5
+var cdan_duration = 10
+## Capatial capture protection duration
+var cdan_capture_duration = 5
 ## Bliz attack
 var blz_enabled = true
 var blz_move_requrement = 10

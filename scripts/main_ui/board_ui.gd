@@ -235,8 +235,11 @@ func _on_gui_input(event):
 			on_claim_tile(grid_coords,game.active_player.claim_colour) #mp replace 1 with game.active_player.claim_colour
 			sound.stream = load("res://audio/FX/left click sound.mp3") as AudioStream
 		elif event.button_index == MOUSE_BUTTON_RIGHT and not event.pressed and not off_input:
-			if on_claim_tile(grid_coords,game.active_player.claim_colour,-1,true,false,false,true): #mp replace 1 with game.active_player.claim_colour
+			if not check_tile_claimably(grid_coords,game.active_player.claim_colour,-1) and on_claim_tile(grid_coords,game.active_player.claim_colour,-1,true,false,false,true): #mp replace 1 with game.active_player.claim_colour
 				board_decrese_move_count.emit(Global.blz_move_requrement)
+				sound.stream = load("res://audio/FX/left click sound.mp3") as AudioStream
+			elif on_claim_tile(grid_coords,game.active_player.claim_colour):
+				board_decrese_move_count.emit(1)
 				sound.stream = load("res://audio/FX/left click sound.mp3") as AudioStream
 			else:
 				sound.stream = load("res://audio/FX/right click sound.mp3") as AudioStream
@@ -293,6 +296,8 @@ func on_claim_tile(coords,claim:int,type:int=-1,
 				if picked_tile.get_custom_data("type") == 1 and type == -1:
 					if Global.cdan_enabled and picked_tile.get_custom_data("ownership") != 0:
 						tile.opposite_claim_data.claim_dangered = 5 * (Global.cdan_duration+1)
+						if claim == game.active_player.claim_colour:
+							game.active_player.orginal_claim.claim_dangered = 5 * (Global.cdan_capture_duration+1)
 					type = 1
 				elif picked_tile.get_custom_data("type") == 2 and type in [1,3]:
 					type = 2
@@ -373,6 +378,9 @@ func check_tile_claimably(coords:Vector2i,claim:int,test_suroundings=false,wants
 		elif picked_tile.get_custom_data("type") == 3:
 			tile.tile_type = "fuel"
 			tile.points -= 2
+		#var cap_buff = 0
+		var cap_debuff = 1
+		#var caps_linked : Array[Vector2i]
 		for neighbor in neighbors:
 			picked_tile = main_grid.get_cell_tile_data(neighbor)
 			if not picked_tile == null:
@@ -383,6 +391,10 @@ func check_tile_claimably(coords:Vector2i,claim:int,test_suroundings=false,wants
 						tile.points += 1
 					elif picked_tile.get_custom_data("type") == 3:
 						tile.points -= 1
+		if cap_debuff == 0: #  and not (Global.cdan_enabled and tile.opposite_claim_data.claim_dangered)
+				tile.points -= 10
+		elif Global.cdan_enabled and game.active_player != null and game.active_player.orginal_claim.claim_dangered > 0:
+			tile.points += game.active_player.orginal_claim.claim_dangered
 		tile.fuel = mini(4,(check_claim_fuel_tile_count(claim)))
 		# RESULT
 		if wants_tile_data:
@@ -409,6 +421,9 @@ func check_tile_claimably(coords:Vector2i,claim:int,test_suroundings=false,wants
 		var cap_buff = 0
 		var cap_debuff = 0
 		var caps_linked : Array[Vector2i]
+		var limit = 35
+		if Global.cdan_enabled and tile.opposite_claim_data.claim_dangered > 0:
+			limit = -1
 		for neighbor in neighbors:
 			picked_tile = main_grid.get_cell_tile_data(neighbor)
 			if not picked_tile == null:
@@ -419,7 +434,7 @@ func check_tile_claimably(coords:Vector2i,claim:int,test_suroundings=false,wants
 					# Tracks how meny capitals
 					for x in check_claim_captatal(claim).filter(func(_coords): return not _coords in caps_linked):
 						tested_tiles = []
-						if find_linked_tiles(tile.coords,[x],claim,18):
+						if find_linked_tiles(tile.coords,[x],claim,30):
 							caps_linked.append(x)
 							tile.cap_list.append(x)
 							cap_buff += 1
@@ -433,7 +448,7 @@ func check_tile_claimably(coords:Vector2i,claim:int,test_suroundings=false,wants
 				elif picked_tile.get_custom_data("ownership") == oppose_claim:
 					for x in check_claim_captatal(oppose_claim).filter(func(_coords): return not _coords in caps_linked):
 						tested_tiles = []
-						if find_linked_tiles(tile.coords,[x],oppose_claim,18):
+						if find_linked_tiles(tile.coords,[x],oppose_claim,limit):
 							caps_linked.append(x)
 							cap_debuff += 1
 					if picked_tile.get_custom_data("type") == 0:
@@ -464,8 +479,8 @@ func check_tile_claimably(coords:Vector2i,claim:int,test_suroundings=false,wants
 				tile.oppose_points += tile.opposite_claim_data.claim_dangered
 				count -= tile.opposite_claim_data.claim_dangered
 			if Global.blz_enabled and blz_fired:
-				tile.points += 10
-				count += 10
+				tile.points += Global.blz_move_requrement * 10
+				count += Global.blz_move_requrement * 10
 			#elif cap_buff >= 2:
 				#tile.oppose_points += 1
 				#count += 1

@@ -20,9 +20,10 @@ func _ready():
 		player_name.text = peer_name #NEW
 	
 	debug_colour = ["red","yellow","light_blue","green","purple","deep_pink","aqua","dark_orange","turquoise","violet"].pick_random() #NEW
-	multiplayer.connected_to_server.connect(RTCSeverConnected)
+	#multiplayer.connected_to_server.connect(RTCSeverConnected)
 	multiplayer.peer_connected.connect(RTCPeerConnected)
 	multiplayer.peer_disconnected.connect(RTCPeerDisconnected)
+	multiplayer.connected_to_server.connect(RTCSeverConnected)
 	peerRTC.peer_connected.connect(RTCPeerConnected)
 	peerRTC.peer_disconnected.connect(RTCPeerDisconnected)
 
@@ -126,7 +127,8 @@ func _process(_delta):
 			if data.msg == brc_mpol.broadcast_msg.candidate:
 				if peerRTC.has_peer(data.org_peer):
 					print_rich(client_namer()," Get Candidate ",data.org_peer," my id is ",id)
-					peerRTC.get_peer(data.org_peer).connection.add_ice_candidate(data.mid,data.index,data.SDP)
+					var error = peerRTC.get_peer(data.org_peer).connection.add_ice_candidate(data.mid,data.index,data.SDP)
+					print_rich(client_namer(false)," The result: ",error)
 			
 			if data.msg == brc_mpol.broadcast_msg.offer:
 				print_rich(client_namer()," Offer fire")
@@ -170,18 +172,19 @@ func create_peer(id):
 		
 		if err != OK:
 			print_rich("[color=red][b]BRC_NET_ERROR.001:[/b] Connection error. The game will break after this,\n[center]GAME CRASH[/center]\n{0}[/color]".format([err]))
-			OS.alert("Error: Connection error. The game will break after this,\nGAME CRASH", "BRC_NET_ERROR.001")
+			OS.alert("Error: Connection error. The game will break after this,\nGAME CRASH", "BRC_NET_ERROR.002")
 			OS.crash("ERROR")
 		# Ok, so if the host has the same id as the player creating the peer, ie: the one who resived the user connected, then it wont create a offer to it.
 		# So when a player joins a new lobby, the host will resive that they joined, but wont send them a 
 		if id < peerRTC.get_unique_id(): # Was !host_id == self.id:
-			print_rich(client_namer()," The host id {0} doesn't match the user ID: {1}".format([host_id,self.id]))
+			print_rich(client_namer()," The id {0} is smaller than the user ID: {1}".format([id,peerRTC.get_unique_id()]))
 			peer.create_offer()
 		else:
-			print_rich(client_namer()," The host id {0} matches the user ID: {1}".format([host_id,self.id]))
+			print_rich(client_namer()," The id {0} matches or is more than the user ID: {1}".format([id,peerRTC.get_unique_id()]))
 			#_on_lobby_join_button_button_down()
 
-## This sends out a offer
+## This sends out a offer [br]
+## OfferCreated
 @warning_ignore("shadowed_variable")
 func msg_offer_sent(type, data, id):
 	if !peerRTC.has_peer(id):
@@ -219,6 +222,7 @@ func send_answer(id,data):
 	}
 	peer.put_packet(JSON.stringify(msg).to_utf8_buffer())
 
+## iceCandidateCreated
 @warning_ignore("shadowed_variable")
 func msg_ice_sent(mid_name,index_name,SDP_name,id):
 	print_rich(client_namer()," Sending ICE [{0}, {1}, {2}, {3}]".format([mid_name,index_name,SDP_name,id]))

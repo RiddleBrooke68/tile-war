@@ -14,7 +14,7 @@ signal move_made
 ## How meny moves do they get.
 @export var moves = 0:
 	set(n):
-		if n == moves - 1:
+		if n <= moves - 1:
 			move_made.emit()
 		moves = n
 		changed_info.emit()

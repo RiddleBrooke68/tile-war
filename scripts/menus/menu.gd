@@ -84,16 +84,16 @@ func _ready(mp_is_updating=false):
 	sound_play()
 	# Pregenration
 	map_setting.selected = Global.map_type
-	_on_map_setting_item_selected(map_setting.selected,false,false)
+	_on_map_setting_item_selected(map_setting.selected,false,true)
 	# Genration
 	wall_slider.value = Global.wall_count
-	_on_wall_slider_value_changed(wall_slider.value)
+	#_on_wall_slider_value_changed(wall_slider.value)
 	fuel_slider.value = Global.fuel_count
-	_on_fuel_slider_value_changed(fuel_slider.value)
+	#_on_fuel_slider_value_changed(fuel_slider.value)
 	cdan_slider.value = Global.cdan_duration
-	_on_cdan_slider_value_changed(cdan_slider.value)
+	#_on_cdan_slider_value_changed(cdan_slider.value)
 	blz_slider.value = Global.blz_move_requrement
-	_on_blz_slider_value_changed(blz_slider.value)
+	#_on_blz_slider_value_changed(blz_slider.value)
 	# Ai
 	ai_level.selected = Global.ai_level
 	# Active players
