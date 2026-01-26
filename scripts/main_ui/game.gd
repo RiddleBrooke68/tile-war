@@ -208,7 +208,7 @@ func game_state_changed(refresh=false,set_active=true):
 					if active_player == null or refresh:
 						set_active_player(claim)
 						if Global.mp_enabled and Global.mp_host:
-							update_active_player(claim)
+							update_active_player.rpc(claims.find(claim))
 						#if Global.cdan_enabled and claim.claim_dangered:
 							#claim.claim_dangered = false
 						#claim.claim_active = true
@@ -269,9 +269,10 @@ func game_state_changed(refresh=false,set_active=true):
 		moves_plate.number = active_player.moves
 		moves_plate.update_plate_display()
 
-func update_active_player(claim):
-	if active_player != claim:
-		set_active_player(claim)
+@rpc("any_peer")
+func update_active_player(claim:int):
+	if active_player != claims[claim]:
+		set_active_player(claims[claim])
 
 @onready var winers_name = %"winers name"
 @onready var win_animiate = %win_animiate
