@@ -359,6 +359,7 @@ func check_tile_claimably(coords:Vector2i,claim:int,test_suroundings=false,wants
 			#if picked_tile.get_custom_data("ownership") != claim and picked_tile.get_custom_data("type") == 3:
 				#tile.move_to_value *= 2
 		tile = start_search(tile,coords,claim)
+	# UNACESSABLE TILE
 	if picked_tile == null:
 		# DATA
 		tile.type = -1
@@ -367,6 +368,7 @@ func check_tile_claimably(coords:Vector2i,claim:int,test_suroundings=false,wants
 		tile_info.emit(tile)
 		# RESULT
 		return false
+	# Self owned tile.
 	elif picked_tile.get_custom_data("ownership") == claim:
 		# DATA
 		tile.type = 2
@@ -401,6 +403,7 @@ func check_tile_claimably(coords:Vector2i,claim:int,test_suroundings=false,wants
 			return tile
 		tile_info.emit(tile)
 		return false
+	# Aposed owned tile.
 	elif picked_tile.get_custom_data("ownership") != 0:
 		
 		# The most messest ways to write this, it work though.
@@ -510,12 +513,14 @@ func check_tile_claimably(coords:Vector2i,claim:int,test_suroundings=false,wants
 				return tile
 			tile_info.emit(tile)
 			return false
-	elif main_grid.get_cell_atlas_coords(coords) == Vector2i(0,1):
+	# Wall tile.
+	elif picked_tile.get_custom_data("ownership") == 0 and picked_tile.get_custom_data("type") == 1: # main_grid.get_cell_atlas_coords(coords) == Vector2i(0,1)
 		tile.type = 3
 		if wants_tile_data:
 			return tile
 		tile_info.emit(tile)
 		return false
+	# Empty tile.
 	else:
 		# check if it is a fuel tile
 		if picked_tile.get_custom_data("type") == 3:
