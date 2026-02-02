@@ -235,11 +235,11 @@ func game_state_changed(refresh=false,set_active=true):
 	if refresh:
 		turn += 1
 		if ((active_player == null and not bot_first_in_turn_order) or (bot_first_in_turn_order and not there_is_players)) and not Global.mp_enabled:
-			active_player = PlayerClaim.new()
+			set_active_player(PlayerClaim.new())
 			active_player.claim_colour = 0
 			moves_plate.colour = active_player.claim_colour
 		elif (bot_first_in_turn_order and there_is_players):
-			active_player = PlayerClaim.new()
+			set_active_player(PlayerClaim.new())
 			on_next_turn()
 			return
 	#mp should be fine.
