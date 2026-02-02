@@ -136,6 +136,7 @@ var mp_enabled = false:
 		print(i)
 		mp_enabled = i
 var mp_host = false
+var mp_server = false
 var mp_connected = false
 var mp_player_id = 0
 var mp_player_list = {}: # peer_id:peer_data={

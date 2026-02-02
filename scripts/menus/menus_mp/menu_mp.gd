@@ -41,6 +41,7 @@ func _ready(is_updating=false):
 	if "mp_svr_name" in Global.cmd_args.keys():
 		server_name = Global.cmd_args["mp_svr_name"]
 	if "mp_start_server" in Global.cmd_args.keys():
+		Global.mp_server = true
 		if client_name == "":
 			client_name = "Host"
 	# In the main menu, the ready function makes sure this is set to false, 
@@ -349,7 +350,7 @@ func request_global_data(id):
 			"lms":Global.lms_enabled, "bran":Global.bran_enabled,
 			"cdan_e":Global.cdan_enabled, "cdan_d":Global.cdan_duration,
 			"blz_e":Global.blz_enabled,"blz_mr":Global.blz_move_requrement,
-			"players":Global.mp_player_list
+			"players":Global.mp_player_list,"server_state":Global.mp_server
 		}
 		update_global_data.rpc_id(id,
 					dict)
@@ -396,6 +397,8 @@ func update_global_data(dict:Dictionary):
 	# blz_move_requrement setting
 	if dict.blz_mr is int:
 		Global.blz_move_requrement = dict.blz_mr
+	if dict.server_state is bool:
+		Global.mp_server = dict.server_state
 	_ready(true)
 	if Global.mp_player_list.is_same_typed_value(dict.players):
 		Global.mp_player_list = dict.players
@@ -467,7 +470,8 @@ func _on_join_button_down():
 
 func _on_start_button_down():
 	# Only the host should be able to start a game.
-	if Global.mp_host:
+	# UNLESS IT IS A SERVER.
+	if Global.mp_host or Global.mp_server:
 		start_game.rpc()
 
 func _on_singleplayer_pressed():
