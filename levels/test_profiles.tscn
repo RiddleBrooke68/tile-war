@@ -1,0 +1,29 @@
+[gd_scene load_steps=4 format=3 uid="uid://ccoi5y6fsnu8l"]
+
+[ext_resource type="Theme" uid="uid://cedkvwvts0evs" path="res://themes/extra_setting_theame.tres" id="1_26jrr"]
+[ext_resource type="Script" uid="uid://k3vdibvj8r1a" path="res://levels/test_profiles.gd" id="1_xnwiu"]
+[ext_resource type="PackedScene" uid="uid://c437j4qxokwfw" path="res://objects/ui/main_menu/profile_system/profile_loader.tscn" id="2_26jrr"]
+
+[node name="test_profiles" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_26jrr")
+script = ExtResource("1_xnwiu")
+
+[node name="profile_loader" parent="." instance=ExtResource("2_26jrr")]
+layout_mode = 0
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 0.0
+offset_right = 0.0
+offset_bottom = 64.0
+grow_horizontal = 1
+grow_vertical = 1
+
+[connection signal="profile_request_save" from="profile_loader" to="." method="_on_profile_loader_profile_request_save"]
+[connection signal="profile_selected" from="profile_loader" to="." method="_on_profile_loader_profile_selected"]

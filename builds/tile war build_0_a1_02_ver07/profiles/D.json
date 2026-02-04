@@ -1,0 +1,39 @@
+{
+	"discription": "",
+	"name": "D",
+	"settings": {
+		"ai": 1,
+		"blz_e": true,
+		"blz_mr": 10,
+		"bran": false,
+		"cap": [
+			1,
+			1,
+			1,
+			1
+		],
+		"cdan_cd": 5,
+		"cdan_d": 10,
+		"cdan_e": true,
+		"claim": [
+			2,
+			1,
+			1,
+			1
+		],
+		"fuel": 16.0,
+		"lms": true,
+		"map": 1,
+		"move_settings": {
+			"fuel_l": 5,
+			"fuel_r": 2,
+			"tile_int_l": 15,
+			"tile_int_r": 2,
+			"tile_sec_l": 20,
+			"tile_sec_r": 5,
+			"turn_l": 10,
+			"turn_r": 2
+		},
+		"wall": 74.0
+	}
+}

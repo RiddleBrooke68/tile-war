@@ -1,0 +1,209 @@
+[gd_scene load_steps=8 format=3 uid="uid://c437j4qxokwfw"]
+
+[ext_resource type="Theme" uid="uid://cedkvwvts0evs" path="res://themes/extra_setting_theame.tres" id="1_5cmhe"]
+[ext_resource type="Script" uid="uid://6wrcof2c2sjo" path="res://scripts/object/profile_loader.gd" id="2_kn5dh"]
+[ext_resource type="PackedScene" uid="uid://tx1fe2sjbs4q" path="res://objects/ui/main_menu/profile_system/profile_button.tscn" id="3_kn5dh"]
+
+[sub_resource type="Animation" id="Animation_03jyr"]
+length = 0.001
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(2),
+"points": PackedFloat32Array(-704, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:position:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(2),
+"points": PackedFloat32Array(64, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+
+[sub_resource type="Animation" id="Animation_uy0j4"]
+resource_name = "close"
+step = 0.041666668
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0, 3, 3),
+"points": PackedFloat32Array(0, -0.25, 0, 0.16666667, 144.97331, 0, -0.041666687, 95.66269, 0.041666687, -95.66269, -704, -0.124, 0, 0.124, 0),
+"times": PackedFloat32Array(0, 0.33333334, 0.7492311)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:position:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0, 2, 2),
+"points": PackedFloat32Array(64, -0.25, 0, 0.25, 0, 64, -0.05555556, 0, 0.06944445, 0, 64, -0.06944445, 0, 0, 0),
+"times": PackedFloat32Array(0, 0.33333334, 0.75)
+}
+
+[sub_resource type="Animation" id="Animation_kn5dh"]
+resource_name = "open"
+length = 1.0000042
+step = 0.041666668
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(3, 2, 3),
+"points": PackedFloat32Array(-704, -0.29166666, -30.934753, 0.29166666, 30.934753, -21.090248, -0.14383374, -201.84981, 0.125, 175.4194, 0, -0.20833331, 2.2990873, 0.20833331, -2.2990873),
+"times": PackedFloat32Array(0, 0.5, 1)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:position:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(2, 0, 0),
+"points": PackedFloat32Array(64, 0, 0, 0.05555556, 0, 64, -0.09722223, 0, 0, 0, 64, 0, 0, 0, 0),
+"times": PackedFloat32Array(0, 0.5, 1)
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_4msij"]
+_data = {
+&"RESET": SubResource("Animation_03jyr"),
+&"close": SubResource("Animation_uy0j4"),
+&"open": SubResource("Animation_kn5dh")
+}
+
+[node name="profile_loader" type="Panel"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -704.0
+offset_top = 64.0
+offset_right = -1152.0023
+offset_bottom = -72.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_5cmhe")
+script = ExtResource("2_kn5dh")
+profile_obj = ExtResource("3_kn5dh")
+
+[node name="BoxContainer" type="BoxContainer" parent="."]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 696.0
+offset_bottom = 504.0
+vertical = true
+
+[node name="Label" type="Label" parent="BoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "Profile system"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BoxContainer" type="BoxContainer" parent="BoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Control" type="Control" parent="BoxContainer/BoxContainer"]
+clip_contents = true
+custom_minimum_size = Vector2(294, 194)
+layout_mode = 2
+size_flags_stretch_ratio = 0.82
+
+[node name="Label" type="Label" parent="BoxContainer/BoxContainer/Control"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 10.0
+offset_right = 128.0
+offset_bottom = 42.0
+text = "Profile saver"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="profile_name" type="LineEdit" parent="BoxContainer/BoxContainer/Control"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 128.0
+offset_top = 10.0
+offset_right = 288.0
+offset_bottom = 42.0
+placeholder_text = "Profile Name"
+max_length = 16
+
+[node name="profile_discription" type="TextEdit" parent="BoxContainer/BoxContainer/Control"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 8.0
+offset_top = 42.0
+offset_right = 288.0
+offset_bottom = 330.0
+placeholder_text = "Desciption"
+
+[node name="profile_saver" type="Button" parent="BoxContainer/BoxContainer/Control"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 8.0
+offset_top = 330.0
+offset_right = 288.0
+offset_bottom = 362.0
+disabled = true
+text = "Save Profile"
+
+[node name="PanelContainer" type="PanelContainer" parent="BoxContainer/BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="BoxContainer/BoxContainer/PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="profile_browser" type="BoxContainer" parent="BoxContainer/BoxContainer/PanelContainer/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+vertical = true
+
+[node name="animate" type="Button" parent="."]
+layout_mode = 0
+offset_left = 736.0
+offset_top = 256.0
+offset_right = 864.0
+offset_bottom = 288.0
+rotation = 1.5707964
+toggle_mode = true
+text = "Profile loader"
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_4msij")
+}
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.002
+one_shot = true
+
+[connection signal="text_changed" from="BoxContainer/BoxContainer/Control/profile_name" to="." method="_on_profile_name_text_changed"]
+[connection signal="pressed" from="BoxContainer/BoxContainer/Control/profile_saver" to="." method="_on_profile_saver_pressed"]
+[connection signal="toggled" from="animate" to="." method="_on_animate_toggled"]
+[connection signal="timeout" from="Timer" to="." method="refresh_menu"]

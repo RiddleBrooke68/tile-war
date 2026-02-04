@@ -1,8 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://dgvl0kruj60fy"]
+[gd_scene load_steps=11 format=3 uid="uid://dgvl0kruj60fy"]
 
 [ext_resource type="Script" uid="uid://cdggui00f6ndm" path="res://scripts/menus/menu.gd" id="1_cnlwo"]
 [ext_resource type="Theme" uid="uid://dxveohgc0uce2" path="res://themes/default_theme.tres" id="1_kfbsc"]
 [ext_resource type="Theme" uid="uid://cedkvwvts0evs" path="res://themes/extra_setting_theame.tres" id="3_gbx6r"]
+[ext_resource type="PackedScene" uid="uid://c437j4qxokwfw" path="res://objects/ui/main_menu/profile_system/profile_loader.tscn" id="4_bvm7p"]
 
 [sub_resource type="Gradient" id="Gradient_n3ddt"]
 colors = PackedColorArray(0.13544941, 0.09605298, 0.041523762, 1, 0.06992452, 0.019128133, 0.020676874, 1)
@@ -918,6 +919,9 @@ libraries = {
 &"": SubResource("AnimationLibrary_2fskk")
 }
 
+[node name="profile_loader" parent="." groups=["menu_settings_ui"] instance=ExtResource("4_bvm7p")]
+layout_mode = 1
+
 [connection signal="button_down" from="BoxContainer/start_game" to="." method="_on_start_game"]
 [connection signal="item_selected" from="BoxContainer/map/map_setting" to="." method="_on_map_setting_item_selected"]
 [connection signal="item_selected" from="BoxContainer3/BoxContainer/Music type/music_type_setting" to="." method="_on_music_type_setting_item_selected"]
@@ -956,3 +960,6 @@ libraries = {
 [connection signal="text_changed" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/turn_settings/turn_lim/turn_lim_input" to="." method="_on_movement_setting_changed" binds= [6]]
 [connection signal="text_changed" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/turn_settings/turn_reduct/turn_reduct_input" to="." method="_on_movement_setting_changed" binds= [7]]
 [connection signal="toggled" from="Extra_options/Open and close Extra Settings button" to="." method="_on_open_and_close_extra_settings_button_toggled"]
+[connection signal="menu_opened" from="profile_loader" to="." method="_on_profile_loader_menu_opened"]
+[connection signal="profile_request_save" from="profile_loader" to="." method="_on_profile_loader_profile_request_save"]
+[connection signal="profile_selected" from="profile_loader" to="." method="_on_profile_loader_profile_selected"]

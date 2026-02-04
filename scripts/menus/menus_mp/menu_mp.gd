@@ -80,7 +80,7 @@ func set_lobby_player_list():
 	for s in Global.mp_player_list.keys():
 		var player_plate_inst = player_plate.instantiate()
 		player_browser.add_child(player_plate_inst)
-		player_plate_inst.set_nameplate(Global.mp_player_list[s].name,Global.mp_claims_colours[Global.mp_player_list[s].current_claim])
+		player_plate_inst.set_nameplate(Global.mp_player_list[s].name,Global.mp_claims_colours[int(Global.mp_player_list[s].current_claim)])
 
 @onready var green_picker = %green_picker
 @onready var purple_picker = %purple_picker
@@ -342,70 +342,47 @@ func send_player_data(_name,id,current_claim=0):
 @rpc("any_peer")
 func request_global_data(id):
 	if Global.mp_host:
-		var dict = {
-			"map":Global.map_type,
-			"wall":Global.wall_count, "fuel":Global.fuel_count,
-			"cap":Global.cap_list, "claim":Global.claim_list, "ai":Global.ai_level,
-			"mus":Global.music_type,
-			"lms":Global.lms_enabled, "bran":Global.bran_enabled,
-			"cdan_e":Global.cdan_enabled, "cdan_d":Global.cdan_duration,
-			"blz_e":Global.blz_enabled,"blz_mr":Global.blz_move_requrement,
-			"players":Global.mp_player_list,"server_state":Global.mp_server
-		}
-		update_global_data.rpc_id(id,
-					dict)
+		var profile = profile_data.new()
+		profile.settings = save_profile_data()
+		#var dict = {
+			#"map":Global.map_type,
+			#"wall":Global.wall_count, "fuel":Global.fuel_count,
+			#"cap":Global.cap_list, "claim":Global.claim_list, "ai":Global.ai_level,
+			#"mus":Global.music_type,
+			#"lms":Global.lms_enabled, "bran":Global.bran_enabled,
+			#"cdan_e":Global.cdan_enabled, "cdan_d":Global.cdan_duration,
+			#"blz_e":Global.blz_enabled,"blz_mr":Global.blz_move_requrement,
+			#"players":Global.mp_player_list,"server_state":Global.mp_server
+		#}
+		load_profile_data.rpc_id(id,
+					profile.settings)
 
-## Syncs anyone joining the server.
+## Loads a profile.
+## Can be used to send game info to anyone joining.
 @rpc("any_peer")
-func update_global_data(dict:Dictionary):
-	# map type
-	if dict.map is int:
-		Global.map_type = dict.map
-	# Wall count
-	if dict.wall is int:
-		Global.wall_count = dict.wall
-	# Fuel count
-	if dict.fuel is int:
-		Global.fuel_count = dict.fuel
-	# Cap count
-	if dict.cap is Array[int]:
-		Global.cap_list = dict.cap
-	# Claim set
-	if dict.claim is Array[int]:
-		Global.claim_list = dict.claim
-	# Ai level
-	if dict.ai is int:
-		Global.ai_level = dict.ai
-	# music type
-	if dict.mus is int:
-		Global.music_type = dict.mus
-	# LMS setting
-	if dict.lms is bool:
-		Global.lms_enabled = dict.lms
-	# Bran setting
-	if dict.bran is bool:
-		Global.bran_enabled = dict.bran
-	# Cdan setting
-	if dict.cdan_e is bool:
-		Global.cdan_enabled = dict.cdan_e
-	# cdan_duration setting
-	if dict.cdan_d is int:
-		Global.cdan_duration = dict.cdan_d
-	# blz setting
-	if dict.blz_e is bool:
-		Global.blz_enabled = dict.blz_e
-	# blz_move_requrement setting
-	if dict.blz_mr is int:
-		Global.blz_move_requrement = dict.blz_mr
-	if dict.server_state is bool:
-		Global.mp_server = dict.server_state
+func load_profile_data(profile:Dictionary,refresh=true):
+	super(profile,refresh)
+	
+	if profile.keys().has("server_state") and profile.server_state is bool:
+		Global.mp_server = profile.server_state
+	
 	_ready(true)
-	if Global.mp_player_list.is_same_typed_value(dict.players):
-		Global.mp_player_list = dict.players
+	if profile.keys().has("players") and Global.mp_player_list.is_same_typed_value(profile.players):
+		Global.mp_player_list = profile.players
 		set_lobby_player_list()
 		for i in Global.mp_player_list.keys():
 			if Global.mp_player_list[i].current_claim != 0:
 				claims_picker_list[Global.mp_player_list[i].current_claim-1].emit_signal("toggled",true,false,Global.mp_player_list[i].name,Global.mp_player_list[i].id)
+
+func save_profile_data(mp_for_client=true) -> Dictionary:
+	var data = super(mp_for_client)
+	
+	if mp_for_client:
+		data["players"] = Global.mp_player_list
+		
+		data["server_state"] = Global.mp_server
+	
+	return data
 
 func remove_player_data(id):
 	if Global.mp_player_list.has(id):

@@ -1,0 +1,12 @@
+{
+	"name":"example_json",
+	"discription":"an example json file.",
+	"path":"",
+	"settings":{
+		"wall":74, "fuel":16,
+		"cap":[1,1,1,1], "ai":1,
+		"lms":true, "bran":false,
+		"cdan_e":true, "cdan_d":10,"cdan_cd":5,
+		"blz_e":true,"blz_mr":10
+	}
+}

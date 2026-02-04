@@ -131,10 +131,7 @@ enum mp_msg {
 	checkIn
 }
 
-var mp_enabled = false:
-	set(i):
-		print(i)
-		mp_enabled = i
+var mp_enabled = false
 var mp_host = false
 var mp_server = false
 var mp_connected = false

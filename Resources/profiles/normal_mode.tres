@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="profile_data" load_steps=2 format=3 uid="uid://bpuantskf7duk"]
+
+[ext_resource type="Script" uid="uid://wr0hw7caj52v" path="res://scripts/data/profile_data.gd" id="1_grxvo"]
+
+[resource]
+script = ExtResource("1_grxvo")
+profile_name = "default game mode"
+profile_discription = "The standard settings the game uses."
+metadata/_custom_type_script = "uid://wr0hw7caj52v"
