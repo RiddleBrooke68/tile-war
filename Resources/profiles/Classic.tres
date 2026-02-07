@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="profile_data" load_steps=2 format=3 uid="uid://b6nx3uldv78o7"]
+
+[ext_resource type="Script" uid="uid://wr0hw7caj52v" path="res://scripts/data/profile_data.gd" id="1_vsf0p"]
+
+[resource]
+script = ExtResource("1_vsf0p")
+profile_name = "Classic"
+profile_discription = "The game distiled to it orignal consept."
+settings = {
+"ai": 0,
+"blz_e": false,
+"blz_mr": 10,
+"bran": false,
+"cap": [1, 1, 1, 1],
+"cdan_cd": 5,
+"cdan_d": 10,
+"cdan_e": false,
+"fuel": 0,
+"lms": false,
+"map": 0,
+"move_settings": {
+"fuel_l": 10,
+"fuel_r": 1,
+"tile_int_l": 15,
+"tile_int_r": 2,
+"tile_sec_l": 30,
+"tile_sec_r": 10,
+"turn_l": 10,
+"turn_r": 1
+},
+"wall": 0
+}
+metadata/_custom_type_script = "uid://wr0hw7caj52v"

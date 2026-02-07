@@ -97,26 +97,27 @@ func _on_green_picker_toggled(toggled_on,mp_player_source=true,mp_name="",mp_id=
 			Global.mp_player_list[multiplayer.get_unique_id()].current_claim = 1
 			green_claim_type.item_selected.emit(2,false)
 			green_claim_type.disabled = true
-			green_name.text = Global.mp_player_list[multiplayer.get_unique_id()].name
+			Global.claim_names[0] = Global.mp_player_list[multiplayer.get_unique_id()].name
 		else:
 			Global.mp_player_list[multiplayer.get_unique_id()].current_claim = 0
 			green_claim_type.item_selected.emit(0,false)
 			green_claim_type.disabled = false
-			green_name.text = ""
-		_on_green_picker_toggled.rpc(toggled_on,false,green_name.text,multiplayer.get_unique_id())
+			Global.claim_names[0] = ""
+		_on_green_picker_toggled.rpc(toggled_on,false,Global.claim_names[0],multiplayer.get_unique_id())
 	else:
 		if toggled_on:
 			Global.mp_player_list[mp_id].current_claim = 1
 			green_claim_type.item_selected.emit(2,false)
 			green_claim_type.disabled = true
-			green_name.text = mp_name
+			Global.claim_names[0] = mp_name
 			green_picker.disabled = true
 		else:
 			Global.mp_player_list[mp_id].current_claim = 0
 			green_claim_type.item_selected.emit(0,false)
 			green_claim_type.disabled = false
-			green_name.text = ""
+			Global.claim_names[0] = ""
 			green_picker.disabled = false
+	green_name.text = Global.claim_names[0]
 	set_lobby_player_list()
 
 ## MULTIPAYER ONLY.
@@ -128,26 +129,27 @@ func _on_purple_picker_toggled(toggled_on,mp_player_source=true,mp_name="",mp_id
 			Global.mp_player_list[multiplayer.get_unique_id()].current_claim = 2
 			purple_claim_type.item_selected.emit(2,false)
 			purple_claim_type.disabled = true
-			purple_name.text = Global.mp_player_list[multiplayer.get_unique_id()].name
+			Global.claim_names[1] = Global.mp_player_list[multiplayer.get_unique_id()].name
 		else:
 			Global.mp_player_list[multiplayer.get_unique_id()].current_claim = 0
 			purple_claim_type.item_selected.emit(0,false)
 			purple_claim_type.disabled = false
-			purple_name.text = ""
-		_on_purple_picker_toggled.rpc(toggled_on,false,purple_name.text,multiplayer.get_unique_id())
+			Global.claim_names[1] = ""
+		_on_purple_picker_toggled.rpc(toggled_on,false,Global.claim_names[1],multiplayer.get_unique_id())
 	else:
 		if toggled_on:
 			Global.mp_player_list[mp_id].current_claim = 2
 			purple_claim_type.item_selected.emit(2,false)
 			purple_claim_type.disabled = true
-			purple_name.text = mp_name
+			Global.claim_names[1] = mp_name
 			purple_picker.disabled = true
 		else:
 			Global.mp_player_list[mp_id].current_claim = 0
 			purple_claim_type.item_selected.emit(0,false)
 			purple_claim_type.disabled = false
-			purple_name.text = ""
+			Global.claim_names[1] = ""
 			purple_picker.disabled = false
+	purple_name.text = Global.claim_names[1]
 	set_lobby_player_list()
 
 ## MULTIPAYER ONLY.
@@ -159,26 +161,27 @@ func _on_yellow_picker_toggled(toggled_on,mp_player_source=true,mp_name="",mp_id
 			Global.mp_player_list[multiplayer.get_unique_id()].current_claim = 3
 			yellow_claim_type.item_selected.emit(2,false)
 			yellow_claim_type.disabled = true
-			yellow_name.text = Global.mp_player_list[multiplayer.get_unique_id()].name
+			Global.claim_names[2] = Global.mp_player_list[multiplayer.get_unique_id()].name
 		else:
 			Global.mp_player_list[multiplayer.get_unique_id()].current_claim = 0
 			yellow_claim_type.item_selected.emit(0,false)
 			yellow_claim_type.disabled = false
-			yellow_name.text = ""
-		_on_yellow_picker_toggled.rpc(toggled_on,false,yellow_name.text,multiplayer.get_unique_id())
+			Global.claim_names[2] = ""
+		_on_yellow_picker_toggled.rpc(toggled_on,false,Global.claim_names[2],multiplayer.get_unique_id())
 	else:
 		if toggled_on:
 			Global.mp_player_list[mp_id].current_claim = 3
 			yellow_claim_type.item_selected.emit(2,false)
 			yellow_claim_type.disabled = true
-			yellow_name.text = mp_name
+			Global.claim_names[2] = mp_name
 			yellow_picker.disabled = true
 		else:
 			Global.mp_player_list[mp_id].current_claim = 0
 			yellow_claim_type.item_selected.emit(0,false)
 			yellow_claim_type.disabled = false
-			yellow_name.text = ""
+			Global.claim_names[2] = ""
 			yellow_picker.disabled = false
+	yellow_name.text = Global.claim_names[2]
 	set_lobby_player_list()
 
 ## MULTIPAYER ONLY.
@@ -190,26 +193,27 @@ func _on_red_picker_toggled(toggled_on,mp_player_source=true,mp_name="",mp_id=""
 			Global.mp_player_list[multiplayer.get_unique_id()].current_claim = 4
 			red_claim_type.item_selected.emit(2,false)
 			red_claim_type.disabled = true
-			red_name.text = Global.mp_player_list[multiplayer.get_unique_id()].name
+			Global.claim_names[3] = Global.mp_player_list[multiplayer.get_unique_id()].name
 		else:
 			Global.mp_player_list[multiplayer.get_unique_id()].current_claim = 0
 			red_claim_type.item_selected.emit(0,false)
 			red_claim_type.disabled = false
-			red_name.text = ""
-		_on_red_picker_toggled.rpc(toggled_on,false,red_name.text,multiplayer.get_unique_id())
+			Global.claim_names[3] = ""
+		_on_red_picker_toggled.rpc(toggled_on,false,Global.claim_names[3],multiplayer.get_unique_id())
 	else:
 		if toggled_on:
 			Global.mp_player_list[mp_id].current_claim = 4
 			red_claim_type.item_selected.emit(2,false)
 			red_claim_type.disabled = true
-			red_name.text = mp_name
+			Global.claim_names[3] = mp_name
 			red_picker.disabled = true
 		else:
 			Global.mp_player_list[mp_id].current_claim = 0
 			red_claim_type.item_selected.emit(0,false)
 			red_claim_type.disabled = false
-			red_name.text = ""
+			Global.claim_names[3] = ""
 			red_picker.disabled = false
+	red_name.text = Global.claim_names[3]
 	set_lobby_player_list()
 
 

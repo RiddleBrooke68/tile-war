@@ -526,7 +526,7 @@ layout_mode = 2
 [node name="Button" type="Label" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/BoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Last man standing"
+text = "Last claim standing"
 
 [node name="lms_setting" type="CheckBox" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/BoxContainer2"]
 unique_name_in_owner = true
@@ -545,31 +545,54 @@ text = "Battle random results"
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="BoxContainer4" type="BoxContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings"]
+[node name="cdan_container" type="BoxContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings"]
+layout_mode = 2
+vertical = true
+
+[node name="BoxContainer4" type="BoxContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/cdan_container"]
 layout_mode = 2
 
-[node name="Button" type="Label" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/BoxContainer4"]
+[node name="Button" type="Label" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/cdan_container/BoxContainer4"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Capital Protection"
 
-[node name="cdan_setting" type="CheckBox" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/BoxContainer4"]
+[node name="cdan_setting" type="CheckBox" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/cdan_container/BoxContainer4"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "This makes it so, if you have a capital taken, none can take your tiles untill after you have a turn. "
 button_pressed = true
 
-[node name="cdan_settings" type="BoxContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings"]
+[node name="cdan_settings" type="BoxContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/cdan_container"]
 layout_mode = 2
 size_flags_horizontal = 3
 vertical = true
 
-[node name="cdan_text" type="Label" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/cdan_settings"]
+[node name="cdan_text" type="Label" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/cdan_container/cdan_settings"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Capital protection duration:"
 
-[node name="CdanSlider" type="HSlider" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/cdan_settings"]
+[node name="CdanSlider" type="HSlider" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/cdan_container/cdan_settings"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Controls the number of Wall tiles there will be added in grenrating a map."
+min_value = 1.0
+max_value = 30.0
+value = 1.0
+rounded = true
+
+[node name="cdan_settings2" type="BoxContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/cdan_container"]
+layout_mode = 2
+size_flags_horizontal = 3
+vertical = true
+
+[node name="cdan_cd_text" type="Label" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/cdan_container/cdan_settings2"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Capital protection duration:"
+
+[node name="CdanCdSlider" type="HSlider" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/cdan_container/cdan_settings2"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Controls the number of Wall tiles there will be added in grenrating a map."
@@ -943,8 +966,9 @@ layout_mode = 1
 [connection signal="item_selected" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/BoxContainer/ai_level_setting" to="." method="_on_change_ai_level"]
 [connection signal="toggled" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/BoxContainer2/lms_setting" to="." method="_on_lms_setting_toggled"]
 [connection signal="toggled" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/BoxContainer3/bran_setting" to="." method="_on_bran_setting_toggled"]
-[connection signal="toggled" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/BoxContainer4/cdan_setting" to="." method="_on_cdan_setting_toggled"]
-[connection signal="value_changed" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/cdan_settings/CdanSlider" to="." method="_on_cdan_slider_value_changed"]
+[connection signal="toggled" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/cdan_container/BoxContainer4/cdan_setting" to="." method="_on_cdan_setting_toggled"]
+[connection signal="value_changed" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/cdan_container/cdan_settings/CdanSlider" to="." method="_on_cdan_slider_value_changed"]
+[connection signal="value_changed" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/cdan_container/cdan_settings2/CdanCdSlider" to="." method="_on_cdan_cd_slider_value_changed"]
 [connection signal="toggled" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/BoxContainer5/blz_setting" to="." method="_on_blz_setting_toggled"]
 [connection signal="value_changed" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/blz_settings2/BlzSlider" to="." method="_on_blz_slider_value_changed"]
 [connection signal="item_selected" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer2/BoxContainer/green_number/green_cap" to="." method="_on_green_cap_item_selected"]

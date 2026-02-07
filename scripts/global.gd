@@ -13,7 +13,7 @@ var wall_count = 74
 ## Sets the number of fuel tiles
 var fuel_count = 16
 ## Defines how meny capital of each claim that will be spwaned in, or removed.
-var cap_list = [1,1,1,1]
+var cap_list = [2,2,2,2]
 
 
 # AI SETTINGS
@@ -87,7 +87,7 @@ var cdan_duration = 10
 var cdan_capture_duration = 5
 ## Bliz attack
 var blz_enabled = true
-var blz_move_requrement = 10
+var blz_move_requrement = 5
 
 # Moves settings
 # Tiles

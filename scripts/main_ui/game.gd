@@ -32,6 +32,8 @@ var active_player : ClaimData:
 
 
 @onready var moves_plate = %moves_plate
+
+var avaible_moves : Array[tile_data]
 ## Tracks the current turn
 var turn = 0
 ## Used when we need to display the current turn.
@@ -83,8 +85,8 @@ func on_next_turn(mp_player_source=true):
 		print(claim.get_data())
 		claim.claim_dead = board_ui.check_claim_captatal(claim.claim_colour).is_empty()
 		if claim.claim_dead == false and claim.claim_had_turn == false and claim.name != active_player.name:
-			
 			if claim is NonPlayerClaim and claim.claim_dead == false:
+				done_moves.clear()
 				set_active_player(claim)
 				#if Global.cdan_enabled and claim.claim_dangered:
 					#claim.claim_dangered = false
@@ -93,22 +95,20 @@ func on_next_turn(mp_player_source=true):
 				#active_player.tile_size = claim.tile_size
 				#moves_plate.colour = claim.claim_colour
 				claim.claim_had_turn = true
-				# Scans the available moves
-				var colection : Array[tile_data] = board_ui.get_all_avalable_tiles(claim.claim_colour)
 				# Only the host should give the ai movement.
 					# Loops through untill it has no more moves
 				while claim.moves > 0:
 					if not Global.mp_enabled or (Global.mp_enabled and Global.mp_host):
-						var target : tile_data = claim.claim_surounding_tiles(colection)
+						var target : tile_data = claim.claim_surounding_tiles(avaible_moves)
 						if target != null and claim.moves > 0:
-							colection.erase(target)
+							avaible_moves.erase(target)
 							done_moves.append_array(
-								colection.filter(
+								avaible_moves.filter(
 									func(thing:tile_data) -> bool: return true if not thing.coords in done_moves else false).map(
 									func(thing:tile_data) -> Vector2i: return thing.coords))
 							#print(done_moves)
 							board_ui.on_claim_tile(target.coords,claim.claim_colour)
-							colection.append_array(board_ui.get_all_local_avalable_tiles(target.coords,claim.claim_colour,done_moves))
+							avaible_moves.append_array(board_ui.get_all_local_avalable_tiles(target.coords,claim.claim_colour,true,done_moves))
 							#active_player.moves -= 1
 							#claim.moves -= 1
 							#mp_sync_movement.rpc(claims.find(claim),claim.moves,true)
@@ -119,7 +119,7 @@ func on_next_turn(mp_player_source=true):
 							#mp_sync_movement.rpc(claims.find(claim),claim.moves,true)
 							remove_active_player_moves(0,true,true)
 						print(active_player.moves)
-						gui_board_events()
+						gui_board_events(target)
 					clock.start()
 					await clock.timeout
 					
@@ -129,6 +129,7 @@ func on_next_turn(mp_player_source=true):
 			
 			#mp If it reads a player, it gives them a turn if they haven't had one.
 			elif claim is PlayerClaim:
+				done_moves.clear()
 				set_active_player(claim)
 				#if Global.cdan_enabled and claim.claim_dangered:
 					#claim.claim_dangered = false
@@ -159,7 +160,7 @@ func mp_sync_movement(claim:int,moves : int,active_afected=false):
 		if active_player == null:
 			print_rich("[color=red]ERROR: the active player hasn't been set before atempts of syncing it.[/color]")
 			set_active_player(claims[claim])
-		gui_board_events()
+		gui_board_events(tile_data.new())
 	if active_player == claims[claim]:
 		active_player = claims[claim]
 	if active_afected and active_player.moves != moves:
@@ -179,6 +180,7 @@ var dead_number = 0
 func game_state_changed(refresh=false,set_active=true):
 	#claims_info.clear()
 	if refresh:
+		done_moves.clear()
 		active_player = null
 	var claim_text = "The Claims\n"
 	var bot_first_in_turn_order = false
@@ -243,7 +245,7 @@ func game_state_changed(refresh=false,set_active=true):
 			on_next_turn()
 			return
 	#mp should be fine.
-	if active_player != null: 
+	if active_player != null:
 		if Global.mp_enabled and Global.mp_host:
 			mp_sync_movement.rpc(claims.find(active_player),active_player.moves,true)
 		claim_text += "----------\nYou have {0} moves left".format([active_player.moves])
@@ -257,6 +259,12 @@ func game_state_changed(refresh=false,set_active=true):
 			next_turn.disabled = true
 		else:
 			board_ui.off_input = false
+		
+		board_ui.action_grid.clear()
+		if active_player.moves != 0:
+			for i in avaible_moves:#board_ui.get_all_avalable_tiles(active_player.claim_colour,false):
+				board_ui.action_grid.set_cell(i.coords,0,Vector2(active_player.claim_colour,0))
+	
 	
 	claims_info.text = claim_text
 	if dead_number == 1 and Global.lms_enabled:
@@ -299,8 +307,33 @@ func _on_chat_input_text_submitted(new_text):
 	chat_input.text = ""
 
 ## This currently oprates the move panel animation.
-func gui_board_events():
-	moves_plate.number = active_player.moves #mp active_player.moves.
+func gui_board_events(target:tile_data):
+	if active_player != null:
+		if not target.available:
+			done_moves.append_array(
+				avaible_moves.filter(
+					func(thing:tile_data) -> bool: return true if thing.coords == target.coords and not thing.coords in done_moves else false).map(
+					func(thing:tile_data) -> Vector2i: return thing.coords))
+			for i in avaible_moves.filter(
+					func(thing:tile_data) -> bool: return true if thing.coords == target.coords else false).map(
+					func(thing:tile_data) -> tile_data: return thing):
+				avaible_moves.erase(i) 
+			#print(done_moves)
+			#board_ui.on_claim_tile(target.coords,active_player.claim_colour)
+			avaible_moves.append_array(board_ui.get_all_local_avalable_tiles(target.coords,active_player.claim_colour,false,done_moves,3))
+			for i in avaible_moves:
+				for n in avaible_moves.filter(
+					func(thing:tile_data) -> bool: return true if thing != i and thing.coords == i.coords else false).map(
+					func(thing:tile_data) -> tile_data: return thing):
+					avaible_moves.erase(n)
+		
+		board_ui.action_grid.clear()
+		if active_player.moves != 0:
+			for i in avaible_moves:#board_ui.get_all_avalable_tiles(active_player.claim_colour,false):
+				board_ui.action_grid.set_cell(i.coords,0,Vector2(active_player.claim_colour,0))
+		
+		moves_plate.number = active_player.moves #mp active_player.moves.
+	
 
 
 func _on_board_tile_info(data:tile_data):
@@ -344,6 +377,8 @@ func set_active_player(claim:ClaimData):
 	active_player.orginal_claim = claim
 	active_player.tile_size = claim.tile_size
 	moves_plate.colour = claim.claim_colour
+	# Scans the available moves
+	avaible_moves = board_ui.get_all_avalable_tiles(active_player.claim_colour,claim is NonPlayerClaim)
 
 func link_up_active_player(claim:ClaimData):
 	if not active_player.orginal_claim == claim and not active_player.move_made.is_connected(claim.depleate_danger_value):

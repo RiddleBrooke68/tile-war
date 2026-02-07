@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="profile_data" load_steps=2 format=3 uid="uid://b8ewdg7kt57t7"]
+
+[ext_resource type="Script" uid="uid://wr0hw7caj52v" path="res://scripts/data/profile_data.gd" id="1_8hnpc"]
+
+[resource]
+script = ExtResource("1_8hnpc")
+profile_name = "Forts"
+profile_discription = "A game mode built around Fortress map."
+settings = {
+"ai": 1,
+"blz_e": false,
+"blz_mr": 10,
+"bran": false,
+"cap": [2, 2, 2, 2],
+"cdan_cd": 5,
+"cdan_d": 10,
+"cdan_e": true,
+"fuel": 38,
+"lms": true,
+"map": 0,
+"move_settings": {
+"fuel_l": 50,
+"fuel_r": 1,
+"tile_int_l": 15,
+"tile_int_r": 1,
+"tile_sec_l": 30,
+"tile_sec_r": 5,
+"turn_l": 0,
+"turn_r": 100
+},
+"wall": 36
+}
+metadata/_custom_type_script = "uid://wr0hw7caj52v"

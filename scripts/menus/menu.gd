@@ -52,6 +52,8 @@ class_name menu_class
 @onready var cdan_setting : CheckBox = %cdan_setting
 @onready var cdan_text : Label = %cdan_text
 @onready var cdan_slider : Slider = %CdanSlider
+@onready var cdan_cd_text : Label = %cdan_cd_text
+@onready var cdan_cd_slider : Slider = %CdanCdSlider
 @onready var blz_setting : CheckBox = %blz_setting
 @onready var blz_text : Label = %blz_text
 @onready var blz_slider : Slider = %BlzSlider
@@ -95,6 +97,8 @@ func _ready(mp_is_updating=false):
 	#_on_fuel_slider_value_changed(fuel_slider.value)
 	cdan_slider.value = Global.cdan_duration
 	#_on_cdan_slider_value_changed(cdan_slider.value)
+	cdan_cd_slider.value = Global.cdan_capture_duration
+	
 	blz_slider.value = Global.blz_move_requrement
 	#_on_blz_slider_value_changed(blz_slider.value)
 	# Ai
@@ -163,35 +167,38 @@ func drag_ended(value):
 @rpc("any_peer")
 func _on_map_setting_item_selected(index,mp_player_source=true,block=false):
 	if Global.mp_enabled and mp_player_source:
-		_on_map_setting_item_selected.rpc(index,false)
+		_on_map_setting_item_selected.rpc(index,false,block)
 	map_setting.selected = index
 	Global.map_type = index
-	if not block:
-		for i in range(0,4):
-			if index == 0:
+	for i in range(0,4):
+		if index == 0:
+			if not block:
 				cap_list[i].selected = 0
 				Global.cap_list[i] = 1
-				cap_list[i].set_item_disabled(1,false)
-				cap_list[i].set_item_disabled(2,false)
-				cap_list[i].set_item_disabled(3,true)
-			elif index == 1:
+			cap_list[i].set_item_disabled(1,false)
+			cap_list[i].set_item_disabled(2,false)
+			cap_list[i].set_item_disabled(3,true)
+		elif index == 1:
+			if not block:
 				cap_list[i].selected = 1
 				Global.cap_list[i] = 2
-				cap_list[i].set_item_disabled(1,false)
-				cap_list[i].set_item_disabled(2,false)
-				cap_list[i].set_item_disabled(3,false)
-			elif index == 2:
+			cap_list[i].set_item_disabled(1,false)
+			cap_list[i].set_item_disabled(2,false)
+			cap_list[i].set_item_disabled(3,false)
+		elif index == 2:
+			if not block:
 				cap_list[i].selected = 1
 				Global.cap_list[i] = 2
-				cap_list[i].set_item_disabled(1,false)
-				cap_list[i].set_item_disabled(2,true)
-				cap_list[i].set_item_disabled(3,true)
-			elif index == 3:
+			cap_list[i].set_item_disabled(1,false)
+			cap_list[i].set_item_disabled(2,true)
+			cap_list[i].set_item_disabled(3,true)
+		elif index == 3:
+			if not block:
 				cap_list[i].selected = 1
 				Global.cap_list[i] = 2
-				cap_list[i].set_item_disabled(1,false)
-				cap_list[i].set_item_disabled(2,true)
-				cap_list[i].set_item_disabled(3,true)
+			cap_list[i].set_item_disabled(1,false)
+			cap_list[i].set_item_disabled(2,true)
+			cap_list[i].set_item_disabled(3,true)
 	sound_play()
 
 @rpc("any_peer")
@@ -427,6 +434,22 @@ func _on_cdan_slider_value_changed(value,mp_player_source=true):
 	sound_play(true)
 
 @rpc("any_peer")
+func _on_cdan_cd_slider_value_changed(value,mp_player_source=true):
+	# Multiplayer parts.cdan_slider.value
+	if Global.mp_enabled and mp_player_source and Global.cdan_capture_duration != int(value):
+		cdan_cd_text.text = "Capital attacker protection duration: {0}".format([int(value)])
+		Global.cdan_capture_duration = int(value)
+		_on_cdan_cd_slider_value_changed.rpc(value,false)
+	elif Global.mp_enabled and cdan_slider.value != int(value):
+		cdan_cd_text.text = "Capital attacker protection duration: {0}".format([int(value)])
+		Global.cdan_capture_duration = int(value)
+		cdan_cd_slider.value = value
+	else:
+		cdan_cd_text.text = "Capital attacker protection duration: {0}".format([int(value)])
+		Global.cdan_capture_duration = int(value)
+	sound_play(true)
+
+@rpc("any_peer")
 func _on_blz_setting_toggled(toggled_on,mp_player_source=true):
 	if Global.mp_enabled and mp_player_source:
 		_on_blz_setting_toggled.rpc(toggled_on,false)
@@ -578,6 +601,7 @@ func load_profile_data(profile:Dictionary,refresh=true):
 	# map type
 	if profile.keys().has("map") and profile.map is int:
 		Global.map_type = profile.map
+		_on_map_setting_item_selected(profile.map,false,true)
 	# Wall count
 	if profile.keys().has("wall") and profile.wall is int:
 		Global.wall_count = profile.wall
@@ -585,7 +609,7 @@ func load_profile_data(profile:Dictionary,refresh=true):
 	if profile.keys().has("fuel") and profile.fuel is int:
 		Global.fuel_count = profile.fuel
 	# Cap count
-	if profile.keys().has("cap") and profile.cap is Array[int]:
+	if profile.keys().has("cap"): #and profile.cap is Array[int]:
 		Global.cap_list = profile.cap
 	# Claim set
 	if profile.keys().has("claim") and profile.claim is Array[int]:
