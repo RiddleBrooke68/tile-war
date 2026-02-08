@@ -61,6 +61,8 @@ func update_plate_display(type=0):
 @onready var number_shifter = $number_shifter
 
 func animate_change(num):
+	if number_shifter == null:
+		return
 	if number_shifter.is_playing():
 		update_plate_display()
 	number_shifter.play("RESET")

@@ -108,7 +108,7 @@ func on_next_turn(mp_player_source=true):
 									func(thing:tile_data) -> Vector2i: return thing.coords))
 							#print(done_moves)
 							board_ui.on_claim_tile(target.coords,claim.claim_colour)
-							avaible_moves.append_array(board_ui.get_all_local_avalable_tiles(target.coords,claim.claim_colour,true,done_moves))
+							avaible_moves.append_array(board_ui.get_all_local_avalable_tiles(target.coords,claim.claim_colour,true,done_moves,5))
 							#active_player.moves -= 1
 							#claim.moves -= 1
 							#mp_sync_movement.rpc(claims.find(claim),claim.moves,true)
@@ -320,7 +320,7 @@ func gui_board_events(target:tile_data):
 				avaible_moves.erase(i) 
 			#print(done_moves)
 			#board_ui.on_claim_tile(target.coords,active_player.claim_colour)
-			avaible_moves.append_array(board_ui.get_all_local_avalable_tiles(target.coords,active_player.claim_colour,false,done_moves,3))
+			avaible_moves.append_array(board_ui.get_all_local_avalable_tiles(target.coords,active_player.claim_colour,false,done_moves,5))
 			for i in avaible_moves:
 				for n in avaible_moves.filter(
 					func(thing:tile_data) -> bool: return true if thing != i and thing.coords == i.coords else false).map(

@@ -28,31 +28,31 @@ signal move_made
 ##@deprecated: This will never apear in game and is used only as to give me thoughts on how they work.
 @export_multiline var info : String
 @export var orginal_claim : ClaimData
-var fuel_count = 0:
+@export var fuel_count = 0:
 	set(n):
 		fuel_count = n
 		changed_info.emit()
-var tile_size = 0:
+@export var tile_size = 0:
 	set(n):
 		tile_size = n
 		changed_info.emit()
-var capatal_tile : Array[Vector2i]:
+@export var capatal_tile : Array[Vector2i]:
 	set(n):
 		capatal_tile = n
 		changed_info.emit()
-var claim_dead = false:
+@export var claim_dead = false:
 	set(n):
 		claim_dead = n
 		changed_info.emit()
-var claim_active = false:
+@export var claim_active = false:
 	set(n):
 		claim_active = n
 		changed_info.emit()
-var claim_dangered = 0:
+@export var claim_dangered = 0:
 	set(n):
 		claim_dangered = n
 		changed_info.emit()
-var claim_had_turn = false:
+@export var claim_had_turn = false:
 	set(n):
 		claim_had_turn = n
 		changed_info.emit()

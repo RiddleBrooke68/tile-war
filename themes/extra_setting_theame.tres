@@ -15,3 +15,4 @@ corner_radius_bottom_left = 6
 
 [resource]
 Panel/styles/panel = SubResource("StyleBoxFlat_kfbsc")
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_kfbsc")
