@@ -52,7 +52,7 @@ func update_plate_display(type=0):
 		else:
 			plate_number.texture = overflow_num
 	elif type == 1:
-		if colour in range(1,move_title_colours.size()+1):
+		if colour in range(1,move_title_colours.size()):
 			plate_moves.texture = move_title_colours[colour-1]
 		else:
 			plate_moves.texture = move_title_unknown_colour

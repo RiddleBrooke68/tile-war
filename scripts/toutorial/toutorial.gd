@@ -158,11 +158,14 @@ func _on_toutorial_grid_took_tile(claim:int,type:int,moved=true):
 		moves_prior = moves
 		moves_plate.number = moves
 		moves_plate.animate_change(moves)
+		var claim_pos = 0
+		for i in range(claim_mangement.size()):
+			claim_pos = i if claim_mangement[i].claim_colour == claim else claim_pos
 		if type == 0:
-			claim_mangement[claim-1].tile_size += 1
+			claim_mangement[claim_pos].tile_size += 1
 		if type == 2:
-			claim_mangement[claim-1].tile_size += 1
-			claim_mangement[claim-1].fuel_count += 1
+			claim_mangement[claim_pos].tile_size += 1
+			claim_mangement[claim_pos].fuel_count += 1
 		
 	else:
 		moves_plate.number = moves

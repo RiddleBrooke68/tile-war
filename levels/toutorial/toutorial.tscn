@@ -369,11 +369,17 @@ toutorial_changes_list = Array[Dictionary]([{}, {}, {
 "kill_player": [1, false],
 "name_player": [1, "Builders Leage"],
 "place": [Vector2i(-2, -11), Vector2(5, 1)],
-"set_move_colour": 5
+"set_move_colour": 5,
+"set_moves_number": 3
 }, {
+"place": [Vector2(-3, -10), Vector2(5, -1)],
 "repeated_set": {
-"repeated_set": {}
+"place": [Vector2(-4, -9), Vector2(5, -1)],
+"repeated_set": {
+"place": [Vector2(-2, -9), Vector2(5, -1)]
 }
+},
+"set_moves_number": 0
 }])
 claim_mangement = Array[ExtResource("2_v5ldb")]([SubResource("Resource_6556l"), SubResource("Resource_reak3"), SubResource("Resource_4cl2c"), SubResource("Resource_xx05t")])
 
@@ -1343,10 +1349,10 @@ grow_vertical = 0
 text = "next"
 
 [node name="turns_4" type="PanelContainer" parent="turns"]
-offset_left = 480.0
-offset_top = 160.0
-offset_right = 896.0
-offset_bottom = 380.0
+offset_left = 632.0
+offset_top = 154.0
+offset_right = 888.0
+offset_bottom = 324.0
 theme = SubResource("Theme_sy64q")
 
 [node name="Control" type="Control" parent="turns/turns_4"]
@@ -1366,7 +1372,7 @@ grow_vertical = 2
 bbcode_enabled = true
 text = "[center]Turns 4[/center]
 
-..."
+Thats their moves, so now, its on to your moves again."
 
 [node name="next" type="Button" parent="turns/turns_4/Control"]
 layout_mode = 1
