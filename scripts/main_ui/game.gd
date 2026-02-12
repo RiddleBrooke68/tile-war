@@ -320,7 +320,7 @@ func gui_board_events(target:tile_data):
 				avaible_moves.erase(i) 
 			#print(done_moves)
 			#board_ui.on_claim_tile(target.coords,active_player.claim_colour)
-			avaible_moves.append_array(board_ui.get_all_local_avalable_tiles(target.coords,active_player.claim_colour,false,done_moves,5))
+			avaible_moves.append_array(board_ui.get_all_local_avalable_tiles(target.coords,active_player.claim_colour,false,done_moves,2))
 			for i in avaible_moves:
 				for n in avaible_moves.filter(
 					func(thing:tile_data) -> bool: return true if thing != i and thing.coords == i.coords else false).map(

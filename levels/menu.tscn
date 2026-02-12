@@ -199,13 +199,15 @@ layout_mode = 2
 button_pressed = true
 alignment = 1
 selected = 0
-item_count = 3
+item_count = 4
 popup/item_0/text = "warning siren"
 popup/item_0/id = 0
 popup/item_1/text = "wolfquest"
 popup/item_1/id = 1
 popup/item_2/text = "33 thousand tiles under the blue"
 popup/item_2/id = 2
+popup/item_3/text = "Loon Skirmish"
+popup/item_3/id = 3
 
 [node name="music_settings" type="BoxContainer" parent="BoxContainer3/BoxContainer"]
 layout_mode = 2

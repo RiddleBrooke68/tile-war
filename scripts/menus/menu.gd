@@ -71,6 +71,9 @@ class_name menu_class
 ## For game sounds. (CURRENTLY USING SOUNDS FROM GOD MACHINE)
 var sound : AudioStreamPlayer
 
+
+var music : AudioStreamPlayer
+
 #var cmd_args = {}
 
 func _ready(mp_is_updating=false):
@@ -87,6 +90,10 @@ func _ready(mp_is_updating=false):
 	sound = AudioStreamPlayer.new()
 	add_child(sound)
 	sound_play()
+	if music == null:
+		music = AudioStreamPlayer.new()
+		add_child(music)
+		music_play()
 	# Pregenration
 	map_setting.selected = Global.map_type
 	_on_map_setting_item_selected(map_setting.selected,false,true)
@@ -158,6 +165,11 @@ func sound_play(use_drag=false):
 		sound.stream = load("res://audio/FX/left click sound.mp3") as AudioStream
 		sound.play()
 
+func music_play():
+	if not music.playing:
+		music.volume_linear = Global.music_vol/10
+		music.stream = load("res://audio/music/placeholders/stolen/pvz_gw_lounge_lizard.ogg") as AudioStream
+		music.play()
 
 var drag = false
 

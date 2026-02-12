@@ -63,9 +63,10 @@ var dist = 2
 ## Which type of music is it.
 var music_type = 0
 const music_list = [
-	"res://audio/music/warning siren/warning siren.ogg",
-	"res://audio/music/wolfquest sounding ass/wolfquest.ogg",
-	"res://audio/music/33 thousand tiles under the blue/33 thousand tiles under the blue.ogg"
+	"res://audio/music/placeholders/warning siren/warning siren.ogg",
+	"res://audio/music/placeholders/wolfquest sounding ass/wolfquest.ogg",
+	"res://audio/music/placeholders/33 thousand tiles under the blue/33 thousand tiles under the blue.ogg",
+	"res://audio/music/placeholders/stolen/pvz_gw_loon_skirmish_low.ogg"
 	]
 var music_vol = 10.0
 var SFX_vol = 10.0
