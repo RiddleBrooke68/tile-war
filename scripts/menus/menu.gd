@@ -166,7 +166,7 @@ func sound_play(use_drag=false):
 		sound.play()
 
 func music_play():
-	if not music.playing:
+	if false:
 		music.volume_linear = Global.music_vol/10
 		music.stream = load("res://audio/music/placeholders/stolen/pvz_gw_lounge_lizard.ogg") as AudioStream
 		music.play()
