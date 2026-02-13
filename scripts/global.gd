@@ -65,8 +65,7 @@ var music_type = 0
 const music_list = [
 	"res://audio/music/placeholders/warning siren/warning siren.ogg",
 	"res://audio/music/placeholders/wolfquest sounding ass/wolfquest.ogg",
-	"res://audio/music/placeholders/33 thousand tiles under the blue/33 thousand tiles under the blue.ogg",
-	"res://audio/music/placeholders/stolen/pvz_gw_loon_skirmish_low.ogg"
+	"res://audio/music/placeholders/33 thousand tiles under the blue/33 thousand tiles under the blue.ogg"
 	]
 var music_vol = 10.0
 var SFX_vol = 10.0
