@@ -23,7 +23,10 @@ var cap_list = [2,2,2,2]
 ## This sets what a claim's statis is apon a start of a match. [br][br]
 ## 0: disable claim,[br]1: enable claim as a bot,[br]2: enable claim as a player.
 var claim_list : Array[int] = [2,1,1,1]
+## Contains the any name that a player has inputed into the game. :/
 var claim_names : Array[String] = ["","","",""]
+## This Silly looking thing cost me 2 bloody days I won't get back. GUESS IT WORKS NOW.[br][br]
+## It also controls who will spawn in, green, purple, yellow, red, or blue. Because why the hell not?
 var claim_colours : Array[int] = [1,2,3,4]
 ## Each name is so have a more clear indcator of who is who.
 enum claim_name_num {
@@ -80,7 +83,7 @@ var lms_enabled = true
 ## When enabled, the game will roll a d20 that has 
 var bran_enabled = false
 ## Capatial Protection[br]
-## When enabled, the game will make it block any attept of taking any more tiles from a claim who lost a capital, that is untill after they get a turn.
+## When enabled, the game will make it block any attept of taking any more tiles from a claim who lost a capital, that is untill after a set amount of moves are taken.
 var cdan_enabled = true
 ## Capatial Protection Duration
 var cdan_duration = 10

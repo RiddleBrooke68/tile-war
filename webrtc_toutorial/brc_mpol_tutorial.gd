@@ -1,3 +1,6 @@
+##@deprecated
+## All of the brc code, are and WILL, be unused.
+## I don't need to say this but this shit, just does not fucking work.
 extends Node
 
 var test_slider_value = 0
