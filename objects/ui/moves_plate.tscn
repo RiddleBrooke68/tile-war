@@ -1,13 +1,10 @@
-[gd_scene load_steps=16 format=3 uid="uid://grt31vvx70ew"]
+[gd_scene load_steps=13 format=3 uid="uid://grt31vvx70ew"]
 
 [ext_resource type="Texture2D" uid="uid://i43o2cidwra0" path="res://sprites/ui/moves/move_back_plate.png" id="1_s4gs6"]
 [ext_resource type="Script" uid="uid://3w8kjpx8wwhk" path="res://scripts/object/moves_plate.gd" id="1_v75ur"]
 [ext_resource type="Texture2D" uid="uid://dvkvqdeee68a0" path="res://sprites/ui/moves/numbers/move_overflow.png" id="2_v75ur"]
 [ext_resource type="Texture2D" uid="uid://by3x43h4kfxhl" path="res://sprites/ui/moves/move_plate.png" id="3_5gre1"]
-[ext_resource type="Texture2D" uid="uid://8uvryh166w5n" path="res://sprites/ui/moves/player_indicator/move_purple_indacator.png" id="3_11dev"]
 [ext_resource type="Texture2D" uid="uid://c6fdrrgnsmkse" path="res://sprites/ui/moves/player_indicator/move_green_indacator.png" id="4_5gre1"]
-[ext_resource type="Texture2D" uid="uid://d3jcqql3c84fa" path="res://sprites/ui/moves/player_indicator/move_yellow_indacator.png" id="4_u04xt"]
-[ext_resource type="Texture2D" uid="uid://dl5w0xs33ybp2" path="res://sprites/ui/moves/player_indicator/move_red_indacator.png" id="5_b50xm"]
 
 [sub_resource type="Animation" id="Animation_yqw4o"]
 length = 0.001
@@ -170,7 +167,6 @@ _data = {
 
 [node name="moves_plate" type="Node2D"]
 script = ExtResource("1_v75ur")
-move_title_colours = Array[CompressedTexture2D]([ExtResource("4_5gre1"), ExtResource("3_11dev"), ExtResource("4_u04xt"), ExtResource("5_b50xm"), null])
 
 [node name="plate_back" type="Sprite2D" parent="."]
 position = Vector2(128, 128)

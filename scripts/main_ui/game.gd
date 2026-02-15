@@ -11,6 +11,9 @@ signal mp_back_to_lobby()
 ## Which claims are on the board.
 @export var claims : Array[ClaimData]
 
+## A point list that alows you too edit a claim with just their colour
+@export var claims_order : Array[ClaimData]
+
 @export var panels : Array[ClaimDataPanel]
 
 #mp This would replace player_claim
@@ -45,21 +48,7 @@ const turn_text = "Turn {0}"
 var music : AudioStreamPlayer
 
 func _ready():
-	#mp I would probably need to get the set for who are players, who are bots, we don't realy need to know if their disabled or not, as their capitals won't spawn.
-	#mp And set them up with the [code]claims[/code]
-	#mp So cross refrence from Global.claim_list
-	for i in range(Global.claim_list.size()):
-		if Global.claim_list[i] == 2:
-			claims[i] = claim_lookup.pc_claim_data[i]
-			claims[i].name = Global.claim_names[i] if Global.claim_names[i] != "" or Global.claim_names.filter(func(_names): return _names == Global.claim_names[i]).size() <= 1 else claims[i].name
-			if Global.mp_enabled:
-				for x in Global.mp_player_list.keys():
-					if i == Global.mp_player_list[x].current_claim - 1:
-						claims[i].name = Global.mp_player_list[x].name
-						claims[i].claim_mp_ip_linked = x
-		else:
-			claims[i] = claim_lookup.npc_claim_data[i]
-		panels[i].claim = claims[i]
+	
 	music = AudioStreamPlayer.new()
 	add_child(music)
 	music.volume_linear = Global.music_vol/10
@@ -100,15 +89,36 @@ func on_next_turn(mp_player_source=true):
 				while claim.moves > 0:
 					if not Global.mp_enabled or (Global.mp_enabled and Global.mp_host):
 						var target : tile_data = claim.claim_surounding_tiles(avaible_moves)
+						# Save Gaurd agnst picking already claimed tiles. 
+						if target != null:
+							var no_tiles = done_moves
+							while not board_ui.check_tile_claimably(target.coords,claim.claim_colour,false,false,false,true):
+								no_tiles.append_array(
+									avaible_moves.filter(
+										func(thing:tile_data) -> bool: return true if thing.coords == target.coords and not thing.coords in no_tiles else false).map(
+										func(thing:tile_data) -> Vector2i: return thing.coords))
+								avaible_moves.erase(target)
+								avaible_moves.append_array(board_ui.get_all_local_avalable_tiles(target.coords,claim.claim_colour,true,no_tiles,4))
+								for i in avaible_moves:
+									for n in avaible_moves.filter(
+										func(thing:tile_data) -> bool: return true if thing != i and thing.coords == i.coords else false).map(
+										func(thing:tile_data) -> tile_data: return thing):
+										avaible_moves.erase(n)
+								target = claim.claim_surounding_tiles(avaible_moves)
 						if target != null and claim.moves > 0:
-							avaible_moves.erase(target)
 							done_moves.append_array(
 								avaible_moves.filter(
-									func(thing:tile_data) -> bool: return true if not thing.coords in done_moves else false).map(
+									func(thing:tile_data) -> bool: return true if thing.coords == target.coords and not thing.coords in done_moves else false).map(
 									func(thing:tile_data) -> Vector2i: return thing.coords))
+							avaible_moves.erase(target)
 							#print(done_moves)
 							board_ui.on_claim_tile(target.coords,claim.claim_colour)
-							avaible_moves.append_array(board_ui.get_all_local_avalable_tiles(target.coords,claim.claim_colour,true,done_moves,5))
+							avaible_moves.append_array(board_ui.get_all_local_avalable_tiles(target.coords,claim,true,done_moves,3))
+							for i in avaible_moves:
+								for n in avaible_moves.filter(
+									func(thing:tile_data) -> bool: return true if thing != i and thing.coords == i.coords else false).map(
+									func(thing:tile_data) -> tile_data: return thing):
+									avaible_moves.erase(n)
 							#active_player.moves -= 1
 							#claim.moves -= 1
 							#mp_sync_movement.rpc(claims.find(claim),claim.moves,true)
@@ -308,7 +318,7 @@ func _on_chat_input_text_submitted(new_text):
 
 ## This currently oprates the move panel animation.
 func gui_board_events(target:tile_data):
-	if active_player != null:
+	if active_player != null and active_player is PlayerClaim:
 		if not target.available:
 			done_moves.append_array(
 				avaible_moves.filter(
@@ -320,7 +330,7 @@ func gui_board_events(target:tile_data):
 				avaible_moves.erase(i) 
 			#print(done_moves)
 			#board_ui.on_claim_tile(target.coords,active_player.claim_colour)
-			avaible_moves.append_array(board_ui.get_all_local_avalable_tiles(target.coords,active_player.claim_colour,false,done_moves,2))
+			avaible_moves.append_array(board_ui.get_all_local_avalable_tiles(target.coords,active_player,false,done_moves,1))
 			for i in avaible_moves:
 				for n in avaible_moves.filter(
 					func(thing:tile_data) -> bool: return true if thing != i and thing.coords == i.coords else false).map(
@@ -378,7 +388,7 @@ func set_active_player(claim:ClaimData):
 	active_player.tile_size = claim.tile_size
 	moves_plate.colour = claim.claim_colour
 	# Scans the available moves
-	avaible_moves = board_ui.get_all_avalable_tiles(active_player.claim_colour,claim is NonPlayerClaim)
+	avaible_moves = board_ui.get_all_avalable_tiles(active_player,claim is NonPlayerClaim)
 
 func link_up_active_player(claim:ClaimData):
 	if not active_player.orginal_claim == claim and not active_player.move_made.is_connected(claim.depleate_danger_value):

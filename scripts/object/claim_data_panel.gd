@@ -12,7 +12,8 @@ class_name ClaimDataPanel
 @export var claim : ClaimData:
 	set(c):
 		if claim != null and claim != c:
-			claim.disconnect("changed_info",update)
+			if claim.is_connected("changed_info",update):
+				claim.disconnect("changed_info",update)
 			claim = c
 			claim.connect("changed_info",update)
 		else:
@@ -26,7 +27,8 @@ var active_turn = false
 
 func _ready():
 	update()
-	claim.connect("changed_info",update)
+	if not claim.is_connected("changed_info",update):
+		claim.connect("changed_info",update)
 
 func update():
 	if claim != null:

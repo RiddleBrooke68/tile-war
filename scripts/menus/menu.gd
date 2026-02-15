@@ -86,10 +86,9 @@ func _ready(mp_is_updating=false):
 				# Options without an argument will be present in the dictionary,
 				# with the value set to an empty string.
 				#cmd_args[cmdline.trim_prefix("--")] = ""
-	
+	ModLoader.get_mods_paths()
 	sound = AudioStreamPlayer.new()
 	add_child(sound)
-	sound_play()
 	if music == null:
 		music = AudioStreamPlayer.new()
 		add_child(music)
@@ -166,9 +165,15 @@ func sound_play(use_drag=false):
 		sound.play()
 
 func music_play():
-	if false:
-		music.volume_linear = Global.music_vol/10
-		music.stream = load("res://audio/music/placeholders/stolen/pvz_gw_lounge_lizard.ogg") as AudioStream
+	music.volume_linear = Global.music_vol/10
+	if not music.playing:
+		var mod_music = ModLoader.get_mods_list(0)
+		if mod_music != "":
+			var son : AudioStreamOggVorbis = load(mod_music) as AudioStreamOggVorbis
+			son.loop = true
+			music.stream = son
+		else:
+			music.stream = load("res://audio/music/On the house/On the house.ogg") as AudioStream
 		music.play()
 
 var drag = false
@@ -390,6 +395,7 @@ func _on_music_slider_value_changed(value):
 	#else:
 	Global.music_vol = value
 	sound_play(true)
+	music_play()
 
 #@rpc("any_peer")
 ## Sets the volume of sound efects

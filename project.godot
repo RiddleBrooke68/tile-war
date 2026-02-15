@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 
 Global="*res://scripts/global.gd"
 brc_mpol="*res://webrtc_toutorial/brc_mpol_tutorial.gd"
+ModLoader="*res://scripts/mod_loader.gd"
 
 [display]
 
