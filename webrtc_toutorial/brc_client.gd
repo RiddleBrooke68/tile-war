@@ -1,4 +1,7 @@
 ##@experimental
+##@deprecated
+## All of the brc code, are and WILL, be unused.
+## I don't need to say this but this shit, just does not fucking work.
 extends Node
 class_name brc_testing_client
 
@@ -37,6 +40,7 @@ func client_namer(new_line=true) -> String: #NEW
 		call_number += 1 #NEW
 	return "{3}[color={1}]Client {0} ({2}):[/color]".format([peer_name,debug_colour,call_number,"\n"if new_line else ""]) #NEW
 
+# THIS PEICE OF SHIT DOES NOT WORK OVER NETWORKS, ONLY ON LAN, AND THATS IT... Fuck this man.
 func RTCSeverConnected():
 	print_rich(client_namer()," RTC Connected to server")
 	brc_mpol.connected = true #NEW

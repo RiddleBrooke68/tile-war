@@ -1,5 +1,8 @@
 ## @experimental
 ## This is for online multiplayer, EGNORE IT
+##@deprecated
+## All of the brc code, are and WILL, be unused.
+## I don't need to say this but this shit, just does not fucking work.
 extends RefCounted
 class_name brc_testing_lobby
 

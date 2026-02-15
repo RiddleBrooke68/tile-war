@@ -5,8 +5,8 @@ const music_path = "/audio"
 var mod_paths_list = []
 var mod_folder : DirAccess
 
-func _ready():
-	get_mods_paths()
+#func _ready():
+	#get_mods_paths()
 
 func get_mods_paths(path=mod_path):
 	var file_name

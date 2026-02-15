@@ -14,15 +14,15 @@ Server (3): Peer Connected: 162612948
 
 Client Riddle (2): Data resived
 
-    Client Riddle (3): id = 1922162990.0
+	Client Riddle (3): id = 1922162990.0
 
-    Client Riddle (4): msg = 0.0
+	Client Riddle (4): msg = 0.0
 
-    Client Riddle (5): server_counter = Server (2):  Id
+	Client Riddle (5): server_counter = Server (2):  Id
 
-    Client Riddle (6): Connected function fired
+	Client Riddle (6): Connected function fired
 
-    Client Riddle (7): This is my ID, DONT LOSE IT: 1922162990.0
+	Client Riddle (7): This is my ID, DONT LOSE IT: 1922162990.0
 
 
 ----------------------------------
@@ -30,19 +30,19 @@ Client Riddle (2): Data resived
 
 Client Brooke (2): Data resived
 
-    Client Brooke (3): id = 162612948.0
+	Client Brooke (3): id = 162612948.0
 
-    Client Brooke (4): msg = 0.0
+	Client Brooke (4): msg = 0.0
 
-    Client Brooke (5): server_counter = Server (3):  Id
+	Client Brooke (5): server_counter = Server (3):  Id
 
-    Client Brooke (6): Connected function fired
+	Client Brooke (6): Connected function fired
 
-    Client Brooke (7): This is my ID, DONT LOSE IT: 162612948.0
+	Client Brooke (7): This is my ID, DONT LOSE IT: 162612948.0
 
-    Client Brooke (8): NEW COLOUR
+	Client Brooke (8): NEW COLOUR
 
-    Client Brooke (9): NEW COLOUR
+	Client Brooke (9): NEW COLOUR
 
 
 ----------------------------------
@@ -51,22 +51,22 @@ Client Riddle (8): Sending a lobby join thingy.
 
 Server (4): { "count_when_fired": "Client Riddle (8):", "id": 1922162990.0, "lobby_value": "", "msg": 4.0, "name": "Riddle" }
 
-    Server (5): Lobby fire
+	Server (5): Lobby fire
 
-    Server (6): RbT4adbu4Hw4hcJKuc1sKYVZ0xPcl3FL
+	Server (6): RbT4adbu4Hw4hcJKuc1sKYVZ0xPcl3FL
 
-    Server (7): 1922162990.0 player getting _data: { "msg": 2, "count_when_fired": "Client Riddle (8):", "server_counter": "Server (7):  Connected user", "id": 1922162990.0, "name": "Riddle" }
-    Server (7): Nope, its not doing it.
+	Server (7): 1922162990.0 player getting _data: { "msg": 2, "count_when_fired": "Client Riddle (8):", "server_counter": "Server (7):  Connected user", "id": 1922162990.0, "name": "Riddle" }
+	Server (7): Nope, its not doing it.
 
-    Server (8): 1922162990.0 player getting data2: { "msg": 2, "count_when_fired": "Client Riddle (8):", "server_counter": "Server (8):  Connected user", "id": 1922162990.0, "name": "Riddle" }
-    Server (8): Nope, its not doing it.
+	Server (8): 1922162990.0 player getting data2: { "msg": 2, "count_when_fired": "Client Riddle (8):", "server_counter": "Server (8):  Connected user", "id": 1922162990.0, "name": "Riddle" }
+	Server (8): Nope, its not doing it.
 
-    Server (9): 1922162990.0 player getting lobby_info: { "msg": 4, "count_when_fired": "Client Riddle (8):", "server_counter": "Server (9):  Lobby data", "player_list": {\"1922162990.0\":{\"id\":1922162990.0,\"index\":1,\"name\":\"Riddle\"}}, "host": 1922162990, "lobby_value": "RbT4adbu4Hw4hcJKuc1sKYVZ0xPcl3FL" }
+	Server (9): 1922162990.0 player getting lobby_info: { "msg": 4, "count_when_fired": "Client Riddle (8):", "server_counter": "Server (9):  Lobby data", "player_list": {\"1922162990.0\":{\"id\":1922162990.0,\"index\":1,\"name\":\"Riddle\"}}, "host": 1922162990, "lobby_value": "RbT4adbu4Hw4hcJKuc1sKYVZ0xPcl3FL" }
 
-    Server (10): 1922162990.0 player getting data: { "msg": 2, "count_when_fired": "Client Riddle (8):", "server_counter": "Server (10):  Connected user", "id": 1922162990.0, "player": { "name": "Riddle", "id": 1922162990.0, "index": 1 } }
+	Server (10): 1922162990.0 player getting data: { "msg": 2, "count_when_fired": "Client Riddle (8):", "server_counter": "Server (10):  Connected user", "id": 1922162990.0, "player": { "name": "Riddle", "id": 1922162990.0, "index": 1 } }
     Server (10): Nope, its not doing it.
 
-    Server (11): Every player getting lobby_info: { "msg": 5, "count_when_fired": "Client Riddle (8):", "server_counter": "Server (11):  Lobby data", "lobby_value": "RbT4adbu4Hw4hcJKuc1sKYVZ0xPcl3FL", "lobby_preview": { 1922162990.0: { "name": "Riddle", "id": 1922162990.0, "index": 1 } }, "lobby_size": "1 players" }
+	Server (11): Every player getting lobby_info: { "msg": 5, "count_when_fired": "Client Riddle (8):", "server_counter": "Server (11):  Lobby data", "lobby_value": "RbT4adbu4Hw4hcJKuc1sKYVZ0xPcl3FL", "lobby_preview": { 1922162990.0: { "name": "Riddle", "id": 1922162990.0, "index": 1 } }, "lobby_size": "1 players" }
 
 .
 
@@ -83,7 +83,7 @@ Client Riddle (9): Data resived
 
     Client Riddle (13): msg = 4.0
 
-    Client Riddle (14): player_list = {"1922162990.0":{"id":1922162990.0,"index":1,"name":"Riddle"}}
+	Client Riddle (14): player_list = {"1922162990.0":{"id":1922162990.0,"index":1,"name":"Riddle"}}
 
     Client Riddle (15): server_counter = Server (9):  Lobby data
 
@@ -98,7 +98,7 @@ LOBBY MESSAGES
 
         Client Brooke (11): count_when_fired = Client Riddle (8):
 
-        Client Brooke (12): lobby_preview = { "1922162990.0": { "id": 1922162990.0, "index": 1.0, "name": "Riddle" } }
+		Client Brooke (12): lobby_preview = { "1922162990.0": { "id": 1922162990.0, "index": 1.0, "name": "Riddle" } }
 
         Client Brooke (13): lobby_size = 1 players
 
@@ -118,7 +118,7 @@ LOBBY MESSAGES
 
     Client Riddle (18): count_when_fired = Client Riddle (8):
 
-    Client Riddle (19): lobby_preview = { "1922162990.0": { "id": 1922162990.0, "index": 1.0, "name": "Riddle" } }
+	Client Riddle (19): lobby_preview = { "1922162990.0": { "id": 1922162990.0, "index": 1.0, "name": "Riddle" } }
 
     Client Riddle (20): lobby_size = 1 players
 
@@ -140,26 +140,26 @@ Server (12): { "count_when_fired": "Client Brooke (18):", "id": 162612948.0, "lo
 
     Server (13): Lobby fire
 
-    Server (14): 1922162990.0 player getting _data: { "msg": 2, "count_when_fired": "Client Brooke (18):", "server_counter": "Server (14):  Connected user", "id": 162612948.0, "name": "Brooke" }
+	Server (14): 1922162990.0 player getting _data: { "msg": 2, "count_when_fired": "Client Brooke (18):", "server_counter": "Server (14):  Connected user", "id": 162612948.0, "name": "Brooke" }
     Server (14): Yep, its doing it.
 
-    Server (15): 162612948.0 player getting data2: { "msg": 2, "count_when_fired": "Client Brooke (18):", "server_counter": "Server (15):  Connected user", "id": 1922162990.0, "name": "Riddle" }
+	Server (15): 162612948.0 player getting data2: { "msg": 2, "count_when_fired": "Client Brooke (18):", "server_counter": "Server (15):  Connected user", "id": 1922162990.0, "name": "Riddle" }
     Server (15): Yep, its doing it.
 
-    Server (16): 1922162990.0 player getting lobby_info: { "msg": 4, "count_when_fired": "Client Brooke (18):", "server_counter": "Server (16):  Lobby data", "player_list": {\"162612948.0\":{\"id\":162612948.0,\"index\":2,\"name\":\"Brooke\"},\"1922162990.0\":{\"id\":1922162990.0,\"index\":1,\"name\":\"Riddle\"}}, "host": 1922162990, "lobby_value": "RbT4adbu4Hw4hcJKuc1sKYVZ0xPcl3FL" }
+	Server (16): 1922162990.0 player getting lobby_info: { "msg": 4, "count_when_fired": "Client Brooke (18):", "server_counter": "Server (16):  Lobby data", "player_list": {\"162612948.0\":{\"id\":162612948.0,\"index\":2,\"name\":\"Brooke\"},\"1922162990.0\":{\"id\":1922162990.0,\"index\":1,\"name\":\"Riddle\"}}, "host": 1922162990, "lobby_value": "RbT4adbu4Hw4hcJKuc1sKYVZ0xPcl3FL" }
 
-    Server (17): 162612948.0 player getting _data: { "msg": 2, "count_when_fired": "Client Brooke (18):", "server_counter": "Server (17):  Connected user", "id": 162612948.0, "name": "Brooke" }
+	Server (17): 162612948.0 player getting _data: { "msg": 2, "count_when_fired": "Client Brooke (18):", "server_counter": "Server (17):  Connected user", "id": 162612948.0, "name": "Brooke" }
     Server (17): Nope, its not doing it.
 
-    Server (18): 162612948.0 player getting data2: { "msg": 2, "count_when_fired": "Client Brooke (18):", "server_counter": "Server (18):  Connected user", "id": 162612948.0, "name": "Brooke" }
+	Server (18): 162612948.0 player getting data2: { "msg": 2, "count_when_fired": "Client Brooke (18):", "server_counter": "Server (18):  Connected user", "id": 162612948.0, "name": "Brooke" }
     Server (18): Nope, its not doing it.
 
-    Server (19): 162612948.0 player getting lobby_info: { "msg": 4, "count_when_fired": "Client Brooke (18):", "server_counter": "Server (19):  Lobby data", "player_list": {\"162612948.0\":{\"id\":162612948.0,\"index\":2,\"name\":\"Brooke\"},\"1922162990.0\":{\"id\":1922162990.0,\"index\":1,\"name\":\"Riddle\"}}, "host": 1922162990, "lobby_value": "RbT4adbu4Hw4hcJKuc1sKYVZ0xPcl3FL" }
+	Server (19): 162612948.0 player getting lobby_info: { "msg": 4, "count_when_fired": "Client Brooke (18):", "server_counter": "Server (19):  Lobby data", "player_list": {\"162612948.0\":{\"id\":162612948.0,\"index\":2,\"name\":\"Brooke\"},\"1922162990.0\":{\"id\":1922162990.0,\"index\":1,\"name\":\"Riddle\"}}, "host": 1922162990, "lobby_value": "RbT4adbu4Hw4hcJKuc1sKYVZ0xPcl3FL" }
 
-    Server (20): 162612948.0 player getting data: { "msg": 2, "count_when_fired": "Client Brooke (18):", "server_counter": "Server (20):  Connected user", "id": 162612948.0, "player": { "name": "Brooke", "id": 162612948.0, "index": 2 } }
+	Server (20): 162612948.0 player getting data: { "msg": 2, "count_when_fired": "Client Brooke (18):", "server_counter": "Server (20):  Connected user", "id": 162612948.0, "player": { "name": "Brooke", "id": 162612948.0, "index": 2 } }
     Server (20): Nope, its not doing it.
 
-    Server (21): Every player getting lobby_info: { "msg": 5, "count_when_fired": "Client Brooke (18):", "server_counter": "Server (21):  Lobby data", "lobby_value": "RbT4adbu4Hw4hcJKuc1sKYVZ0xPcl3FL", "lobby_preview": { 1922162990.0: { "name": "Riddle", "id": 1922162990.0, "index": 1 }, 162612948.0: { "name": "Brooke", "id": 162612948.0, "index": 2 } }, "lobby_size": "2 players" }
+	Server (21): Every player getting lobby_info: { "msg": 5, "count_when_fired": "Client Brooke (18):", "server_counter": "Server (21):  Lobby data", "lobby_value": "RbT4adbu4Hw4hcJKuc1sKYVZ0xPcl3FL", "lobby_preview": { 1922162990.0: { "name": "Riddle", "id": 1922162990.0, "index": 1 }, 162612948.0: { "name": "Brooke", "id": 162612948.0, "index": 2 } }, "lobby_size": "2 players" }
 
 .
 
@@ -230,7 +230,7 @@ Client Riddle (37): Data resived
 
     Client Riddle (41): msg = 4.0
 
-    Client Riddle (42): player_list = {"162612948.0":{"id":162612948.0,"index":2,"name":"Brooke"},"1922162990.0":{"id":1922162990.0,"index":1,"name":"Riddle"}}
+	Client Riddle (42): player_list = {"162612948.0":{"id":162612948.0,"index":2,"name":"Brooke"},"1922162990.0":{"id":1922162990.0,"index":1,"name":"Riddle"}}
 
     Client Riddle (43): server_counter = Server (16):  Lobby data
 
@@ -259,7 +259,7 @@ Client Brooke (28): Data resived
 
     Client Brooke (32): msg = 4.0
 
-    Client Brooke (33): player_list = {"162612948.0":{"id":162612948.0,"index":2,"name":"Brooke"},"1922162990.0":{"id":1922162990.0,"index":1,"name":"Riddle"}}
+	Client Brooke (33): player_list = {"162612948.0":{"id":162612948.0,"index":2,"name":"Brooke"},"1922162990.0":{"id":1922162990.0,"index":1,"name":"Riddle"}}
 
     Client Brooke (34): server_counter = Server (19):  Lobby data
 
@@ -273,7 +273,7 @@ Client Riddle (45): Data resived
 
     Client Riddle (46): count_when_fired = Client Brooke (18):
 
-    Client Riddle (47): lobby_preview = { "162612948.0": { "id": 162612948.0, "index": 2.0, "name": "Brooke" }, "1922162990.0": { "id": 1922162990.0, "index": 1.0, "name": "Riddle" } }
+	Client Riddle (47): lobby_preview = { "162612948.0": { "id": 162612948.0, "index": 2.0, "name": "Brooke" }, "1922162990.0": { "id": 1922162990.0, "index": 1.0, "name": "Riddle" } }
 
     Client Riddle (48): lobby_size = 2 players
 
@@ -302,7 +302,7 @@ Client Brooke (36): Data resived
 
     Client Brooke (37): count_when_fired = Client Brooke (18):
 
-    Client Brooke (38): lobby_preview = { "162612948.0": { "id": 162612948.0, "index": 2.0, "name": "Brooke" }, "1922162990.0": { "id": 1922162990.0, "index": 1.0, "name": "Riddle" } }
+	Client Brooke (38): lobby_preview = { "162612948.0": { "id": 162612948.0, "index": 2.0, "name": "Brooke" }, "1922162990.0": { "id": 1922162990.0, "index": 1.0, "name": "Riddle" } }
 
     Client Brooke (39): lobby_size = 2 players
 
