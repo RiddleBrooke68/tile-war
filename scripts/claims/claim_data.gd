@@ -11,6 +11,8 @@ signal move_made
 		changed_info.emit()
 ## What colour do they asine to. Note that 0 is unclaimed and 5 is unused.
 @export_range(1,5) var claim_colour = 1
+## This is were the claim is sloted in, 0 to 3.
+@export var claim_turn_slot = 0
 ## How meny moves do they get.
 @export var moves = 0:
 	set(n):
@@ -93,8 +95,15 @@ func print_data():
 	print("capatal_tile", capatal_tile)
 	
 
+## Returns the current data of a claim.
 func get_data():
 	return "----------------\n
 {0} have
 {1} tiles, {2} fuel tiles,
 and {3} capitals\n".format([name,tile_size,fuel_count,capatal_tile.size()])
+
+#func reset_data():
+	#fuel_count = 0
+	#tile_size = 0
+	#capatal_tile = []
+	#claim_dead = false

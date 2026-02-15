@@ -24,6 +24,7 @@ var cap_list = [2,2,2,2]
 ## 0: disable claim,[br]1: enable claim as a bot,[br]2: enable claim as a player.
 var claim_list : Array[int] = [2,1,1,1]
 var claim_names : Array[String] = ["","","",""]
+var claim_colours : Array[int] = [1,2,3,4]
 ## Each name is so have a more clear indcator of who is who.
 enum claim_name_num {
 	## This is 0 or with some arrays -1, this means they are not a player.[br] MP Exlusive.

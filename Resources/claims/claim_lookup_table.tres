@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="claim_lookup_table" load_steps=12 format=3 uid="uid://dytqq3fwvh2y3"]
+[gd_resource type="Resource" script_class="claim_lookup_table" load_steps=14 format=3 uid="uid://dytqq3fwvh2y3"]
 
 [ext_resource type="Script" uid="uid://bmkjamamvf3ie" path="res://scripts/claims/non_player_claim.gd" id="1_i0cgo"]
 [ext_resource type="Resource" uid="uid://boeqbhnugtyd5" path="res://Resources/claims/nonplayer_claims/green_npc_claim.tres" id="2_2eic8"]
@@ -7,13 +7,15 @@
 [ext_resource type="Script" uid="uid://ymollqqfqjft" path="res://scripts/claims/claim_lookup_table.gd" id="3_r0gau"]
 [ext_resource type="Resource" uid="uid://bi1dlfq3ngrj2" path="res://Resources/claims/nonplayer_claims/yellow_npc_claim.tres" id="4_xb1xq"]
 [ext_resource type="Resource" uid="uid://bsa8sbwsvlufq" path="res://Resources/claims/nonplayer_claims/red_npc_claim.tres" id="5_jshd5"]
+[ext_resource type="Resource" uid="uid://bm8nesojeh0hq" path="res://Resources/claims/nonplayer_claims/blue_npc_claim.tres" id="6_qrr8c"]
 [ext_resource type="Resource" uid="uid://ej04cfpihcpx" path="res://Resources/claims/player_claims/green_pc_claim.tres" id="7_gmv77"]
 [ext_resource type="Resource" uid="uid://dqxj6bihsmrmx" path="res://Resources/claims/player_claims/purple_pc_claim.tres" id="8_k446o"]
 [ext_resource type="Resource" uid="uid://gysd337x8xhh" path="res://Resources/claims/player_claims/yellow_pc_claim.tres" id="9_jshd5"]
 [ext_resource type="Resource" uid="uid://dynj4t4b0w33d" path="res://Resources/claims/player_claims/river_pc_claim.tres" id="10_gmv77"]
+[ext_resource type="Resource" uid="uid://bd3og0up2dygu" path="res://Resources/claims/player_claims/blue_pc_claim.tres" id="12_wt03u"]
 
 [resource]
 script = ExtResource("3_r0gau")
-pc_claim_data = Array[ExtResource("2_is0tk")]([ExtResource("7_gmv77"), ExtResource("8_k446o"), ExtResource("9_jshd5"), ExtResource("10_gmv77")])
-npc_claim_data = Array[ExtResource("1_i0cgo")]([ExtResource("2_2eic8"), ExtResource("3_k446o"), ExtResource("4_xb1xq"), ExtResource("5_jshd5")])
+pc_claim_data = Array[ExtResource("2_is0tk")]([ExtResource("7_gmv77"), ExtResource("8_k446o"), ExtResource("9_jshd5"), ExtResource("10_gmv77"), ExtResource("12_wt03u")])
+npc_claim_data = Array[ExtResource("1_i0cgo")]([ExtResource("2_2eic8"), ExtResource("3_k446o"), ExtResource("4_xb1xq"), ExtResource("5_jshd5"), ExtResource("6_qrr8c")])
 metadata/_custom_type_script = "uid://ymollqqfqjft"

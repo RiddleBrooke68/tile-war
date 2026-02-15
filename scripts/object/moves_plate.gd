@@ -30,6 +30,7 @@ extends Node2D
 	preload("res://sprites/ui/moves/player_indicator/move_purple_indacator.png") as CompressedTexture2D,
 	preload("res://sprites/ui/moves/player_indicator/move_yellow_indacator.png") as CompressedTexture2D,
 	preload("res://sprites/ui/moves/player_indicator/move_red_indacator.png") as CompressedTexture2D,
+	preload("res://sprites/ui/moves/player_indicator/move_blue_indacator.png") as CompressedTexture2D,
 ]
 @export var move_title_unknown_colour : CompressedTexture2D = preload("res://sprites/ui/moves/player_indicator/move_unknown_indacator.png") as CompressedTexture2D
 @export var colour = 0:
@@ -52,7 +53,7 @@ func update_plate_display(type=0):
 		else:
 			plate_number.texture = overflow_num
 	elif type == 1:
-		if colour in range(1,move_title_colours.size()):
+		if colour in range(1,move_title_colours.size()+1):
 			plate_moves.texture = move_title_colours[colour-1]
 		else:
 			plate_moves.texture = move_title_unknown_colour

@@ -78,6 +78,7 @@ var music : AudioStreamPlayer
 
 func _ready(mp_is_updating=false):
 	
+	ModLoader.get_mods_paths()
 	if not Global.mp_dedicated:
 		sound = AudioStreamPlayer.new()
 		add_child(sound)
@@ -97,7 +98,7 @@ func _ready(mp_is_updating=false):
 		cdan_slider.value = Global.cdan_duration
 		#_on_cdan_slider_value_changed(cdan_slider.value)
 		cdan_cd_slider.value = Global.cdan_capture_duration
-		
+
 		blz_slider.value = Global.blz_move_requrement
 		#_on_blz_slider_value_changed(blz_slider.value)
 		# Ai
@@ -118,8 +119,8 @@ func _ready(mp_is_updating=false):
 		# Cap number
 		for i in range(0,4):
 			cap_list[i].selected = Global.cap_list[i] - 1
-		
-		
+
+
 		# Lms
 		lms_setting.button_pressed = Global.lms_enabled
 		# Bran
@@ -128,7 +129,7 @@ func _ready(mp_is_updating=false):
 		cdan_setting.button_pressed = Global.cdan_enabled
 		# Blz
 		blz_setting.button_pressed = Global.blz_enabled
-		
+
 		# movement
 		tile_int_lim_input.text = str(Global.moves_tile_int_lim_boost)
 		tile_int_reduct_input.text = str(Global.moves_tile_int_reduction_boost)
@@ -138,7 +139,7 @@ func _ready(mp_is_updating=false):
 		fuel_reduct_input.text = str(Global.moves_fuel_reduction_boost)
 		turn_lim_input.text = str(Global.moves_turn_lim_boost)
 		turn_reduct_input.text = str(Global.moves_turn_reduction_boost)
-	
+
 	if not Global.mp_dedicated:
 		# Music
 		music_type.selected = Global.music_type
@@ -163,9 +164,15 @@ func sound_play(use_drag=false):
 func music_play():
 	if Global.mp_dedicated:
 		return
-	if false:
-		music.volume_linear = Global.music_vol/10
-		music.stream = load("res://audio/music/placeholders/stolen/pvz_gw_lounge_lizard.ogg") as AudioStream
+	music.volume_linear = Global.music_vol/10
+	if not music.playing:
+		var mod_music = ModLoader.get_mods_list(0)
+		if mod_music != "":
+			var son : AudioStreamOggVorbis = load(mod_music) as AudioStreamOggVorbis
+			son.loop = true
+			music.stream = son
+		else:
+			music.stream = load("res://audio/music/On the house/On the house.ogg") as AudioStream
 		music.play()
 
 var drag = false
@@ -405,6 +412,7 @@ func _on_music_slider_value_changed(value):
 	#else:
 	Global.music_vol = value
 	sound_play(true)
+	music_play()
 
 #@rpc("any_peer")
 ## Sets the volume of sound efects
