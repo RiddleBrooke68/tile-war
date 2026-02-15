@@ -60,11 +60,12 @@ func _ready():
 		else:
 			claims[i] = claim_lookup.npc_claim_data[i]
 		panels[i].claim = claims[i]
-	music = AudioStreamPlayer.new()
-	add_child(music)
-	music.volume_linear = Global.music_vol/10
-	music.stream = load(Global.music_list[Global.music_type]) as AudioStream
-	music.play()
+	if not Global.mp_dedicated:
+		music = AudioStreamPlayer.new()
+		add_child(music)
+		music.volume_linear = Global.music_vol/10
+		music.stream = load(Global.music_list[Global.music_type]) as AudioStream
+		music.play()
 	game_state_changed(true)
 
 
@@ -77,7 +78,8 @@ func on_next_turn(mp_player_source=true):
 	if Global.mp_enabled and mp_player_source:
 		on_next_turn.rpc(false)
 	active_player.claim_had_turn = true
-	next_turn.disabled = true
+	if not Global.mp_dedicated:
+		next_turn.disabled = true
 	continue_turn = false
 	print("Start Next turn:")
 	for claim : ClaimData in claims:
@@ -146,7 +148,8 @@ func on_next_turn(mp_player_source=true):
 			claim.claim_active = false
 	
 	
-	next_turn.disabled = false
+	if not Global.mp_dedicated:
+		next_turn.disabled = false
 	if not continue_turn:
 		game_state_changed(true)
 	else:
@@ -256,26 +259,32 @@ func game_state_changed(refresh=false,set_active=true):
 			board_ui.off_input = true
 		elif Global.mp_enabled and not active_player.claim_mp_ip_linked in [Global.mp_player_id,0]:
 			board_ui.off_input = true
-			next_turn.disabled = true
+			if not Global.mp_dedicated:
+				next_turn.disabled = true
 		else:
 			board_ui.off_input = false
 		
-		board_ui.action_grid.clear()
-		if active_player.moves != 0:
-			for i in avaible_moves:#board_ui.get_all_avalable_tiles(active_player.claim_colour,false):
-				board_ui.action_grid.set_cell(i.coords,0,Vector2(active_player.claim_colour,0))
+		if not Global.mp_dedicated:
+			board_ui.action_grid.clear()
+			if active_player.moves != 0:
+				for i in avaible_moves:#board_ui.get_all_avalable_tiles(active_player.claim_colour,false):
+					board_ui.action_grid.set_cell(i.coords,0,Vector2(active_player.claim_colour,0))
 	
 	
-	claims_info.text = claim_text
+	if not Global.mp_dedicated:
+		claims_info.text = claim_text
 	if dead_number == 1 and Global.lms_enabled:
-		winers_name.text = active_player.name
-		win_animiate.play("win")
-		next_turn.disabled = true
+		if not Global.mp_dedicated:
+			winers_name.text = active_player.name
+			win_animiate.play("win")
+			next_turn.disabled = true
+		print("[DEDICATED] Game over (LMS) - Winner: %s" % active_player.name)
 	else:
 		dead_number = 0
 	if active_player != null:
-		moves_plate.number = active_player.moves
-		moves_plate.update_plate_display()
+		if not Global.mp_dedicated:
+			moves_plate.number = active_player.moves
+			moves_plate.update_plate_display()
 
 @rpc("any_peer")
 func update_active_player(claim:int):
@@ -295,10 +304,13 @@ func print_data_to_game(_str,mp_player_source=true):
 	if Global.mp_enabled and mp_player_source:
 		print_data_to_game.rpc(_str,false)
 	game_event_text += _str+"\n"
-	game_event_recorder.text = game_event_text
+	if not Global.mp_dedicated:
+		game_event_recorder.text = game_event_text
 
 
 func _on_chat_input_text_submitted(new_text):
+	if Global.mp_dedicated:
+		return
 	var colour_claim = Global.mp_claims_colours[Global.mp_player_list[Global.mp_player_id].current_claim].to_html()
 	if Global.mp_enabled:
 		print_data_to_game("[color={2}][b]{0}:[/b][/color] {1}".format([Global.mp_player_list[Global.mp_player_id].name,new_text,colour_claim]))
@@ -327,16 +339,20 @@ func gui_board_events(target:tile_data):
 					func(thing:tile_data) -> tile_data: return thing):
 					avaible_moves.erase(n)
 		
-		board_ui.action_grid.clear()
-		if active_player.moves != 0:
-			for i in avaible_moves:#board_ui.get_all_avalable_tiles(active_player.claim_colour,false):
-				board_ui.action_grid.set_cell(i.coords,0,Vector2(active_player.claim_colour,0))
+		if not Global.mp_dedicated:
+			board_ui.action_grid.clear()
+			if active_player.moves != 0:
+				for i in avaible_moves:#board_ui.get_all_avalable_tiles(active_player.claim_colour,false):
+					board_ui.action_grid.set_cell(i.coords,0,Vector2(active_player.claim_colour,0))
 		
-		moves_plate.number = active_player.moves #mp active_player.moves.
+		if not Global.mp_dedicated:
+			moves_plate.number = active_player.moves #mp active_player.moves.
 	
 
 
 func _on_board_tile_info(data:tile_data):
+	if Global.mp_dedicated:
+		return
 	tile_info.text = data.get_info()
 	game_info.text = turn_text.format([turn])
 
@@ -354,9 +370,14 @@ func new_game(mp_player_source=true):
 		claim.moves = 0
 	if Global.mp_enabled and mp_player_source:
 		new_game.rpc(false)
-	fade_anim.play("fade_out")
-	var tween = get_tree().create_tween()
-	tween.tween_property(music,"volume_linear",0.0,3.0)
+	if not Global.mp_dedicated:
+		fade_anim.play("fade_out")
+		var tween = get_tree().create_tween()
+		tween.tween_property(music,"volume_linear",0.0,3.0)
+	else:
+		print("[DEDICATED] New game requested, returning to lobby.")
+		if Global.mp_enabled:
+			mp_back_to_lobby.emit()
 
 
 func _on_fade_anim_animation_finished(anim_name):
@@ -376,7 +397,8 @@ func set_active_player(claim:ClaimData):
 	active_player = claim.duplicate()
 	active_player.orginal_claim = claim
 	active_player.tile_size = claim.tile_size
-	moves_plate.colour = claim.claim_colour
+	if not Global.mp_dedicated:
+		moves_plate.colour = claim.claim_colour
 	# Scans the available moves
 	avaible_moves = board_ui.get_all_avalable_tiles(active_player.claim_colour,claim is NonPlayerClaim)
 

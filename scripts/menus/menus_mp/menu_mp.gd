@@ -40,47 +40,81 @@ func _ready(is_updating=false):
 		client_name = Global.cmd_args["mp_name"] 
 	if "mp_svr_name" in Global.cmd_args.keys():
 		server_name = Global.cmd_args["mp_svr_name"]
+	if Global.mp_server_name != "":
+		server_name = Global.mp_server_name
 	if "mp_start_server" in Global.cmd_args.keys():
 		Global.mp_server = true
 		if client_name == "":
 			client_name = "Host"
+	# Dedicated server setup
+	if Global.mp_dedicated:
+		if client_name == "":
+			client_name = "DedicatedServer"
+		if server_name == "":
+			server_name = str(OS.get_environment("COMPUTERNAME")) + " (Dedicated)"
+		port = Global.mp_port
 	# In the main menu, the ready function makes sure this is set to false, 
 	# so after we run the class ready function, we make this true.
 	
 	if not is_updating:
-		Global.mp_player_list_changed.connect(set_lobby_player_list)
+		if not Global.mp_dedicated:
+			Global.mp_player_list_changed.connect(set_lobby_player_list)
+		else:
+			Global.mp_player_list_changed.connect(_dedicated_log_player_list)
 		# Broadcasting
-		peerUDP = PacketPeerUDP.new()
-		peerUDP.bind(4444)
+		if not Global.mp_dedicated:
+			peerUDP = PacketPeerUDP.new()
+			peerUDP.bind(4444)
 		
 		multiplayer.peer_connected.connect(player_connected)
 		multiplayer.peer_disconnected.connect(player_disconnected)
-		multiplayer.connected_to_server.connect(connected_to_server)
-		multiplayer.connection_failed.connect(connection_failed)
+		if not Global.mp_dedicated:
+			multiplayer.connected_to_server.connect(connected_to_server)
+			multiplayer.connection_failed.connect(connection_failed)
 		multiplayer.server_disconnected.connect(server_disconnected)
 		
 		if server_name == "":
 			server_name = str(OS.get_environment("COMPUTERNAME"))
-		server_label.text = server_name
-		client_label.text = client_name
-		_on_client_name_text_changed(client_name)
+		if not Global.mp_dedicated:
+			server_label.text = server_name
+			client_label.text = client_name
+			_on_client_name_text_changed(client_name)
 		
 		# Sets the port and ip
 		set_id() # IP.resolve_hostname(str(OS.get_environment("COMPUTERNAME")),IP.TYPE_IPV4)
-		port = randi_range(1024,65535)
-		server_ip_label.text = address
-		server_port_label.text = str(port)
+		if not Global.mp_dedicated:
+			port = randi_range(1024,65535)
+			server_ip_label.text = address
+			server_port_label.text = str(port)
+		else:
+			port = Global.mp_port
 	
-	if "mp_start_server" in Global.cmd_args.keys():
+	if Global.mp_dedicated:
+		_on_host_button_down()
+	elif "mp_start_server" in Global.cmd_args.keys():
 		_on_host_button_down()
 
 func set_lobby_player_list():
+	if Global.mp_dedicated:
+		return
 	for i in get_tree().get_nodes_in_group("mp_lobby_name_plate"):
 		player_browser.remove_child(i)
 	for s in Global.mp_player_list.keys():
 		var player_plate_inst = player_plate.instantiate()
 		player_browser.add_child(player_plate_inst)
 		player_plate_inst.set_nameplate(Global.mp_player_list[s].name,Global.mp_claims_colours[int(Global.mp_player_list[s].current_claim)])
+
+## Dedicated server console logging when the player list changes.
+func _dedicated_log_player_list():
+	print("[DEDICATED] Players ({0}):".format([Global.mp_player_list.size()]))
+	for id in Global.mp_player_list.keys():
+		var p = Global.mp_player_list[id]
+		var claim_str = "Spectator"
+		if p.current_claim == 1: claim_str = "Greenwich"
+		elif p.current_claim == 2: claim_str = "Plum Valley"
+		elif p.current_claim == 3: claim_str = "York Street"
+		elif p.current_claim == 4: claim_str = "River Solme"
+		print("  - {0} (ID: {1}) -> {2}".format([p.name, id, claim_str]))
 
 @onready var green_picker = %green_picker
 @onready var purple_picker = %purple_picker
@@ -95,29 +129,37 @@ func _on_green_picker_toggled(toggled_on,mp_player_source=true,mp_name="",mp_id=
 		if toggled_on:
 			print(client_name," asining player to claim green: " + str(multiplayer.get_unique_id()))
 			Global.mp_player_list[multiplayer.get_unique_id()].current_claim = 1
-			green_claim_type.item_selected.emit(2,false)
-			green_claim_type.disabled = true
+			if not Global.mp_dedicated:
+				green_claim_type.item_selected.emit(2,false)
+				green_claim_type.disabled = true
+			Global.claim_list[0] = 2
 			Global.claim_names[0] = Global.mp_player_list[multiplayer.get_unique_id()].name
 		else:
 			Global.mp_player_list[multiplayer.get_unique_id()].current_claim = 0
-			green_claim_type.item_selected.emit(0,false)
-			green_claim_type.disabled = false
+			if not Global.mp_dedicated:
+				green_claim_type.item_selected.emit(0,false)
+				green_claim_type.disabled = false
+			Global.claim_list[0] = 0
 			Global.claim_names[0] = ""
 		_on_green_picker_toggled.rpc(toggled_on,false,Global.claim_names[0],multiplayer.get_unique_id())
 	else:
 		if toggled_on:
 			Global.mp_player_list[mp_id].current_claim = 1
-			green_claim_type.item_selected.emit(2,false)
-			green_claim_type.disabled = true
+			if not Global.mp_dedicated:
+				green_claim_type.item_selected.emit(2,false)
+				green_claim_type.disabled = true
+			Global.claim_list[0] = 2
 			Global.claim_names[0] = mp_name
-			green_picker.disabled = true
+			if not Global.mp_dedicated: green_picker.disabled = true
 		else:
 			Global.mp_player_list[mp_id].current_claim = 0
-			green_claim_type.item_selected.emit(0,false)
-			green_claim_type.disabled = false
+			if not Global.mp_dedicated:
+				green_claim_type.item_selected.emit(0,false)
+				green_claim_type.disabled = false
+			Global.claim_list[0] = 0
 			Global.claim_names[0] = ""
-			green_picker.disabled = false
-	green_name.text = Global.claim_names[0]
+			if not Global.mp_dedicated: green_picker.disabled = false
+	if not Global.mp_dedicated: green_name.text = Global.claim_names[0]
 	set_lobby_player_list()
 
 ## MULTIPAYER ONLY.
@@ -127,29 +169,37 @@ func _on_purple_picker_toggled(toggled_on,mp_player_source=true,mp_name="",mp_id
 		if toggled_on:
 			print(client_name," asining player to claim purple: " + str(multiplayer.get_unique_id()))
 			Global.mp_player_list[multiplayer.get_unique_id()].current_claim = 2
-			purple_claim_type.item_selected.emit(2,false)
-			purple_claim_type.disabled = true
+			if not Global.mp_dedicated:
+				purple_claim_type.item_selected.emit(2,false)
+				purple_claim_type.disabled = true
+			Global.claim_list[1] = 2
 			Global.claim_names[1] = Global.mp_player_list[multiplayer.get_unique_id()].name
 		else:
 			Global.mp_player_list[multiplayer.get_unique_id()].current_claim = 0
-			purple_claim_type.item_selected.emit(0,false)
-			purple_claim_type.disabled = false
+			if not Global.mp_dedicated:
+				purple_claim_type.item_selected.emit(0,false)
+				purple_claim_type.disabled = false
+			Global.claim_list[1] = 0
 			Global.claim_names[1] = ""
 		_on_purple_picker_toggled.rpc(toggled_on,false,Global.claim_names[1],multiplayer.get_unique_id())
 	else:
 		if toggled_on:
 			Global.mp_player_list[mp_id].current_claim = 2
-			purple_claim_type.item_selected.emit(2,false)
-			purple_claim_type.disabled = true
+			if not Global.mp_dedicated:
+				purple_claim_type.item_selected.emit(2,false)
+				purple_claim_type.disabled = true
+			Global.claim_list[1] = 2
 			Global.claim_names[1] = mp_name
-			purple_picker.disabled = true
+			if not Global.mp_dedicated: purple_picker.disabled = true
 		else:
 			Global.mp_player_list[mp_id].current_claim = 0
-			purple_claim_type.item_selected.emit(0,false)
-			purple_claim_type.disabled = false
+			if not Global.mp_dedicated:
+				purple_claim_type.item_selected.emit(0,false)
+				purple_claim_type.disabled = false
+			Global.claim_list[1] = 0
 			Global.claim_names[1] = ""
-			purple_picker.disabled = false
-	purple_name.text = Global.claim_names[1]
+			if not Global.mp_dedicated: purple_picker.disabled = false
+	if not Global.mp_dedicated: purple_name.text = Global.claim_names[1]
 	set_lobby_player_list()
 
 ## MULTIPAYER ONLY.
@@ -159,29 +209,37 @@ func _on_yellow_picker_toggled(toggled_on,mp_player_source=true,mp_name="",mp_id
 		if toggled_on:
 			print(client_name," asining player to claim yellow: " + str(multiplayer.get_unique_id()))
 			Global.mp_player_list[multiplayer.get_unique_id()].current_claim = 3
-			yellow_claim_type.item_selected.emit(2,false)
-			yellow_claim_type.disabled = true
+			if not Global.mp_dedicated:
+				yellow_claim_type.item_selected.emit(2,false)
+				yellow_claim_type.disabled = true
+			Global.claim_list[2] = 2
 			Global.claim_names[2] = Global.mp_player_list[multiplayer.get_unique_id()].name
 		else:
 			Global.mp_player_list[multiplayer.get_unique_id()].current_claim = 0
-			yellow_claim_type.item_selected.emit(0,false)
-			yellow_claim_type.disabled = false
+			if not Global.mp_dedicated:
+				yellow_claim_type.item_selected.emit(0,false)
+				yellow_claim_type.disabled = false
+			Global.claim_list[2] = 0
 			Global.claim_names[2] = ""
 		_on_yellow_picker_toggled.rpc(toggled_on,false,Global.claim_names[2],multiplayer.get_unique_id())
 	else:
 		if toggled_on:
 			Global.mp_player_list[mp_id].current_claim = 3
-			yellow_claim_type.item_selected.emit(2,false)
-			yellow_claim_type.disabled = true
+			if not Global.mp_dedicated:
+				yellow_claim_type.item_selected.emit(2,false)
+				yellow_claim_type.disabled = true
+			Global.claim_list[2] = 2
 			Global.claim_names[2] = mp_name
-			yellow_picker.disabled = true
+			if not Global.mp_dedicated: yellow_picker.disabled = true
 		else:
 			Global.mp_player_list[mp_id].current_claim = 0
-			yellow_claim_type.item_selected.emit(0,false)
-			yellow_claim_type.disabled = false
+			if not Global.mp_dedicated:
+				yellow_claim_type.item_selected.emit(0,false)
+				yellow_claim_type.disabled = false
+			Global.claim_list[2] = 0
 			Global.claim_names[2] = ""
-			yellow_picker.disabled = false
-	yellow_name.text = Global.claim_names[2]
+			if not Global.mp_dedicated: yellow_picker.disabled = false
+	if not Global.mp_dedicated: yellow_name.text = Global.claim_names[2]
 	set_lobby_player_list()
 
 ## MULTIPAYER ONLY.
@@ -191,29 +249,37 @@ func _on_red_picker_toggled(toggled_on,mp_player_source=true,mp_name="",mp_id=""
 		if toggled_on:
 			print(client_name," asining player to claim red: " + str(multiplayer.get_unique_id()))
 			Global.mp_player_list[multiplayer.get_unique_id()].current_claim = 4
-			red_claim_type.item_selected.emit(2,false)
-			red_claim_type.disabled = true
+			if not Global.mp_dedicated:
+				red_claim_type.item_selected.emit(2,false)
+				red_claim_type.disabled = true
+			Global.claim_list[3] = 2
 			Global.claim_names[3] = Global.mp_player_list[multiplayer.get_unique_id()].name
 		else:
 			Global.mp_player_list[multiplayer.get_unique_id()].current_claim = 0
-			red_claim_type.item_selected.emit(0,false)
-			red_claim_type.disabled = false
+			if not Global.mp_dedicated:
+				red_claim_type.item_selected.emit(0,false)
+				red_claim_type.disabled = false
+			Global.claim_list[3] = 0
 			Global.claim_names[3] = ""
 		_on_red_picker_toggled.rpc(toggled_on,false,Global.claim_names[3],multiplayer.get_unique_id())
 	else:
 		if toggled_on:
 			Global.mp_player_list[mp_id].current_claim = 4
-			red_claim_type.item_selected.emit(2,false)
-			red_claim_type.disabled = true
+			if not Global.mp_dedicated:
+				red_claim_type.item_selected.emit(2,false)
+				red_claim_type.disabled = true
+			Global.claim_list[3] = 2
 			Global.claim_names[3] = mp_name
-			red_picker.disabled = true
+			if not Global.mp_dedicated: red_picker.disabled = true
 		else:
 			Global.mp_player_list[mp_id].current_claim = 0
-			red_claim_type.item_selected.emit(0,false)
-			red_claim_type.disabled = false
+			if not Global.mp_dedicated:
+				red_claim_type.item_selected.emit(0,false)
+				red_claim_type.disabled = false
+			Global.claim_list[3] = 0
 			Global.claim_names[3] = ""
-			red_picker.disabled = false
-	red_name.text = Global.claim_names[3]
+			if not Global.mp_dedicated: red_picker.disabled = false
+	if not Global.mp_dedicated: red_name.text = Global.claim_names[3]
 	set_lobby_player_list()
 
 
@@ -229,6 +295,8 @@ func set_id(ip=""):
 		address_broadcast = "{0}.{1}.{2}.{3}".format([broadcast_int[0],broadcast_int[1],broadcast_int[2],"255"])
 
 func select_server(select_name:String,select_ip:String,select_port:int):
+	if Global.mp_dedicated:
+		return
 	server_label.text = select_name
 	_on_server_name_text_changed(select_name)
 	server_ip_label.text = select_ip
@@ -240,8 +308,9 @@ func _on_server_name_text_changed(new_text):
 	server_name = new_text
 
 func _on_client_name_text_changed(new_text):
-	host_button.disabled = new_text == ""
-	join_button.disabled = new_text == ""
+	if not Global.mp_dedicated:
+		host_button.disabled = new_text == ""
+		join_button.disabled = new_text == ""
 	#client_label.text = new_text
 	client_name = new_text
 
@@ -258,7 +327,7 @@ func _on_server_ip_text_changed(new_text):
 func _on_server_port_text_changed(new_text:String):
 	if new_text.to_int() in range(1024,65535):
 		port = new_text.to_int()
-	else:
+	elif not Global.mp_dedicated:
 		server_port_label.text = str(port)
 
 
@@ -269,7 +338,8 @@ func player_connected(id):
 	#Global.mp_host = is_hosting
 	if not Global.mp_player_list.is_empty():
 		print(client_name," player connected: " + str(id))
-		send_player_data.rpc_id(id,client_label.text,Global.mp_player_id,Global.mp_player_list[Global.mp_player_id].current_claim)
+		var _label_text = client_name if Global.mp_dedicated else client_label.text
+		send_player_data.rpc_id(id,_label_text,Global.mp_player_id,Global.mp_player_list[Global.mp_player_id].current_claim)
 		#if Global.mp_host:
 			#update_global_data.rpc_id(id,
 				#Global.map_type,
@@ -308,6 +378,9 @@ func connection_failed():
 
 @rpc("any_peer")
 func server_disconnected():
+	if Global.mp_dedicated:
+		print("[DEDICATED] Server shutdown.")
+		return
 	if not Global.mp_ended_sesion:
 		print_rich(client_name," [color=red][b]NET_ERROR.001:[/b] It seems that a was just disconnected from the server.[/color]")
 		OS.alert("Error: It seems that you were just disconnected from the server, try to rejoin if you can.", "NET_ERROR.001")
@@ -337,8 +410,13 @@ func send_player_data(_name,id,current_claim=0):
 			"current_claim": current_claim
 		}
 		set_lobby_player_list()
-		if Global.mp_player_list[id].current_claim != 0:
+		if Global.mp_player_list[id].current_claim != 0 and not Global.mp_dedicated:
 			claims_picker_list[Global.mp_player_list[id].current_claim-1].emit_signal("toggled",true,false,Global.mp_player_list[id].name,Global.mp_player_list[id].id)
+		elif Global.mp_player_list[id].current_claim != 0 and Global.mp_dedicated:
+			# Dedicated: update data without UI
+			var c = Global.mp_player_list[id].current_claim
+			Global.claim_list[c - 1] = 2
+			Global.claim_names[c - 1] = Global.mp_player_list[id].name
 	if multiplayer.is_server():
 		for i in Global.mp_player_list:
 			send_player_data.rpc(Global.mp_player_list[i].name, i)
@@ -376,7 +454,12 @@ func load_profile_data(profile:Dictionary,refresh=true):
 		set_lobby_player_list()
 		for i in Global.mp_player_list.keys():
 			if Global.mp_player_list[i].current_claim != 0:
-				claims_picker_list[Global.mp_player_list[i].current_claim-1].emit_signal("toggled",true,false,Global.mp_player_list[i].name,Global.mp_player_list[i].id)
+				if not Global.mp_dedicated:
+					claims_picker_list[Global.mp_player_list[i].current_claim-1].emit_signal("toggled",true,false,Global.mp_player_list[i].name,Global.mp_player_list[i].id)
+				else:
+					var c = Global.mp_player_list[i].current_claim
+					Global.claim_list[c - 1] = 2
+					Global.claim_names[c - 1] = Global.mp_player_list[i].name
 
 func save_profile_data(mp_for_client=true) -> Dictionary:
 	var data = super(mp_for_client)
@@ -392,23 +475,33 @@ func remove_player_data(id):
 	if Global.mp_player_list.has(id):
 		print(client_name," player removing player to list: " + str(id))
 		if Global.mp_player_list[id].current_claim != 0:
-			claims_picker_list[Global.mp_player_list[id].current_claim-1].emit_signal("toggled",false,Global.mp_player_list[id].name,Global.mp_player_list[id].id)
+			if not Global.mp_dedicated:
+				claims_picker_list[Global.mp_player_list[id].current_claim-1].emit_signal("toggled",false,Global.mp_player_list[id].name,Global.mp_player_list[id].id)
+			else:
+				var c = Global.mp_player_list[id].current_claim
+				Global.claim_list[c - 1] = 0
+				Global.claim_names[c - 1] = ""
 		Global.mp_player_list.erase(id)
 
 var scene
 @rpc("any_peer","call_local")
 func start_game():
-	print("game")
-	timer.stop()
+	print("[DEDICATED] Game starting..." if Global.mp_dedicated else "game")
+	if not Global.mp_dedicated:
+		timer.stop()
 	scene = game_mp.instantiate()
 	scene.get_child(1).mp_back_to_lobby.connect(end_game)
 	get_tree().root.add_child(scene)
-	self.hide()
+	if not Global.mp_dedicated:
+		self.hide()
 
 func end_game():
-	timer.start()
+	print("[DEDICATED] Returning to lobby." if Global.mp_dedicated else "")
+	if not Global.mp_dedicated:
+		timer.start()
 	get_tree().root.remove_child(scene)
-	self.show()
+	if not Global.mp_dedicated:
+		self.show()
 	
 
 func _on_host_button_down():
@@ -424,20 +517,34 @@ func _on_host_button_down():
 	multiplayer.set_multiplayer_peer(peer)
 	print("Awaitng for players, {0}, {1}".format([address,port]))
 	Global.mp_player_id = multiplayer.get_unique_id()
-	send_player_data(client_label.text,Global.mp_player_id)
+	var _label_text = client_name if Global.mp_dedicated else client_label.text
+	send_player_data(_label_text,Global.mp_player_id)
 	
-	for i in get_tree().get_nodes_in_group("menu_mp"):
-		i.hide()
-	for i in get_tree().get_nodes_in_group("menu_settings_ui"):
-		i.show()
+	if not Global.mp_dedicated:
+		for i in get_tree().get_nodes_in_group("menu_mp"):
+			i.hide()
+		for i in get_tree().get_nodes_in_group("menu_settings_ui"):
+			i.show()
 	
-	peerUDP = PacketPeerUDP.new()
-	peerUDP.bind(4433)
+	if not Global.mp_dedicated:
+		peerUDP = PacketPeerUDP.new()
+		peerUDP.bind(4433)
 	
 	Global.mp_host = true
-	peerUDP.set_broadcast_enabled(true)
-	update_broadcast_server_staius()
-	timer.start()
+	if not Global.mp_dedicated:
+		peerUDP.set_broadcast_enabled(true)
+		update_broadcast_server_staius()
+		timer.start()
+	else:
+		print("")
+		print("========================================")
+		print("[DEDICATED] Server started successfully!")
+		print("[DEDICATED] Listening on port: {0}".format([port]))
+		print("[DEDICATED] Server name: {0}".format([server_name]))
+		print("[DEDICATED] Local IP: {0}".format([address]))
+		print("[DEDICATED] Waiting for players...")
+		print("========================================")
+		print("")
 
 
 func _on_join_button_down():
@@ -456,6 +563,8 @@ func _on_start_button_down():
 		start_game.rpc()
 
 func _on_singleplayer_pressed():
+	if Global.mp_dedicated:
+		return
 	if Global.mp_host:
 		update_broadcast_server_closed()
 		server_disconnected.rpc()
@@ -513,6 +622,8 @@ enum broadcast_form_staius {
 ## Its practaly updating its staius.
 ## Uses [enum menu_mp_class.broadcast_form_start] as its framework for how it sends this info.
 func update_broadcast_server_staius():
+	if Global.mp_dedicated:
+		return
 	peerUDP.set_dest_address("255.255.255.255",4444)
 	broadcast_start_signal()
 	peerUDP.put_packet("{0} Players".format([Global.mp_player_list.size()]).to_utf8_buffer())
@@ -537,6 +648,8 @@ enum broadcast_form_end {
 }
 
 func update_broadcast_server_closed():
+	if Global.mp_dedicated:
+		return
 	peerUDP.set_dest_address("255.255.255.255",4444)
 	broadcast_start_signal()
 	peerUDP.put_packet("closed".format([Global.mp_player_list.size()]).to_utf8_buffer())
@@ -568,6 +681,8 @@ var svr_mp_lobby_size = ""
 var svr_mp_closed = ""
 ## This only is checking for server signals it seems.
 func _process(_delta):
+	if Global.mp_dedicated:
+		return
 	if not Global.mp_host and not Global.mp_connected:
 		#var _s = peerUDP.get_available_packet_count()
 		if peerUDP.get_available_packet_count() > 0:

@@ -135,6 +135,12 @@ var mp_enabled = false
 var mp_host = false
 var mp_server = false
 var mp_connected = false
+## True when running as a headless dedicated server (launched with --dedicated).
+var mp_dedicated = false
+## The port the dedicated server listens on, or the port a client connects to. Default 7777.
+var mp_port = 7777
+## Display name for the dedicated server.
+var mp_server_name = ""
 var mp_player_id = 0
 var mp_player_list = {}: # peer_id:peer_data={
 			#"name": _name,
@@ -177,8 +183,20 @@ func _ready():
 			# Options without an argument will be present in the dictionary,
 			# with the value set to an empty string.
 			cmd_args[cmdline.trim_prefix("--")] = ""
+	# Dedicated server args
+	if "dedicated" in cmd_args.keys():
+		mp_dedicated = true
+		mp_server = true
+	if "port" in cmd_args.keys():
+		var _port = int(cmd_args["port"])
+		if _port >= 1024 and _port <= 65535:
+			mp_port = _port
+		else:
+			print("[DEDICATED] Invalid port: ", cmd_args["port"], ". Using default: ", mp_port)
+	if "server_name" in cmd_args.keys():
+		mp_server_name = cmd_args["server_name"]
 	if "music_type" in cmd_args.keys():
 		if int(cmd_args["music_type"]) >= 0 and int(cmd_args["music_type"]) < music_list.size():
 			music_type = int(cmd_args["music_type"])
 	if "map_type" in cmd_args.keys():
-		map_type = cmd_args[map_type]
+		map_type = int(cmd_args["map_type"])

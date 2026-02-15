@@ -68,9 +68,10 @@ func _ready():
 		true if Global.claim_list[2] > 0 else false,
 		true if Global.claim_list[3] > 0 else false]
 		)
-	sound = AudioStreamPlayer.new()
-	add_child(sound)
-	sound.volume_db = linear_to_db(Global.SFX_vol/10)
+	if not Global.mp_dedicated:
+		sound = AudioStreamPlayer.new()
+		add_child(sound)
+		sound.volume_db = linear_to_db(Global.SFX_vol/10)
 	
 	# Read map limits
 	var set_of_grid : Array[Vector2i] = main_grid.get_used_cells()
@@ -112,7 +113,8 @@ func _ready():
 				for x in range(check_claim_tile_type_count(i+1,1),Global.cap_list[i]):
 					if not on_claim_tile(rcoord.call(false,false,break_loop),i+1,1,false,false,true):
 						print_rich("[color=red][b]GEN_ERROR.001:[/b] could not find a place for a captial, Dont have such high gen settings.[/color]")
-						OS.alert("Error: could not find a place for a capital tile, Dont have such high gen settings. The game will break after this, ENDING GAME", "GEN_ERROR.001")
+						if not Global.mp_dedicated:
+							OS.alert("Error: could not find a place for a capital tile, Dont have such high gen settings. The game will break after this, ENDING GAME", "GEN_ERROR.001")
 						OS.crash("ERROR")
 						var test = null
 						test.kill() # This will crash the game
@@ -133,7 +135,8 @@ func _ready():
 				if not on_claim_tile(rcoord.call(false,true,break_loop),0,1,false,true,true):
 					end_genration -= 1
 					print_rich("[color=red][b]GEN_ERROR.002:[/b] could not find a place for a wall tile, Dont have such high gen settings.[/color]")
-					OS.alert("Error: could not find a place for a wall tile, Dont have such high gen settings.", "GEN_ERROR.002")
+					if not Global.mp_dedicated:
+						OS.alert("Error: could not find a place for a wall tile, Dont have such high gen settings.", "GEN_ERROR.002")
 					#OS.crash("ERROR")
 					#var test = null
 					#test.kill() # This will crash the game
@@ -142,7 +145,8 @@ func _ready():
 				if not on_claim_tile(rcoord.call(true,false,break_loop),0,3,false,true,true):
 					end_genration -= 1
 					print_rich("[color=red][b]GEN_ERROR.003:[/b] could not find a place for a tile, Dont have such high gen settings.[/color]")
-					OS.alert("Error: could not find a place for a fuel tile, Dont have such high gen settings.", "GEN_ERROR.003")
+					if not Global.mp_dedicated:
+						OS.alert("Error: could not find a place for a fuel tile, Dont have such high gen settings.", "GEN_ERROR.003")
 					#OS.crash("ERROR")
 					#var test = null
 					#test.kill() # This will crash the game
@@ -166,6 +170,8 @@ func _ready():
 
 
 func _process(_delta):
+	if Global.mp_dedicated:
+		return
 	if hovered:
 		# Get mouse position on grid.
 		var mouse_pos = get_global_mouse_position()
@@ -232,6 +238,8 @@ signal board_decrese_move_count(incremts:int)
 
 ## Fires for any click on the board.
 func _on_gui_input(event):
+	if Global.mp_dedicated:
+		return
 	if event is InputEventMouseButton:
 		var tile : tile_data = check_tile_claimably(grid_coords,game.active_player.claim_colour,-1,true)
 		if event.button_index == MOUSE_BUTTON_LEFT and not event.pressed and not (lock_mode or off_input):
@@ -262,13 +270,16 @@ func _on_gui_input(event):
 ## Fires only when there is a mpui input from other clients.
 func _on_mpui_input(coords,claim:int,type:int=-1,update=true,terain=false,force_do=false,blz_fired=false,did_claim=true,mp_ran_results=[0,0]):
 	if on_claim_tile(coords,claim,type,update,terain,force_do,blz_fired,false,did_claim,mp_ran_results):
-		sound.stream = load("res://audio/FX/left click sound.mp3") as AudioStream
+		if not Global.mp_dedicated:
+			sound.stream = load("res://audio/FX/left click sound.mp3") as AudioStream
 	
 	else:
-		sound.stream = load("res://audio/FX/right click sound.mp3") as AudioStream
+		if not Global.mp_dedicated:
+			sound.stream = load("res://audio/FX/right click sound.mp3") as AudioStream
 	var tile : tile_data = check_tile_claimably(coords,game.active_player.claim_colour,-1,true)
 	game.gui_board_events(tile)
-	sound.play()
+	if not Global.mp_dedicated:
+		sound.play()
 
 
 ## Sets a tile on the main board.

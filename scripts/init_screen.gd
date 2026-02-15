@@ -29,11 +29,17 @@ func _ready():
 		print("\n-------------------------------\n")
 		print_rich("[b]Commands:[/b] Dedicating\n")
 		print_rich("[color=green]--mp_[/color][color=red]start_server:[/color] Starts up on the multiplayer and starts a lan server.")
+		print_rich("[color=green]--dedicated:[/color] Starts a headless dedicated server. Clients connect via IP:port.")
+		print_rich("[color=red]--port=N:[/color] Sets the dedicated server port (default 7777). Range: 1024-65535.")
+		print_rich("[color=red]--server_name=X:[/color] Sets the dedicated server display name.")
 		print_rich("[color=red]--brc_[/color][color=yellow]dedicate:[/color] starts up a testing brc dedicated server. ")
 		get_tree().quit()
 	
+	# Starts a dedicated headless server
+	if "dedicated" in Global.cmd_args.keys():
+		screen = 1
 	# Starts a server
-	if "mp_start_server" in Global.cmd_args.keys():
+	elif "mp_start_server" in Global.cmd_args.keys():
 		screen = 1
 	# Auto open local multiplayer
 	elif Global.cmd_args.keys().any(func(num): return num in ["multiplayer","mp"]):
