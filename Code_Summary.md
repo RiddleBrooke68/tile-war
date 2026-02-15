@@ -524,7 +524,7 @@ Data-only operations on `Global.*` variables remain unconditional for game logic
 
 **Dedicated Server:**
 ```
-tile_war_server.exe --dedicated --port=7777 --server_name="My Server"
+tile_war_mpol.exe --dedicated --port=7777 --server_name="My Server"
 ```
 
 **Client (WAN):**
@@ -537,7 +537,7 @@ Open game → Multiplayer → Server browser auto-discovers via UDP broadcast
 `export_presets.cfg` contains three presets:
 1. **"Dev Windows Desktop"** - Main game build (`tile war.exe`), excludes builds/profiles/mods
 2. **"macOS NEEDS PORT DATA"** - Partially configured macOS build
-3. **"Dedicated Server (Windows)"** - Headless server (`tile_war_server.exe`), `dedicated_server=true`, excludes builds/profiles
+3. **"Dedicated Server (Windows)"** - Headless server (`tile_war_mpol.exe`), `dedicated_server=true`, excludes builds/profiles
 
 ---
 
