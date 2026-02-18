@@ -11,6 +11,7 @@ teratory_beeline = 0
 capital_beeline = 1
 name = "plum valley"
 claim_colour = 2
+claim_real_color = Color(0.67069995, 0.3515, 0.95, 1)
 claim_panel_normal = ExtResource("1_hg04t")
 claim_panel_danged = ExtResource("1_e4n2b")
 metadata/_custom_type_script = "uid://bmkjamamvf3ie"

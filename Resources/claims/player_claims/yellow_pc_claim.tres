@@ -8,6 +8,7 @@
 script = ExtResource("1_xyyt4")
 name = "york street"
 claim_colour = 3
+claim_real_color = Color(1, 0.7966667, 0.39, 1)
 claim_panel_normal = ExtResource("1_gshy8")
 claim_panel_danged = ExtResource("1_6wkl6")
 metadata/_custom_type_script = "uid://cioo3en61w18o"

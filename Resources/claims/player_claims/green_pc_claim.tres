@@ -7,6 +7,7 @@
 [resource]
 script = ExtResource("2_366fs")
 name = "Greenwich"
+claim_real_color = Color(0.26356006, 0.66, 0.2112, 1)
 claim_panel_normal = ExtResource("1_yxuxr")
 claim_panel_danged = ExtResource("1_366fs")
 info = "Early on, this was the only player."

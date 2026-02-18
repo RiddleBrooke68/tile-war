@@ -11,6 +11,8 @@ signal move_made
 		changed_info.emit()
 ## What colour do they asine to. Note that 0 is unclaimed and 5 is unused.
 @export_range(1,5) var claim_colour = 1
+
+@export var claim_real_color = Color(1.0, 1.0, 1.0, 0.0)
 ## This is were the claim is sloted in, 0 to 3.
 @export var claim_turn_slot = 0
 ## How meny moves do they get.

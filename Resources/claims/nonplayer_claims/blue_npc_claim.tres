@@ -13,6 +13,7 @@ capital_beeline = 10
 wall_beeline = 3
 name = "Builders League"
 claim_colour = 5
+claim_real_color = Color(0.42137322, 0.41360003, 0.88, 1)
 claim_panel_normal = ExtResource("1_15koo")
 info = "This is a funny 5th claim that I wanted to add, but didn't get time to do it, only acts as a refrence to Team Fortres 2, and acts as Unused content. How you were suposed to see it was through naming a player ether, [Builders, Builders League, or Blu] and start the game, and that player would be replaced by this.
 

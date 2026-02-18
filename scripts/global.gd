@@ -66,7 +66,8 @@ var dist = 2
 # MUSIC OPTIONS
 ## Which type of music is it.
 var music_type = 0
-const music_list = [
+## Could change this, but don't wana.
+var music_list = [
 	"res://audio/music/placeholders/warning siren/warning siren.ogg",
 	"res://audio/music/placeholders/wolfquest sounding ass/wolfquest.ogg",
 	"res://audio/music/placeholders/33 thousand tiles under the blue/33 thousand tiles under the blue.ogg"

@@ -14,6 +14,7 @@ capital_beeline = 2
 wall_beeline = 2
 name = "york street"
 claim_colour = 3
+claim_real_color = Color(1, 0.7966667, 0.39, 1)
 claim_panel_normal = ExtResource("1_bkfqs")
 claim_panel_danged = ExtResource("1_ibugb")
 metadata/_custom_type_script = "uid://bmkjamamvf3ie"

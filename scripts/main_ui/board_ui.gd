@@ -12,6 +12,8 @@ signal tile_info(data:tile_data)
 ## Controls the fuel tile count
 @export var fuel_tile_count = 10
 
+@export var click_efect : PackedScene
+
 ## The main grid. 18x20 or a 3 to 4 ratio
 @onready var main_grid : TileMapLayer = $main_grid
 ## The overlay thats to show the player what their clicking.
@@ -256,6 +258,19 @@ func _on_mouse_entered():
 func _on_mouse_exited():
 	hovered = false
 
+const colours = {
+	"Greenwich":Color(0.501, 0.801, 0.456, 0.0),
+	"Plum":Color(0.614, 0.185, 0.77, 0.0),
+	"York":Color(1.0, 0.936, 0.36, 0.0),
+	"River":Color(0.72, 0.166, 0.166, 0.0),
+	"Builders":Color(0.23, 0.487, 1.0, 0.0)
+}
+
+func click_effect_color(c:Color,coords):
+	var node : Node2D = click_efect.instantiate()
+	add_child(node)
+	node.global_position = coords
+	node.start(c)
 
 signal board_decrese_move_count(incremts:int)
 
@@ -267,6 +282,7 @@ func _on_gui_input(event):
 			board_decrese_move_count.emit(1)
 			on_claim_tile(grid_coords,game.active_player.claim_colour) #mp replace 1 with game.active_player.claim_colour
 			sound.stream = load("res://audio/FX/left click sound.mp3") as AudioStream
+			click_effect_color(game.active_player.claim_real_color,overlay_grid.to_global(overlay_grid.map_to_local(grid_coords)))
 		
 		elif event.button_index == MOUSE_BUTTON_RIGHT and not event.pressed and not off_input:
 			if not tile.available and on_claim_tile(grid_coords,game.active_player.claim_colour,-1,true,false,false,true): #mp replace 1 with game.active_player.claim_colour
@@ -367,8 +383,9 @@ func on_claim_tile(coords,claim,type:int=-1,
 						picked_tile = main_grid.get_cell_tile_data(neighbor)
 						if not picked_tile == null:
 							on_claim_tile(neighbor,claim,type,false,true,true)
-							var ntile : tile_data = check_tile_claimably(neighbor,claim,-1,true)
-							game.gui_board_events(ntile)
+							if not force_do:
+								var ntile : tile_data = check_tile_claimably(neighbor,claim,-1,true)
+								game.gui_board_events(ntile)
 			if update:
 				game_state_change.emit()
 			if not terain and not force_do:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=4 uid="uid://bojd4turtuu7f"]
+[gd_scene load_steps=34 format=4 uid="uid://bojd4turtuu7f"]
 
 [ext_resource type="Texture2D" uid="uid://c8dqm2t52mlvy" path="res://sprites/tilemaps/tile_captures/tile_ui.png" id="1_7wffp"]
 [ext_resource type="Script" uid="uid://d3656qxysmfyq" path="res://scripts/main_ui/board_ui.gd" id="1_fhnlk"]
@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://grt31vvx70ew" path="res://objects/ui/moves_plate.tscn" id="9_alpnb"]
 [ext_resource type="Texture2D" uid="uid://c7fq6cs4cf1nv" path="res://sprites/ui/buttons/next_turn_button/next_turn_button.png" id="9_bsnyx"]
 [ext_resource type="Texture2D" uid="uid://bqlx5sj8aytaj" path="res://sprites/ui/buttons/next_turn_button/next_turn_button_clicked.png" id="10_1fjtt"]
+[ext_resource type="PackedScene" uid="uid://rsjmwt83aaec" path="res://objects/fx/placement_colour.tscn" id="10_6d2wa"]
 [ext_resource type="Texture2D" uid="uid://fag70sjvwby0" path="res://sprites/ui/buttons/next_turn_button/next_turn_button_locked.png" id="11_gha74"]
 [ext_resource type="PackedScene" uid="uid://cj0c3ub7bgeqa" path="res://objects/ui/claim_data_panel.tscn" id="12_1fjtt"]
 [ext_resource type="Theme" uid="uid://cedkvwvts0evs" path="res://themes/extra_setting_theame.tres" id="16_sowik"]
@@ -293,6 +294,7 @@ offset_bottom = 592.0
 script = ExtResource("1_fhnlk")
 impasable_tile_count = 130
 fuel_tile_count = 20
+click_efect = ExtResource("10_6d2wa")
 
 [node name="main_grid" type="TileMapLayer" parent="game/board border/board"]
 editor_description = "Grid is 7 by 10"

@@ -1,30 +1,33 @@
 shader_type canvas_item;
 render_mode unshaded;
 
-uniform sampler2D dispace_x;
-uniform sampler2D dispace_y;
-// Acts as the opaicty
-uniform sampler2D dispace_z;
+//uniform sampler2D dispace_x;
+//uniform sampler2D dispace_y;
+//// Acts as the opaicty
+//uniform sampler2D dispace_z;
+//
+//uniform float mix_float;
 
-uniform float mix_float;
+uniform sampler2D noise_texture : source_color, repeat_enable;
+uniform sampler2D fade ;
+uniform vec4 color: source_color = vec4(1.0,1.0,1.0,0.0);
+uniform float fade_power : hint_range(0.0, 10.0, 0.1) = 2.0;
+uniform float strength : hint_range(0.0, 0.05, 0.001) = 0.005;
+uniform vec2 speed = vec2(0.1, 0.05);
+uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
 
-uniform sampler2D screen_texture : hint_screen_texture, repeat_disable, filter_nearest;
-
-void vertex() {
-	vec2 col = vec2(COLOR.r-0.5*2.0,COLOR.g-0.5*2.0)*10.0;
-	VERTEX += col;
-}
 
 void fragment() {
-	vec3 c = textureLod(screen_texture, SCREEN_UV, 0.0).rgb;
+	vec2 noise_uv = UV + TIME * speed;
 	
-	c.rgb = mix(c.rgb,vec3(texture(dispace_x,UV).r,texture(dispace_y,UV).g,texture(dispace_z,UV).b),mix_float);
+	vec2 noice = texture(noise_texture, noise_uv).xy;
+	vec2 fades = texture(fade, UV).xy;
+	vec2 offset = vec2(noice.x * 2.0 - 1.0, noice.y * 2.0 - 1.0);
 	
-	COLOR = vec4(c.rgb,c.b);
-	//COLOR = vertex_color;
+	offset *= strength * (fades*fade_power);
+	vec2 distorted_uv = SCREEN_UV + offset;
+	vec2 distorted_uv_color = SCREEN_UV + offset*2.0;
+	
+	COLOR = mix(texture(SCREEN_TEXTURE, distorted_uv),vec4(color.rgb,texture(fade,UV).r*offset.x),0.05);//vec4(texture(SCREEN_TEXTURE, distorted_uv_color).rgb*vec4(texture(SCREEN_TEXTURE, distorted_uv)+color).rgb,dot(texture(fade,UV).rgb, vec3(0.299, 0.587, 0.114))*fade_power),1.0);
 }
 
-//void fragment() {
-	//vec4 new = texture(TEXTURE,vec2(texture(dispace_x,UV).r,texture(dispace_y,UV).g));
-	//COLOR = vec4(texture(dispace_x,UV).r,texture(dispace_y,UV).g,texture(dispace_z,UV).b,1.0);
-//}
