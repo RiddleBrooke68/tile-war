@@ -280,7 +280,7 @@ func _on_gui_input(event):
 		var tile : tile_data = check_tile_claimably(grid_coords,game.active_player,-1,true)
 		if event.button_index == MOUSE_BUTTON_LEFT and not event.pressed and not (lock_mode or off_input):
 			board_decrese_move_count.emit(1)
-			on_claim_tile(grid_coords,game.active_player.claim_colour) #mp replace 1 with game.active_player.claim_colour
+			on_claim_tile(grid_coords,game.active_player) #mp replace 1 with game.active_player.claim_colour
 			sound.stream = load("res://audio/FX/left click sound.mp3") as AudioStream
 			click_effect_color(game.active_player.claim_real_color,overlay_grid.to_global(overlay_grid.map_to_local(grid_coords)))
 		
@@ -542,10 +542,14 @@ func check_tile_claimably(coords:Vector2i,claim,test_suroundings=false,wants_til
 			if cap_buff >= 1:
 				#tile.points += cap_buff
 				count += cap_buff
-			#cap_buff = 0
-			#for x in check_claim_captatal(oppose_claim):
-				#cap_buff += 1 if find_linked_tiles(tile.coords,[x],oppose_claim) else 0
-				#print(cap_buff)
+			
+			if check_claim_captatal(claim_colour).size() == 1 and Global.cls_enabled:
+				tile.points += Global.cls_boost
+				count += Global.cls_boost
+			
+			if check_claim_captatal(oppose_claim).size() == 1 and Global.cls_enabled:
+				tile.oppose_points += Global.cls_boost
+				count -= Global.cls_boost
 			# If the tile isn't conected to a capital, then it gets a -10 debuff to reward cutting off areas.
 			if cap_debuff == 0: #  and not (Global.cdan_enabled and tile.opposite_claim_data.claim_dangered)
 				tile.oppose_points -= 10

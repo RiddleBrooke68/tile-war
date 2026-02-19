@@ -93,6 +93,10 @@ var cdan_capture_duration = 5
 ## Bliz attack
 var blz_enabled = true
 var blz_move_requrement = 5
+## Capatial last stand
+var cls_enabled = true
+## This controls how strong it is.
+var cls_boost = 2
 
 # Moves settings
 # Tiles
