@@ -364,7 +364,7 @@ func on_claim_tile(coords,claim,type:int=-1,
 				if picked_tile.get_custom_data("type") == 1 and type == -1:
 					if Global.cdan_enabled and picked_tile.get_custom_data("ownership") != 0:
 						tile.opposite_claim_data.claim_dangered = 5 * (Global.cdan_duration+1)
-						if claim == game.active_player.claim_colour:
+						if claim_colour == game.active_player.claim_colour:
 							game.active_player.orginal_claim.claim_dangered = 5 * (Global.cdan_capture_duration+1)
 					type = 1
 				elif picked_tile.get_custom_data("type") == 2 and type in [1,3]:

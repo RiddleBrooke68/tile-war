@@ -98,7 +98,7 @@ func on_next_turn(mp_player_source=true):
 										func(thing:tile_data) -> bool: return true if thing.coords == target.coords and not thing.coords in no_tiles else false).map(
 										func(thing:tile_data) -> Vector2i: return thing.coords))
 								avaible_moves.erase(target)
-								avaible_moves.append_array(board_ui.get_all_local_avalable_tiles(target.coords,claim.claim_colour,true,no_tiles,4))
+								avaible_moves.append_array(board_ui.get_all_local_avalable_tiles(target.coords,claim.claim_turn_slot,true,no_tiles,4))
 								for i in avaible_moves:
 									for n in avaible_moves.filter(
 										func(thing:tile_data) -> bool: return true if thing != i and thing.coords == i.coords else false).map(
