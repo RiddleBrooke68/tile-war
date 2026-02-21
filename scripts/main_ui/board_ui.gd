@@ -25,6 +25,7 @@ const placement = Vector2i(-10,-13)
 
 @onready var game = $"../.."
 
+@onready var move_manger = %movement_type_manger
 
 
 ## Watches for if the mouse is on the board or not.
@@ -158,7 +159,7 @@ func _ready():
 				check_claim_tile_type_count(-1,3) < Global.fuel_count):
 			
 			if check_claim_tile_type_count(0,1) < Global.wall_count:
-				if not on_claim_tile(rcoord.call(false,true,break_loop),0,1,false,true,true):
+				if not on_claim_tile(rcoord.call(true,true,break_loop),0,1,false,true,true):
 					end_genration -= 1
 					print_rich("[color=red][b]GEN_ERROR.002:[/b] could not find a place for a wall tile, Dont have such high gen settings.[/color]")
 					OS.alert("Error: could not find a place for a wall tile, Dont have such high gen settings.", "GEN_ERROR.002")
@@ -258,19 +259,24 @@ func _on_mouse_entered():
 func _on_mouse_exited():
 	hovered = false
 
-const colours = {
-	"Greenwich":Color(0.501, 0.801, 0.456, 0.0),
-	"Plum":Color(0.614, 0.185, 0.77, 0.0),
-	"York":Color(1.0, 0.936, 0.36, 0.0),
-	"River":Color(0.72, 0.166, 0.166, 0.0),
-	"Builders":Color(0.23, 0.487, 1.0, 0.0)
-}
+const colours = [
+	Color(0.0, 0.0, 0.0, 1.0), 		#Unclaimed
+	Color(0.346, 0.505, 0.295, 1.0),	#Greenwich
+	Color(0.466, 0.139, 0.509, 1.0),	#Plum Valey
+	Color(0.414, 0.37, 0.073, 1.0),		#York Street
+	Color(0.428, 0.134, 0.124, 1.0),	#River Solme
+	Color(0.17, 0.303, 0.58, 1.0)		#Builders League.
+]
 
-func click_effect_color(c:Color,coords):
+func click_effect_color(coords,_size=Vector2(1.0,1.0)):
+	var glow = get_tree().get_nodes_in_group("glow")
+	if glow.size() > 10:
+		glow[0].queue_free()
 	var node : Node2D = click_efect.instantiate()
 	add_child(node)
 	node.global_position = coords
-	node.start(c)
+	node.scale = _size
+	node.start(colours[game.active_player.claim_colour])
 
 signal board_decrese_move_count(incremts:int)
 
@@ -278,39 +284,56 @@ signal board_decrese_move_count(incremts:int)
 func _on_gui_input(event):
 	if event is InputEventMouseButton:
 		var tile : tile_data = check_tile_claimably(grid_coords,game.active_player,-1,true)
-		if event.button_index == MOUSE_BUTTON_LEFT and not event.pressed and not (lock_mode or off_input):
+		var click_size = Vector2(1.0,1.0)
+		var blz_lock = not check_tile_claimably(grid_coords,game.active_player,-1,false,true)
+		
+		if (event.button_index == MOUSE_BUTTON_LEFT and move_manger.mode == 0 or event.button_index == MOUSE_BUTTON_RIGHT and move_manger.mode == 1) and not event.pressed and not (lock_mode or off_input):
 			board_decrese_move_count.emit(1)
 			on_claim_tile(grid_coords,game.active_player) #mp replace 1 with game.active_player.claim_colour
 			sound.stream = load("res://audio/FX/left click sound.mp3") as AudioStream
-			click_effect_color(game.active_player.claim_real_color,overlay_grid.to_global(overlay_grid.map_to_local(grid_coords)))
 		
-		elif event.button_index == MOUSE_BUTTON_RIGHT and not event.pressed and not off_input:
-			if not tile.available and on_claim_tile(grid_coords,game.active_player.claim_colour,-1,true,false,false,true): #mp replace 1 with game.active_player.claim_colour
-				board_decrese_move_count.emit(Global.blz_move_requrement)
-				sound.stream = load("res://audio/FX/left click sound.mp3") as AudioStream
+		elif Global.blz_enabled and (
+					event.button_index == MOUSE_BUTTON_RIGHT and move_manger.mode == 0 or event.button_index == MOUSE_BUTTON_LEFT and move_manger.mode == 1
+					) and not event.pressed and not (blz_lock or off_input):
 			
-			elif on_claim_tile(grid_coords,game.active_player.claim_colour):
+			if not tile.available and game.active_player.moves >= Global.blz_move_requrement: #mp replace 1 with game.active_player.claim_colour
+				var sav = game.active_player.moves
+				board_decrese_move_count.emit(Global.blz_move_requrement)
+				if not on_claim_tile(grid_coords,game.active_player,-1,true,false,false,true):
+					board_decrese_move_count.emit(sav,true)
+				sound.stream = load("res://audio/FX/left click sound.mp3") as AudioStream
+				click_size = Vector2(2.0,2.0)
+			
+			elif tile.available:
 				board_decrese_move_count.emit(1)
+				on_claim_tile(grid_coords,game.active_player)
 				sound.stream = load("res://audio/FX/left click sound.mp3") as AudioStream
 			
 			else:
 				sound.stream = load("res://audio/FX/right click sound.mp3") as AudioStream
+				click_size = Vector2(0.5,0.5)
 			
 		elif (lock_mode or off_input):
 			sound.stream = load("res://audio/FX/right click sound.mp3") as AudioStream
+			click_size = Vector2(0.5,0.5)
 		
+		click_effect_color(overlay_grid.to_global(overlay_grid.map_to_local(grid_coords)),click_size)
 		tile = check_tile_claimably(grid_coords,game.active_player,-1,true)
 		game.gui_board_events(tile)
 		sound.play()
 
 @rpc("any_peer")
 ## Fires only when there is a mpui input from other clients.
-func _on_mpui_input(coords,claim:int,type:int=-1,update=true,terain=false,force_do=false,blz_fired=false,did_claim=true,mp_ran_results=[0,0]):
-	if on_claim_tile(coords,claim,type,update,terain,force_do,blz_fired,false,did_claim,mp_ran_results):
+func _on_mpui_input(coords,claim:int,type:int=-1,update=true,terain=false,force_do=false,blz_fired=false,did_claim=false,mp_ran_results=[0,0]):
+	var click_size = Vector2(1.0,1.0)
+	if on_claim_tile(coords,game.claims[claim],type,update,terain,force_do or did_claim,blz_fired,false,false,mp_ran_results):
 		sound.stream = load("res://audio/FX/left click sound.mp3") as AudioStream
+		click_size = Vector2(2.0,2.0) if blz_fired else Vector2(1.0,1.0)
 	
 	else:
 		sound.stream = load("res://audio/FX/right click sound.mp3") as AudioStream
+		click_size = Vector2(0.5,0.5)
+	click_effect_color(overlay_grid.to_global(overlay_grid.map_to_local(coords)),click_size)
 	var tile : tile_data = check_tile_claimably(coords,game.active_player,-1,true)
 	game.gui_board_events(tile)
 	sound.play()
@@ -338,6 +361,9 @@ func on_claim_tile(coords,claim,type:int=-1,
 			var changed = true
 			var did_claim = false
 			var tile : tile_data = check_tile_claimably(coords,claim,false,true,blz_fired,true) if not (terain or force_do) else tile_data.new()
+			if picked_tile.get_custom_data("ownership") != 0:
+				if tile.opposite_claim_data == null:
+					tile.opposite_claim_data = game.claims_order[picked_tile.get_custom_data("ownership")-1] 
 			var ran_attacker
 			var ran_defender
 			var mp_start_type = type
@@ -356,13 +382,15 @@ func on_claim_tile(coords,claim,type:int=-1,
 					print("Fail, {0}, {1}".format([ran_attacker,ran_defender]))
 					game.failed_move = true
 					changed = false
-			if (not tile.available or (Global.blz_enabled and blz_fired and game.claims[claim_slot].moves < Global.blz_move_requrement)) and not force_do:
+			if not tile.available and not force_do: # or (Global.blz_enabled and blz_fired and not game.active_player.moves >= Global.blz_move_requrement)
 				changed = false
 			#elif Global.bran_enabled and not check_tile_claimably(coords,claim):
 				#changed = false
 			if changed:
 				if picked_tile.get_custom_data("type") == 1 and type == -1:
 					if Global.cdan_enabled and picked_tile.get_custom_data("ownership") != 0:
+						#if tile.opposite_claim_data == null:
+							#tile.opposite_claim_data = game.claims_order[picked_tile.get_custom_data("ownership")-1] 
 						tile.opposite_claim_data.claim_dangered = 5 * (Global.cdan_duration+1)
 						if claim_colour == game.active_player.claim_colour:
 							game.active_player.orginal_claim.claim_dangered = 5 * (Global.cdan_capture_duration+1)
@@ -375,17 +403,36 @@ func on_claim_tile(coords,claim,type:int=-1,
 				elif type == -1:
 					type = 0
 				main_grid.set_cell(coords,0,Vector2i(claim_colour,type))
-				if (picked_tile.get_custom_data("type") == 1 or (type == 1 or type == 2) and not picked_tile.get_custom_data("type") == 1) and changed and not terain:
+				if (	(picked_tile.get_custom_data("type") == 1 or (type == 1 or type == 2) and not picked_tile.get_custom_data("type") == 1)
+						or
+						(Global.blz_enabled and blz_fired)) and changed and not terain:
 					if type != 2:
 						type = 0
 					var neighbors = main_grid.get_surrounding_cells(coords)
 					for neighbor in neighbors:
+						var block_blz = false
 						picked_tile = main_grid.get_cell_tile_data(neighbor)
+						type = picked_tile.get_custom_data("type")
 						if not picked_tile == null:
-							on_claim_tile(neighbor,claim,type,false,true,true)
-							if not force_do:
-								var ntile : tile_data = check_tile_claimably(neighbor,claim,-1,true)
-								game.gui_board_events(ntile)
+							if (not (Global.blz_enabled and blz_fired)
+									or
+									(picked_tile.get_custom_data("ownership") == tile.opposite_claim_data.claim_colour and not picked_tile.get_custom_data("type") in [1,2])):
+								
+								# Balance, so when you bliz a tile next to a capital, it won't take the tiles around that capital.
+								if (Global.blz_enabled and blz_fired):
+									var neighbors2 = main_grid.get_surrounding_cells(neighbor)
+									for neighbor2 in neighbors2:
+										picked_tile = main_grid.get_cell_tile_data(neighbor2)
+										if not picked_tile == null:
+											if (picked_tile.get_custom_data("ownership") == tile.opposite_claim_data.claim_colour and picked_tile.get_custom_data("type") in [1,2]):
+												block_blz = true
+												break;
+								
+								if not block_blz:
+									on_claim_tile(neighbor,claim,type,false,true,true)
+									if not force_do:
+										var ntile : tile_data = check_tile_claimably(neighbor,claim,-1,true)
+										game.gui_board_events(ntile)
 			if update:
 				game_state_change.emit()
 			if not terain and not force_do:
@@ -407,7 +454,7 @@ func on_claim_tile(coords,claim,type:int=-1,
 					game.print_data_to_game(result)
 				elif mp_player_source:
 					game.print_data_to_game.rpc(result)
-					_on_mpui_input.rpc(coords,claim_slot,mp_start_type,update,terain,force_do,blz_fired,did_claim,[ran_attacker,ran_defender])
+					_on_mpui_input.rpc(coords,claim_slot,mp_start_type,update,terain,force_do,blz_fired,changed,[ran_attacker,ran_defender])
 			return changed
 		#else:
 			#print("Failed to place a tile as the coords given: {0}, are outside map boundrys".format([coords]))
@@ -665,7 +712,7 @@ func get_all_avalable_tiles(claim,search_for_value=true,ignore_set:Array[Vector2
 	# the loop that looks arround
 	for tile in colection:
 		if not tile in ignore_set:
-			if check_tile_claimably(tile,claim):
+			if check_tile_claimably(tile,claim) or (Global.blz_enabled and Global.ai_level == 2 and check_tile_claimably(tile,claim,false,false,true)):
 				var new_tile = tile_data.new()
 				new_tile.coords = tile
 				
@@ -692,7 +739,10 @@ func get_all_local_avalable_tiles(coords,claim,search_for_value=true,ignore_set:
 	var neighbors = main_grid.get_surrounding_cells(coords)
 	for neighbor in neighbors:
 		if not neighbor in ignore_set:
-			if check_tile_claimably(neighbor,claim):
+			if check_tile_claimably(neighbor,claim) or (
+					(game.claims_order[claim_slot-1] if claim_slot > 0 else game.claims[claim_slot]) is NonPlayerClaim 
+					and Global.blz_enabled and Global.ai_level == 2 and check_tile_claimably(neighbor,claim,false,false,true)):
+				
 				var new_tile = tile_data.new()
 				new_tile.coords = neighbor
 				
@@ -717,6 +767,7 @@ func start_search(new_tile:tile_data,coords:Vector2i,claim:int,ignore_set:Array[
 	var picked_tile = main_grid.get_cell_tile_data(coords)
 	if not picked_tile == null:
 		if not (picked_tile.get_custom_data("ownership") == 0 and picked_tile.get_custom_data("type") == 1):
+			new_tile.opposite_claim_data = game.claims_order[picked_tile.get_custom_data("ownership")-1]
 			
 			new_tile.move_to_value = search_surounding_tiles(coords,Global.dist,claim,
 															ignore_set,
@@ -734,6 +785,20 @@ func start_search(new_tile:tile_data,coords:Vector2i,claim:int,ignore_set:Array[
 			if not picked_tile.get_custom_data("ownership") in [0,claim] and picked_tile.get_custom_data("type") == 1:
 				new_tile.move_to_value = 1 if new_tile.move_to_value <= 0 else new_tile.move_to_value 
 				new_tile.move_to_value *= ai_data.capital_beeline if can_use_ai else 1
+			
+			var neighbors = main_grid.get_surrounding_cells(coords)
+			var blz_pref = 0
+			
+			if (Global.blz_enabled and Global.ai_level == 2):
+				for neighbor in neighbors:
+					picked_tile = main_grid.get_cell_tile_data(neighbor)
+					if not picked_tile == null:
+						if not picked_tile.get_custom_data("ownership") in [0,claim] and new_tile.opposite_claim_data != null:
+							if picked_tile.get_custom_data("ownership") == new_tile.opposite_claim_data.claim_colour:
+								blz_pref += 1
+				
+				if ai_data is NonPlayerClaim and blz_pref >= ai_data.blz_amount_want:
+					new_tile.blz_prefrance = true
 	#if can_use_ai:
 		#print("This tile has the folowing info\n--------------")
 		#print(new_tile.get_info()+"\n------------")

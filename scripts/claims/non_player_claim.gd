@@ -13,6 +13,8 @@ class_name NonPlayerClaim
 @export var capital_beeline = 0
 ## If it sees a wall, it goes for it. This weighs that. See [method board.search_surounding_tiles]
 @export var wall_beeline = 0
+## This sets how meny tiles around this one tile need to be the same color to willingly blitz this tile.
+@export var blz_amount_want = 3
 
 func claim_surounding_tiles(available:Array[tile_data]) -> tile_data:
 	var target_list : tile_data

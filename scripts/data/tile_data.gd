@@ -14,6 +14,7 @@ class_name tile_data
 @export var opposite_claim = ""
 @export var oppose_points = 0
 @export var oppose_fuel = 0
+@export var blz_prefrance = false
 
 @export var points = 0
 @export var fuel = 0
@@ -33,7 +34,7 @@ var score_compile = ""
 var reach_compile = ""
 
 const empty_text = "This is a empty {tile_type} tile\n"
-const enemy_text = "This is a enemy claim from:\n[b]{opposite_claim}[/b]\nThey get:\n      [b]{oppose_points} surrounding points[/b]\n      [b]{oppose_fuel} fuel points[/b]\n"
+const enemy_text = "This is a enemy claim from: [b]{opposite_claim}[/b]\nThey get:\n      [b]{oppose_points} surrounding points[/b]\n      [b]{oppose_fuel} fuel points[/b]\n"
 const attack_text = "You get:\n      [b]{points} surrounding points[/b]\n      [b]{fuel} fuel points[/b]\n"
 const boost_text = "The attatcker also gets:\n  [b]+1 attack boost[/b]\n"
 const boost_cap_text = "  [b]+{cap_linked} capital boost[/b]\n--------------\n"

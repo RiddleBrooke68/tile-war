@@ -308,6 +308,7 @@ layout_mode = 2
 tooltip_text = "Controls the number of Wall tiles there will be added in grenrating a map."
 max_value = 160.0
 rounded = true
+scrollable = false
 
 [node name="fuel_settings" type="BoxContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/map Settings/BoxContainer"]
 layout_mode = 2
@@ -325,6 +326,7 @@ layout_mode = 2
 tooltip_text = "Controls the number of fuel tiles there will be added in grenrating a map."
 max_value = 76.0
 rounded = true
+scrollable = false
 
 [node name="HSeparator" type="HSeparator" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer"]
 layout_mode = 2
@@ -582,6 +584,7 @@ min_value = 1.0
 max_value = 30.0
 value = 1.0
 rounded = true
+scrollable = false
 
 [node name="cdan_settings2" type="BoxContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/cdan_container"]
 layout_mode = 2
@@ -601,6 +604,7 @@ min_value = 1.0
 max_value = 30.0
 value = 1.0
 rounded = true
+scrollable = false
 
 [node name="BoxContainer5" type="BoxContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings"]
 layout_mode = 2
@@ -634,6 +638,7 @@ min_value = 1.0
 max_value = 30.0
 value = 1.0
 rounded = true
+scrollable = false
 
 [node name="HSeparator2" type="HSeparator" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer"]
 layout_mode = 2

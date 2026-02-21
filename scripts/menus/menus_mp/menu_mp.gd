@@ -399,6 +399,7 @@ var scene
 @rpc("any_peer","call_local")
 func start_game():
 	print("game")
+	music.stop()
 	timer.stop()
 	scene = game_mp.instantiate()
 	scene.get_child(1).mp_back_to_lobby.connect(end_game)

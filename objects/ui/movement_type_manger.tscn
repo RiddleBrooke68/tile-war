@@ -1,0 +1,90 @@
+[gd_scene load_steps=12 format=3 uid="uid://v1u5kj5n5xv2"]
+
+[ext_resource type="Script" uid="uid://cm5yo8nwn43nf" path="res://scripts/object/movement_type_manger.gd" id="1_c5g2a"]
+[ext_resource type="Texture2D" uid="uid://1np4le12dwr3" path="res://sprites/tilemaps/tile_moves/movement_options.png" id="1_u7tq2"]
+[ext_resource type="Texture2D" uid="uid://b4lyd7474qkyg" path="res://sprites/tilemaps/tile_moves/movement_options_picked.png" id="2_c5g2a"]
+
+[sub_resource type="InputEventKey" id="InputEventKey_c5g2a"]
+device = -1
+keycode = 49
+unicode = 49
+
+[sub_resource type="Shortcut" id="Shortcut_en2mi"]
+events = [SubResource("InputEventKey_c5g2a")]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_en2mi"]
+atlas = ExtResource("1_u7tq2")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2xa2t"]
+atlas = ExtResource("2_c5g2a")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="InputEventKey" id="InputEventKey_2xa2t"]
+device = -1
+keycode = 50
+unicode = 50
+
+[sub_resource type="Shortcut" id="Shortcut_ws88w"]
+events = [SubResource("InputEventKey_2xa2t")]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ws88w"]
+atlas = ExtResource("1_u7tq2")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ymobt"]
+atlas = ExtResource("2_c5g2a")
+region = Rect2(32, 0, 32, 32)
+
+[node name="movement_type_manger" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 128.0
+offset_bottom = 64.0
+script = ExtResource("1_c5g2a")
+
+[node name="PanelContainer" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="claim" type="TextureButton" parent="PanelContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 32.0
+grow_vertical = 2
+tooltip_text = "Simply clicking a tile while on this mode, alows you to claim a tile if you have the greater point value."
+toggle_mode = true
+shortcut = SubResource("Shortcut_en2mi")
+texture_normal = SubResource("AtlasTexture_en2mi")
+texture_pressed = SubResource("AtlasTexture_2xa2t")
+texture_hover = SubResource("AtlasTexture_en2mi")
+stretch_mode = 1
+
+[node name="blitz" type="TextureButton" parent="PanelContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -32.0
+grow_horizontal = 0
+grow_vertical = 2
+tooltip_text = "This mode will cost more more moves, but will alow you to take tiles you couldn't before.
+
+You can also do this by right clicking when the normal mode is on."
+toggle_mode = true
+shortcut = SubResource("Shortcut_ws88w")
+texture_normal = SubResource("AtlasTexture_ws88w")
+texture_pressed = SubResource("AtlasTexture_ymobt")
+texture_hover = SubResource("AtlasTexture_ws88w")
+stretch_mode = 1
+
+[connection signal="pressed" from="PanelContainer/claim" to="." method="swich_mode" binds= [0]]
+[connection signal="pressed" from="PanelContainer/blitz" to="." method="swich_mode" binds= [1]]

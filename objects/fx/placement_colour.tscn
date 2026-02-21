@@ -35,9 +35,8 @@ seamless_blend_skirt = 0.167
 shader = ExtResource("1_a0x82")
 shader_parameter/noise_texture = SubResource("NoiseTexture2D_1wrfe")
 shader_parameter/fade = ExtResource("3_l1yqf")
-shader_parameter/color = Color(0.06766674, 0.58, 0, 1)
 shader_parameter/fade_power = 0.0
-shader_parameter/strength = 0.02000000095
+shader_parameter/strength = 0.005
 shader_parameter/speed = Vector2(0.1, 0.05)
 
 [sub_resource type="Gradient" id="Gradient_85wdj"]
@@ -45,6 +44,20 @@ colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 0)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_bdcrv"]
 gradient = SubResource("Gradient_85wdj")
+
+[sub_resource type="Animation" id="Animation_1avfs"]
+length = 0.001
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:material:shader_parameter/fade_power")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
 
 [sub_resource type="Animation" id="Animation_l1yqf"]
 resource_name = "spike"
@@ -76,27 +89,13 @@ tracks/1/keys = {
 }]
 }
 
-[sub_resource type="Animation" id="Animation_1avfs"]
-length = 0.001
-tracks/0/type = "bezier"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:material:shader_parameter/fade_power")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_bdcrv"]
 _data = {
 &"RESET": SubResource("Animation_1avfs"),
 &"spike": SubResource("Animation_l1yqf")
 }
 
-[node name="placement" type="Node2D"]
+[node name="placement" type="Node2D" groups=["glow"]]
 script = ExtResource("1_obkiy")
 
 [node name="Sprite2D2" type="Sprite2D" parent="."]
@@ -106,7 +105,7 @@ texture = SubResource("GradientTexture2D_oit0e")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_l1yqf")
-position = Vector2(3.8146973e-06, 1.6940659e-21)
+position = Vector2(1.1368684e-13, -2.2737368e-13)
 scale = Vector2(1.25, 1.25)
 texture = SubResource("GradientTexture2D_bdcrv")
 

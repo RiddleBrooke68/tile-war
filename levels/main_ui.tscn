@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=4 uid="uid://bojd4turtuu7f"]
+[gd_scene load_steps=35 format=4 uid="uid://bojd4turtuu7f"]
 
 [ext_resource type="Texture2D" uid="uid://c8dqm2t52mlvy" path="res://sprites/tilemaps/tile_captures/tile_ui.png" id="1_7wffp"]
 [ext_resource type="Script" uid="uid://d3656qxysmfyq" path="res://scripts/main_ui/board_ui.gd" id="1_fhnlk"]
@@ -16,6 +16,7 @@
 [ext_resource type="PackedScene" uid="uid://rsjmwt83aaec" path="res://objects/fx/placement_colour.tscn" id="10_6d2wa"]
 [ext_resource type="Texture2D" uid="uid://fag70sjvwby0" path="res://sprites/ui/buttons/next_turn_button/next_turn_button_locked.png" id="11_gha74"]
 [ext_resource type="PackedScene" uid="uid://cj0c3ub7bgeqa" path="res://objects/ui/claim_data_panel.tscn" id="12_1fjtt"]
+[ext_resource type="PackedScene" uid="uid://v1u5kj5n5xv2" path="res://objects/ui/movement_type_manger.tscn" id="12_bwe6u"]
 [ext_resource type="Theme" uid="uid://cedkvwvts0evs" path="res://themes/extra_setting_theame.tres" id="16_sowik"]
 
 [sub_resource type="Gradient" id="Gradient_n3ddt"]
@@ -345,6 +346,12 @@ size_flags_horizontal = 3
 size_flags_stretch_ratio = 1.5
 vertical = true
 
+[node name="movement_type_manger" parent="game/input border/BoxContainer2/BoxContainer/inputs" instance=ExtResource("12_bwe6u")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(124, 64)
+layout_mode = 2
+size_flags_horizontal = 0
+
 [node name="next_turn" type="TextureButton" parent="game/input border/BoxContainer2/BoxContainer/inputs"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -358,8 +365,8 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_font_sizes/normal_font_size = 14
-theme_override_font_sizes/bold_font_size = 14
+theme_override_font_sizes/normal_font_size = 12
+theme_override_font_sizes/bold_font_size = 12
 bbcode_enabled = true
 
 [node name="new_game" type="Button" parent="game/input border/BoxContainer2/BoxContainer/inputs"]

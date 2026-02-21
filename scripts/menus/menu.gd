@@ -358,6 +358,7 @@ func _on_river_cap_item_selected(index,mp_player_source=true):
 
 
 func _on_start_game():
+	music.stop()
 	get_tree().change_scene_to_file("res://levels/main_ui.tscn")
 
 func _on_multiplayer_pressed():

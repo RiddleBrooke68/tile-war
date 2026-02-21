@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://8vfoca2yligy"
+path="res://.godot/imported/audio_music_placeholders_stolen_pvz_gw_lounge_lizard.main.ogg-1df8b61671ed5c7144bd2fccbe6d0847.oggvorbisstr"
+
+[deps]
+
+source_file="res://builds/tile war build_0_a1_02_ver10/mods/mod_example.no/audio/audio_music_placeholders_stolen_pvz_gw_lounge_lizard.main.ogg"
+dest_files=["res://.godot/imported/audio_music_placeholders_stolen_pvz_gw_lounge_lizard.main.ogg-1df8b61671ed5c7144bd2fccbe6d0847.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

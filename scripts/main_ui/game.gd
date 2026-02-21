@@ -112,8 +112,9 @@ func on_next_turn(mp_player_source=true):
 									func(thing:tile_data) -> Vector2i: return thing.coords))
 							avaible_moves.erase(target)
 							#print(done_moves)
-							board_ui.on_claim_tile(target.coords,claim.claim_colour)
-							avaible_moves.append_array(board_ui.get_all_local_avalable_tiles(target.coords,claim,true,done_moves,3))
+							board_ui.on_claim_tile(target.coords,claim,-1,true,false,false,target.blz_prefrance)
+							board_ui.click_effect_color(target.coords,Vector2(2.0,2.0) if target.blz_prefrance else Vector2(1.0,1.0))
+							avaible_moves.append_array(board_ui.get_all_local_avalable_tiles(target.coords,claim,true,done_moves,2))
 							for i in avaible_moves:
 								for n in avaible_moves.filter(
 									func(thing:tile_data) -> bool: return true if thing != i and thing.coords == i.coords else false).map(
@@ -371,6 +372,7 @@ func new_game(mp_player_source=true):
 
 func _on_fade_anim_animation_finished(anim_name):
 	if anim_name == "fade_out":
+		music.stop()
 		if Global.mp_enabled:
 			mp_back_to_lobby.emit()
 		else:
@@ -395,8 +397,8 @@ func link_up_active_player(claim:ClaimData):
 		active_player.move_made.connect(claim.depleate_danger_value)
 
 func remove_active_player_moves(incremts:int=1,set_as=false,bot_only=false):
-	if active_player.moves - incremts < 0 or active_player.orginal_claim.moves - incremts < 0 or incremts < 0 and set_as:
-		return
+	#if active_player.moves - incremts < 0 or active_player.orginal_claim.moves - incremts < 0 or incremts < 0 and set_as:
+		#return
 	failed_move = false
 	if not set_as:
 		active_player.moves -= incremts
@@ -404,6 +406,13 @@ func remove_active_player_moves(incremts:int=1,set_as=false,bot_only=false):
 	else:
 		active_player.moves = incremts
 		active_player.orginal_claim.moves = incremts
+	
+	if active_player.moves < 0:
+		active_player.moves = 0
+		active_player.orginal_claim.moves = 0
+	if active_player.moves != 0 or active_player is NonPlayerClaim:
+			board_ui.off_input = false
+	
 	if not bot_only:
 		if Global.mp_enabled: #and Global.mp_host:
 			mp_sync_movement.rpc(claims.find(active_player.orginal_claim),active_player.orginal_claim.moves,true)
@@ -411,3 +420,11 @@ func remove_active_player_moves(incremts:int=1,set_as=false,bot_only=false):
 			#mp_sync_host.rpc_id(1,Global.mp_player_id,claims.find(active_player.orginal_claim))
 	else:
 		mp_sync_movement.rpc(claims.find(active_player.orginal_claim),active_player.orginal_claim.moves,true)
+	
+	if active_player != null and active_player is PlayerClaim:
+		board_ui.action_grid.clear()
+		if active_player.moves != 0:
+			for i in avaible_moves:#board_ui.get_all_avalable_tiles(active_player.claim_colour,false):
+				board_ui.action_grid.set_cell(i.coords,0,Vector2(active_player.claim_colour,0))
+		
+		moves_plate.number = active_player.moves #mp active_player.moves.
