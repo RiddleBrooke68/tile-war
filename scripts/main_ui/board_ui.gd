@@ -386,6 +386,7 @@ func on_claim_tile(coords,claim,type:int=-1,
 				changed = false
 			#elif Global.bran_enabled and not check_tile_claimably(coords,claim):
 				#changed = false
+			
 			if changed:
 				if picked_tile.get_custom_data("type") == 1 and type == -1:
 					if Global.cdan_enabled and picked_tile.get_custom_data("ownership") != 0:
@@ -412,7 +413,8 @@ func on_claim_tile(coords,claim,type:int=-1,
 					for neighbor in neighbors:
 						var block_blz = false
 						picked_tile = main_grid.get_cell_tile_data(neighbor)
-						type = picked_tile.get_custom_data("type")
+						if type == 0: 
+							type = picked_tile.get_custom_data("type")
 						if not picked_tile == null:
 							if (not (Global.blz_enabled and blz_fired)
 									or
@@ -660,7 +662,7 @@ func check_tile_neutralty(coords:Vector2i,ignore_2nd_neighbor=false,ignore_neigh
 	var picked_tile = main_grid.get_cell_tile_data(coords)
 	if picked_tile == null:
 		return false
-	elif picked_tile.get_custom_data("ownership") == 0 and not picked_tile.get_custom_data("type") in [1,2,3]:
+	elif picked_tile.get_custom_data("ownership") == 0 and picked_tile.get_custom_data("type") == 0:
 		var neighbors = main_grid.get_surrounding_cells(coords)
 		for neighbor in neighbors:
 			picked_tile = main_grid.get_cell_tile_data(neighbor)
