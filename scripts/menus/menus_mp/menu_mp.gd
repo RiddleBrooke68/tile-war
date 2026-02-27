@@ -95,11 +95,13 @@ func _on_green_picker_toggled(toggled_on,mp_player_source=true,mp_name="",mp_id=
 		if toggled_on:
 			print(client_name," asining player to claim green: " + str(multiplayer.get_unique_id()))
 			Global.mp_player_list[multiplayer.get_unique_id()].current_claim = 1
+			Global.mp_player_color = 1
 			green_claim_type.item_selected.emit(2,false)
 			green_claim_type.disabled = true
 			Global.claim_names[0] = Global.mp_player_list[multiplayer.get_unique_id()].name
 		else:
 			Global.mp_player_list[multiplayer.get_unique_id()].current_claim = 0
+			Global.mp_player_color = 0
 			green_claim_type.item_selected.emit(0,false)
 			green_claim_type.disabled = false
 			Global.claim_names[0] = ""
@@ -127,11 +129,13 @@ func _on_purple_picker_toggled(toggled_on,mp_player_source=true,mp_name="",mp_id
 		if toggled_on:
 			print(client_name," asining player to claim purple: " + str(multiplayer.get_unique_id()))
 			Global.mp_player_list[multiplayer.get_unique_id()].current_claim = 2
+			Global.mp_player_color = 2
 			purple_claim_type.item_selected.emit(2,false)
 			purple_claim_type.disabled = true
 			Global.claim_names[1] = Global.mp_player_list[multiplayer.get_unique_id()].name
 		else:
 			Global.mp_player_list[multiplayer.get_unique_id()].current_claim = 0
+			Global.mp_player_color = 0
 			purple_claim_type.item_selected.emit(0,false)
 			purple_claim_type.disabled = false
 			Global.claim_names[1] = ""
@@ -159,11 +163,13 @@ func _on_yellow_picker_toggled(toggled_on,mp_player_source=true,mp_name="",mp_id
 		if toggled_on:
 			print(client_name," asining player to claim yellow: " + str(multiplayer.get_unique_id()))
 			Global.mp_player_list[multiplayer.get_unique_id()].current_claim = 3
+			Global.mp_player_color = 3
 			yellow_claim_type.item_selected.emit(2,false)
 			yellow_claim_type.disabled = true
 			Global.claim_names[2] = Global.mp_player_list[multiplayer.get_unique_id()].name
 		else:
 			Global.mp_player_list[multiplayer.get_unique_id()].current_claim = 0
+			Global.mp_player_color = 0
 			yellow_claim_type.item_selected.emit(0,false)
 			yellow_claim_type.disabled = false
 			Global.claim_names[2] = ""
@@ -191,11 +197,13 @@ func _on_red_picker_toggled(toggled_on,mp_player_source=true,mp_name="",mp_id=""
 		if toggled_on:
 			print(client_name," asining player to claim red: " + str(multiplayer.get_unique_id()))
 			Global.mp_player_list[multiplayer.get_unique_id()].current_claim = 4
+			Global.mp_player_color = 4
 			red_claim_type.item_selected.emit(2,false)
 			red_claim_type.disabled = true
 			Global.claim_names[3] = Global.mp_player_list[multiplayer.get_unique_id()].name
 		else:
 			Global.mp_player_list[multiplayer.get_unique_id()].current_claim = 0
+			Global.mp_player_color = 0
 			red_claim_type.item_selected.emit(0,false)
 			red_claim_type.disabled = false
 			Global.claim_names[3] = ""
@@ -269,7 +277,7 @@ func player_connected(id):
 	#Global.mp_host = is_hosting
 	if not Global.mp_player_list.is_empty():
 		print(client_name," player connected: " + str(id))
-		send_player_data.rpc_id(id,client_label.text,Global.mp_player_id,Global.mp_player_list[Global.mp_player_id].current_claim)
+		send_player_data.rpc_id(id,client_label.text,Global.mp_player_id,Global.mp_player_color)
 		#if Global.mp_host:
 			#update_global_data.rpc_id(id,
 				#Global.map_type,
@@ -316,6 +324,7 @@ func server_disconnected():
 	Global.mp_connected = false
 	peer = ENetMultiplayerPeer.new()
 	Global.mp_player_id = 0
+	Global.mp_player_color = 0
 	Global.mp_player_list.clear()
 	
 	if not Global.mp_ended_sesion and get_tree() != null:

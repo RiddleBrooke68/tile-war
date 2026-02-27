@@ -138,6 +138,21 @@ use_texture_padding = false
 5:1/0 = 0
 5:1/0/custom_data_0 = 5
 5:1/0/custom_data_1 = 1
+1:4/0 = 0
+1:4/0/custom_data_0 = 1
+1:4/0/custom_data_1 = 4
+2:4/0 = 0
+2:4/0/custom_data_0 = 2
+2:4/0/custom_data_1 = 4
+3:4/0 = 0
+3:4/0/custom_data_0 = 3
+3:4/0/custom_data_1 = 4
+4:4/0 = 0
+4:4/0/custom_data_0 = 4
+4:4/0/custom_data_1 = 4
+5:4/0 = 0
+5:4/0/custom_data_0 = 5
+5:4/0/custom_data_1 = 4
 
 [sub_resource type="TileSet" id="TileSet_6xtx1"]
 tile_shape = 3
@@ -312,6 +327,12 @@ tile_set = SubResource("TileSet_6xtx1")
 
 [node name="action_grid" type="TileMapLayer" parent="game/board border/board"]
 modulate = Color(0.37, 0.37, 0.37, 0.43137255)
+position = Vector2(288, 296)
+scale = Vector2(4, 4)
+tile_set = SubResource("TileSet_6xtx1")
+
+[node name="fog_grid" type="TileMapLayer" parent="game/board border/board"]
+modulate = Color(0.3779188, 0.37791887, 0.37791884, 1)
 position = Vector2(288, 296)
 scale = Vector2(4, 4)
 tile_set = SubResource("TileSet_6xtx1")

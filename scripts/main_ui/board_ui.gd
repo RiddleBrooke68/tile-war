@@ -18,8 +18,10 @@ signal tile_info(data:tile_data)
 @onready var main_grid : TileMapLayer = $main_grid
 ## The overlay thats to show the player what their clicking.
 @onready var overlay_grid : TileMapLayer = $overlay_grid
-
+## Shows what the player can do.
 @onready var action_grid : TileMapLayer = $action_grid
+## Hides tiles in multiplayer with fog of war.
+@onready var fog_grid = $fog_grid
 
 const placement = Vector2i(-10,-13)
 
@@ -693,6 +695,51 @@ func check_tile_neutralty(coords:Vector2i,ignore_2nd_neighbor=false,ignore_neigh
 		return false
 
 
+# FOG
+
+func update_fog() -> Error:
+	if Global.mp_player_color == 0:
+		return Error.ERR_INVALID_PARAMETER
+	var player_claim : ClaimData = game.claims_order[Global.mp_player_color-1]
+	if Global.mp_enabled and Global.fow_enabled and player_claim.claim_mp_ip_linked in [Global.mp_player_id,0]:
+		var clear_tiles = []
+		clear_tiles = get_claim_tile_type_coords(player_claim.claim_colour)
+		var neighbours_set = []
+		
+		var loop = func loop(i,function,length):
+			var picked_tile = main_grid.get_cell_tile_data(i)
+			if picked_tile == null:
+				return
+			if picked_tile.get_custom_data("type") == 1 and picked_tile.get_custom_data("ownership") == 0:
+				return
+			if length == 0:
+				return
+			var neighbors = main_grid.get_surrounding_cells(i)
+			for neighbor in neighbors:
+				if not neighbor in clear_tiles:
+					if not neighbor in neighbours_set:
+						neighbours_set.append(neighbor)
+					function.call(neighbor,function,length-1)
+		
+		for i in clear_tiles:
+			loop.call(i,loop,Global.fow_sight)
+		clear_tiles.append_array(neighbours_set)
+		
+		for i in main_grid.get_used_cells():
+			fog_grid.set_cell(i,
+							0,
+							Vector2i(
+								player_claim.claim_colour,
+								4 if not i in clear_tiles else -1
+								)
+							)
+		return Error.OK
+	else:
+		fog_grid.clear()
+		# Returns a lock error, meaning the player does not control this player.
+		return Error.ERR_LOCKED
+
+
 
 # COLLECT INFO
 
@@ -756,6 +803,7 @@ func get_all_local_avalable_tiles(coords,claim,search_for_value=true,ignore_set:
 					claimed_tiles.append_array(get_all_local_avalable_tiles(neighbor,claim,search_for_value,ignore_set,distance-1))
 	broke_timer = false
 	return claimed_tiles
+
 
 func start_search(new_tile:tile_data,coords:Vector2i,claim:int,ignore_set:Array[Vector2i]=[],stop_time=-1.0) -> tile_data:
 	# The ai personaltys
@@ -948,6 +996,22 @@ func check_claim_tile_type_count(claim,type) -> int:
 
 
 # coords
+
+## FOR FOG
+func get_claim_tile_type_coords(claim = -1,type = -1) -> Array[Vector2i]:
+	var coords : Array[Vector2i]
+	var colection = main_grid.get_used_cells()
+	for tile in colection:
+		var picked_tile = main_grid.get_cell_tile_data(tile)
+		if not picked_tile == null:
+			if ((picked_tile.get_custom_data("ownership") == claim or claim == -1) 
+					and 
+					(picked_tile.get_custom_data("type") == type or type == -1)
+					and not tile in coords):
+				coords.append(tile)
+				
+	tested_tiles = []
+	return coords
 
 ## Gets the positon of the preplaced empty tile, to make acualy empty.
 func check_special_empty_tiles() -> Array[Vector2i]:

@@ -92,7 +92,7 @@ func on_next_turn(mp_player_source=true):
 						# Save Gaurd agnst picking already claimed tiles. 
 						if target != null:
 							var no_tiles = done_moves
-							while not board_ui.check_tile_claimably(target.coords,claim.claim_colour,false,false,false,true):
+							while not board_ui.check_tile_claimably(target.coords,claim,false,false,false,true):
 								no_tiles.append_array(
 									avaible_moves.filter(
 										func(thing:tile_data) -> bool: return true if thing.coords == target.coords and not thing.coords in no_tiles else false).map(
@@ -189,6 +189,7 @@ var failed_move = false
 var dead_number = 0
 ## Updates the game when something happens.
 func game_state_changed(refresh=false,set_active=true):
+	board_ui.update_fog()
 	#claims_info.clear()
 	if refresh:
 		done_moves.clear()

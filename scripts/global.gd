@@ -97,6 +97,10 @@ var blz_move_requrement = 5
 var cls_enabled = true
 ## This controls how strong it is.
 var cls_boost = 2
+## Fog of war
+var fow_enabled = false
+## Sight in the fog.
+var fow_sight = 2
 
 # Moves settings
 # Tiles
@@ -145,6 +149,7 @@ var mp_host = false
 var mp_server = false
 var mp_connected = false
 var mp_player_id = 0
+var mp_player_color = 0
 var mp_player_list = {}: # peer_id:peer_data={
 			#"name": _name,
 			#"id": id,
