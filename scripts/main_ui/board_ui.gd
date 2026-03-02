@@ -305,7 +305,7 @@ func _on_gui_input(event):
 					event.button_index == MOUSE_BUTTON_RIGHT and move_manger.mode == 0 or event.button_index == MOUSE_BUTTON_LEFT and move_manger.mode == 1
 					) and not event.pressed and not (blz_lock or off_input):
 			
-			if not tile.available and game.active_player.moves >= Global.blz_move_requrement: #mp replace 1 with game.active_player.claim_colour
+			if game.active_player.moves >= Global.blz_move_requrement: #mp replace 1 with game.active_player.claim_colour
 				var sav = game.active_player.moves
 				board_decrese_move_count.emit(Global.blz_move_requrement)
 				if not on_claim_tile(grid_coords,game.active_player,-1,true,false,false,true):
@@ -313,10 +313,10 @@ func _on_gui_input(event):
 				sound.stream = load("res://audio/FX/left click sound.mp3") as AudioStream
 				click_size = Vector2(2.0,2.0)
 			
-			elif tile.available:
-				board_decrese_move_count.emit(1)
-				on_claim_tile(grid_coords,game.active_player)
-				sound.stream = load("res://audio/FX/left click sound.mp3") as AudioStream
+			#elif tile.available:
+				#board_decrese_move_count.emit(1)
+				#on_claim_tile(grid_coords,game.active_player)
+				#sound.stream = load("res://audio/FX/left click sound.mp3") as AudioStream
 			
 			else:
 				sound.stream = load("res://audio/FX/right click sound.mp3") as AudioStream
@@ -424,6 +424,7 @@ func on_claim_tile(coords,claim,type:int=-1,
 						picked_tile = main_grid.get_cell_tile_data(neighbor)
 						if type == 0: 
 							type = picked_tile.get_custom_data("type")
+							print(type)
 						if not picked_tile == null:
 							if (not (Global.blz_enabled and blz_fired)
 									or

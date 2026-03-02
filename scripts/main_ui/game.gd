@@ -274,7 +274,7 @@ func game_state_changed(refresh=false,set_active=true):
 			board_ui.off_input = false
 		
 		board_ui.action_grid.clear()
-		if not board_ui.off_input:
+		if active_player.moves == 0:
 			for i in avaible_moves:#board_ui.get_all_avalable_tiles(active_player.claim_colour,false):
 				board_ui.action_grid.set_cell(i.coords,0,Vector2(active_player.claim_colour,0))
 	
@@ -289,6 +289,8 @@ func game_state_changed(refresh=false,set_active=true):
 	if active_player != null:
 		moves_plate.number = active_player.moves
 		moves_plate.update_plate_display()
+	
+	board_ui.update_fog()
 
 @rpc("any_peer")
 func update_active_player(claim:int):

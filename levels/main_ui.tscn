@@ -173,30 +173,26 @@ fuel_tile_count = 20
 click_efect = ExtResource("10_6d2wa")
 
 [node name="PointLight2D" type="PointLight2D" parent="game/board border/board"]
-visible = false
 position = Vector2(408, 160)
 color = Color(0.3171617, 0.3023937, 0, 1)
-energy = 3.43
+energy = 4.69
 range_item_cull_mask = 2
 shadow_enabled = true
-shadow_color = Color(0.10322646, 0.09663544, 1.8049032e-08, 0.21176471)
 shadow_filter = 2
-shadow_filter_smooth = 11.1
+shadow_filter_smooth = 26.2
 shadow_item_cull_mask = 3
 texture = ExtResource("11_uhiin")
 texture_scale = 5.89
 height = 81.0
 
 [node name="PointLight2D4" type="PointLight2D" parent="game/board border/board"]
-visible = false
 position = Vector2(48, 488)
 color = Color(0.49341172, 0, 0.13870019, 1)
-energy = 9.36
+energy = 1.51
 range_item_cull_mask = 2
 shadow_enabled = true
-shadow_color = Color(0.45, 0, 0.12749998, 0.047058824)
 shadow_filter = 2
-shadow_filter_smooth = 11.5
+shadow_filter_smooth = 7.8
 shadow_item_cull_mask = 3
 texture = ExtResource("11_uhiin")
 texture_scale = 7.3
