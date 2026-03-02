@@ -27,7 +27,7 @@ signal move_made
 ## Use when the player is in danger mode, where one their capatials have been taken. If left empty, it will defaut to [member ClaimData.claim_panel_normal], see that also for more info.
 @export var claim_panel_danged : Texture
 ## If multiplayer is active, then is makes sure that players don't control other players.
-@export var claim_mp_ip_linked : int = 0
+@export var claim_mp_ip_linked : int = -1
 @export_group("Unused info")
 ##@deprecated: This will never apear in game and is used only as to give me thoughts on how they work.
 @export_multiline var info : String

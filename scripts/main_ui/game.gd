@@ -23,7 +23,7 @@ var active_player : ClaimData:
 		if i != null:
 			print(i.name)
 		active_player = i
-
+var player_prior : ClaimData
 
 @onready var board_ui = %board
 @onready var next_turn = %next_turn
@@ -142,6 +142,7 @@ func on_next_turn(mp_player_source=true):
 			elif claim is PlayerClaim:
 				done_moves.clear()
 				set_active_player(claim)
+				
 				#if Global.cdan_enabled and claim.claim_dangered:
 					#claim.claim_dangered = false
 				#claim.claim_active = true
@@ -266,14 +267,14 @@ func game_state_changed(refresh=false,set_active=true):
 		
 		if active_player.moves == 0 or active_player is NonPlayerClaim:
 			board_ui.off_input = true
-		elif Global.mp_enabled and not active_player.claim_mp_ip_linked in [Global.mp_player_id,0]:
+		elif Global.mp_enabled and not active_player.claim_mp_ip_linked == Global.mp_player_id:
 			board_ui.off_input = true
 			next_turn.disabled = true
 		else:
 			board_ui.off_input = false
 		
 		board_ui.action_grid.clear()
-		if active_player.moves != 0:
+		if not board_ui.off_input:
 			for i in avaible_moves:#board_ui.get_all_avalable_tiles(active_player.claim_colour,false):
 				board_ui.action_grid.set_cell(i.coords,0,Vector2(active_player.claim_colour,0))
 	
@@ -383,6 +384,8 @@ func set_active_player(claim:ClaimData):
 	if not active_player == null:
 		for i in active_player.move_made.get_connections():
 			active_player.move_made.disconnect(i.callable)
+	if claim is PlayerClaim:
+		player_prior = claim
 	#if Global.cdan_enabled and claim.claim_dangered:
 		#claim.claim_dangered = false
 	claim.claim_active = true

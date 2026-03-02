@@ -53,6 +53,7 @@ var lot : Vector4i
 
 func _ready():
 	
+	main_grid.hide()
 	enabled_claims.clear()
 	#mp If I were to make it so I would take into acount that Global.[claim]_enabled is the 0, 1, 2 option system.
 	#mp I'd first have to make it so the game can see if the part is more than 0, the claim is enabled.
@@ -195,8 +196,14 @@ func _ready():
 		if Global.mp_enabled:
 			mp_update_board_state.rpc(serialize_pattern(main_grid.get_pattern(set_of_grid)))
 
+var start = false
 
 func _process(_delta):
+	if not start:
+		main_grid.show()
+		update_fog()
+		start = true
+	
 	if hovered:
 		# Get mouse position on grid.
 		var mouse_pos = get_global_mouse_position()
@@ -697,47 +704,57 @@ func check_tile_neutralty(coords:Vector2i,ignore_2nd_neighbor=false,ignore_neigh
 
 # FOG
 
-func update_fog() -> Error:
-	if Global.mp_player_color == 0:
-		return Error.ERR_INVALID_PARAMETER
-	var player_claim : ClaimData = game.claims_order[Global.mp_player_color-1]
-	if Global.mp_enabled and Global.fow_enabled and player_claim.claim_mp_ip_linked in [Global.mp_player_id,0]:
-		var clear_tiles = []
-		clear_tiles = get_claim_tile_type_coords(player_claim.claim_colour)
-		var neighbours_set = []
-		
-		var loop = func loop(i,function,length):
-			var picked_tile = main_grid.get_cell_tile_data(i)
-			if picked_tile == null:
-				return
-			if picked_tile.get_custom_data("type") == 1 and picked_tile.get_custom_data("ownership") == 0:
-				return
-			if length == 0:
-				return
-			var neighbors = main_grid.get_surrounding_cells(i)
-			for neighbor in neighbors:
-				if not neighbor in clear_tiles:
-					if not neighbor in neighbours_set:
-						neighbours_set.append(neighbor)
-					function.call(neighbor,function,length-1)
-		
-		for i in clear_tiles:
-			loop.call(i,loop,Global.fow_sight)
-		clear_tiles.append_array(neighbours_set)
-		
-		for i in main_grid.get_used_cells():
-			fog_grid.set_cell(i,
-							0,
-							Vector2i(
-								player_claim.claim_colour,
-								4 if not i in clear_tiles else -1
+var claim_placeholder = ClaimData.new()
+
+func update_fog(claim_add:ClaimData=claim_placeholder) -> Error:
+	if Global.fow_enabled:
+		var player_claim : ClaimData
+		if Global.mp_enabled:
+			if Global.mp_player_color == 0:
+				return Error.ERR_INVALID_PARAMETER
+			player_claim = game.claims_order[Global.mp_player_color-1]
+			if not player_claim.claim_mp_ip_linked == Global.mp_player_id:
+				player_claim = ClaimData.new()
+		elif claim_add != claim_placeholder:
+			player_claim = claim_add
+		else:
+			player_claim = game.player_prior
+		if player_claim is PlayerClaim:
+			var clear_tiles = []
+			clear_tiles = get_claim_tile_type_coords(player_claim.claim_colour)
+			var neighbours_set = []
+			
+			var loop = func loop(i,function,length):
+				var picked_tile = main_grid.get_cell_tile_data(i)
+				if picked_tile == null:
+					return
+				if picked_tile.get_custom_data("type") == 1 and picked_tile.get_custom_data("ownership") == 0:
+					return
+				if length == 0:
+					return
+				var neighbors = main_grid.get_surrounding_cells(i)
+				for neighbor in neighbors:
+					if not neighbor in clear_tiles:
+						if not neighbor in neighbours_set:
+							neighbours_set.append(neighbor)
+						function.call(neighbor,function,length-1)
+			
+			for i in clear_tiles:
+				loop.call(i,loop,Global.fow_sight)
+			clear_tiles.append_array(neighbours_set)
+			
+			for i in main_grid.get_used_cells():
+				fog_grid.set_cell(i,
+								0,
+								Vector2i(
+									player_claim.claim_colour,
+									4 if not i in clear_tiles else -1
+									)
 								)
-							)
-		return Error.OK
-	else:
-		fog_grid.clear()
-		# Returns a lock error, meaning the player does not control this player.
-		return Error.ERR_LOCKED
+			return Error.OK
+	fog_grid.clear()
+	# Returns a lock error, meaning the player does not control this player.
+	return Error.ERR_LOCKED
 
 
 

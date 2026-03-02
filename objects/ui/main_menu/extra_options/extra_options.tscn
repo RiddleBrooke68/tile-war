@@ -1,0 +1,789 @@
+[gd_scene load_steps=6 format=3 uid="uid://42s5kx7hyutw"]
+
+[ext_resource type="Theme" uid="uid://cedkvwvts0evs" path="res://themes/extra_setting_theame.tres" id="1_wyo6v"]
+
+[sub_resource type="Animation" id="Animation_gbx6r"]
+length = 0.001
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(-448, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:position:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(64, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+
+[sub_resource type="Animation" id="Animation_bvm7p"]
+resource_name = "close_extra_settings"
+step = 0.083333336
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0, 2),
+"points": PackedFloat32Array(0, -0.25, 0, 0.333, 0, -448, -0.46592462, -78.94385, 0, 0),
+"times": PackedFloat32Array(0, 1)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:position:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0, 2),
+"points": PackedFloat32Array(64, -0.25, 0, 0.25, 0, 64, -0.16666667, 0, 0, 0),
+"times": PackedFloat32Array(0, 1)
+}
+
+[sub_resource type="Animation" id="Animation_kfbsc"]
+resource_name = "open_extra_settings"
+step = 0.083333336
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0, 2),
+"points": PackedFloat32Array(-448, -0.25, 0, 0.33333334, -138.7182, 0, -0.417, 0, 0, 0),
+"times": PackedFloat32Array(0, 1)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:position:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0, 2),
+"points": PackedFloat32Array(64, -0.25, 0, 0.25, 0, 64, -0.16666667, 0, 0, 0),
+"times": PackedFloat32Array(0, 1)
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_2fskk"]
+_data = {
+&"RESET": SubResource("Animation_gbx6r"),
+&"close_extra_settings": SubResource("Animation_bvm7p"),
+&"open_extra_settings": SubResource("Animation_kfbsc")
+}
+
+[node name="Extra_options" type="Panel" groups=["menu_settings_ui"]]
+offset_left = -448.0
+offset_top = 64.0
+offset_bottom = 576.0
+theme = ExtResource("1_wyo6v")
+
+[node name="BoxContainer" type="BoxContainer" parent="."]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 440.0
+offset_bottom = 504.0
+vertical = true
+
+[node name="Label" type="Label" parent="BoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Extra Game
+Settings"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="BoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="BoxContainer" type="BoxContainer" parent="BoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+vertical = true
+
+[node name="map Settings" type="BoxContainer" parent="BoxContainer/ScrollContainer/BoxContainer"]
+layout_mode = 2
+vertical = true
+
+[node name="Label" type="Label" parent="BoxContainer/ScrollContainer/BoxContainer/map Settings"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Map Settings"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BoxContainer" type="BoxContainer" parent="BoxContainer/ScrollContainer/BoxContainer/map Settings"]
+layout_mode = 2
+
+[node name="wall_settings" type="BoxContainer" parent="BoxContainer/ScrollContainer/BoxContainer/map Settings/BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+vertical = true
+
+[node name="wall_text" type="Label" parent="BoxContainer/ScrollContainer/BoxContainer/map Settings/BoxContainer/wall_settings"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Wall count:"
+
+[node name="WallSlider" type="HSlider" parent="BoxContainer/ScrollContainer/BoxContainer/map Settings/BoxContainer/wall_settings"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Controls the number of Wall tiles there will be added in grenrating a map."
+max_value = 160.0
+rounded = true
+scrollable = false
+
+[node name="fuel_settings" type="BoxContainer" parent="BoxContainer/ScrollContainer/BoxContainer/map Settings/BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+vertical = true
+
+[node name="fuel_text" type="Label" parent="BoxContainer/ScrollContainer/BoxContainer/map Settings/BoxContainer/fuel_settings"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "fuel count:"
+
+[node name="FuelSlider" type="HSlider" parent="BoxContainer/ScrollContainer/BoxContainer/map Settings/BoxContainer/fuel_settings"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Controls the number of fuel tiles there will be added in grenrating a map."
+max_value = 76.0
+rounded = true
+scrollable = false
+
+[node name="HSeparator" type="HSeparator" parent="BoxContainer/ScrollContainer/BoxContainer"]
+layout_mode = 2
+
+[node name="claim settings" type="BoxContainer" parent="BoxContainer/ScrollContainer/BoxContainer"]
+layout_mode = 2
+vertical = true
+
+[node name="Label" type="Label" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Map and Claim Settings"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GridContainer" type="GridContainer" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings"]
+layout_mode = 2
+columns = 2
+
+[node name="green_settings" type="BoxContainer" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/GridContainer"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+vertical = true
+
+[node name="green_mode" type="BoxContainer" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/GridContainer/green_settings"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/GridContainer/green_settings/green_mode"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Greenwich"
+
+[node name="green_claim_type" type="OptionButton" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/GridContainer/green_settings/green_mode"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "This controls who is at play and if they are a player or not."
+selected = 2
+item_count = 3
+popup/item_0/text = "disabled"
+popup/item_0/id = 0
+popup/item_1/text = "bot"
+popup/item_1/id = 1
+popup/item_2/text = "player"
+popup/item_2/id = 2
+
+[node name="green_name" type="LineEdit" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/GridContainer/green_settings"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "This sets the name of the claim in game if controled by a player."
+placeholder_text = "Greenwich"
+
+[node name="purple_settings" type="BoxContainer" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/GridContainer"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+vertical = true
+
+[node name="purple_mode" type="BoxContainer" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/GridContainer/purple_settings"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/GridContainer/purple_settings/purple_mode"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Plum Valley"
+
+[node name="purple_claim_type" type="OptionButton" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/GridContainer/purple_settings/purple_mode"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "This controls who is at play and if they are a player or not."
+selected = 2
+item_count = 3
+popup/item_0/text = "disabled"
+popup/item_0/id = 0
+popup/item_1/text = "bot"
+popup/item_1/id = 1
+popup/item_2/text = "player"
+popup/item_2/id = 2
+
+[node name="purple_name" type="LineEdit" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/GridContainer/purple_settings"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "This sets the name of the claim in game if controled by a player."
+placeholder_text = "Plum Valley"
+
+[node name="yellow_settings" type="BoxContainer" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/GridContainer"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+vertical = true
+
+[node name="yellow_mode" type="BoxContainer" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/GridContainer/yellow_settings"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/GridContainer/yellow_settings/yellow_mode"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "York Street"
+
+[node name="yellow_claim_type" type="OptionButton" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/GridContainer/yellow_settings/yellow_mode"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "This controls who is at play and if they are a player or not."
+selected = 2
+item_count = 3
+popup/item_0/text = "disabled"
+popup/item_0/id = 0
+popup/item_1/text = "bot"
+popup/item_1/id = 1
+popup/item_2/text = "player"
+popup/item_2/id = 2
+
+[node name="yellow_name" type="LineEdit" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/GridContainer/yellow_settings"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "This sets the name of the claim in game if controled by a player."
+placeholder_text = "York Street"
+
+[node name="red_settings" type="BoxContainer" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/GridContainer"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+vertical = true
+
+[node name="red_mode" type="BoxContainer" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/GridContainer/red_settings"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/GridContainer/red_settings/red_mode"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "River Solme"
+
+[node name="red_claim_type" type="OptionButton" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/GridContainer/red_settings/red_mode"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "This controls who is at play and if they are a player or not."
+selected = 2
+item_count = 3
+popup/item_0/text = "disabled"
+popup/item_0/id = 0
+popup/item_1/text = "bot"
+popup/item_1/id = 1
+popup/item_2/text = "player"
+popup/item_2/id = 2
+
+[node name="red_name" type="LineEdit" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/GridContainer/red_settings"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "This sets the name of the claim in game if controled by a player."
+placeholder_text = "River Solme"
+
+[node name="player_setting" type="CheckButton" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/GridContainer"]
+visible = false
+layout_mode = 2
+button_pressed = true
+text = "Have Player"
+
+[node name="purple_setting" type="CheckButton" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/GridContainer"]
+visible = false
+layout_mode = 2
+button_pressed = true
+text = "Have plum valey"
+
+[node name="yellow_setting" type="CheckButton" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/GridContainer"]
+visible = false
+layout_mode = 2
+button_pressed = true
+text = "Have york street"
+
+[node name="red_setting" type="CheckButton" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/GridContainer"]
+visible = false
+layout_mode = 2
+button_pressed = true
+text = "Have river solme"
+
+[node name="BoxContainer" type="BoxContainer" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings"]
+layout_mode = 2
+
+[node name="Button" type="Label" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Ai level"
+
+[node name="ai_level_setting" type="OptionButton" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/BoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+button_pressed = true
+selected = 1
+item_count = 3
+popup/item_0/text = "level 1"
+popup/item_0/id = 0
+popup/item_1/text = "level 2"
+popup/item_1/id = 1
+popup/item_2/text = "level 3"
+popup/item_2/id = 2
+
+[node name="BoxContainer2" type="BoxContainer" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings"]
+layout_mode = 2
+
+[node name="Button" type="Label" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/BoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Last claim standing"
+
+[node name="lms_setting" type="CheckBox" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/BoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+button_pressed = true
+
+[node name="BoxContainer3" type="BoxContainer" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings"]
+layout_mode = 2
+
+[node name="Button" type="Label" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/BoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Battle random results"
+
+[node name="bran_setting" type="CheckBox" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/BoxContainer3"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="cdan_container" type="BoxContainer" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings"]
+layout_mode = 2
+vertical = true
+
+[node name="BoxContainer4" type="BoxContainer" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/cdan_container"]
+layout_mode = 2
+
+[node name="Button" type="Label" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/cdan_container/BoxContainer4"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Capital Protection"
+
+[node name="cdan_setting" type="CheckBox" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/cdan_container/BoxContainer4"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "This makes it so, if you have a capital taken, none can take your tiles untill after you have a turn. "
+button_pressed = true
+
+[node name="cdan_settings" type="BoxContainer" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/cdan_container"]
+layout_mode = 2
+size_flags_horizontal = 3
+vertical = true
+
+[node name="cdan_text" type="Label" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/cdan_container/cdan_settings"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Capital protection duration:"
+
+[node name="CdanSlider" type="HSlider" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/cdan_container/cdan_settings"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Controls the number of Wall tiles there will be added in grenrating a map."
+min_value = 1.0
+max_value = 30.0
+value = 1.0
+rounded = true
+scrollable = false
+
+[node name="cdan_settings2" type="BoxContainer" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/cdan_container"]
+layout_mode = 2
+size_flags_horizontal = 3
+vertical = true
+
+[node name="cdan_cd_text" type="Label" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/cdan_container/cdan_settings2"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Capital protection duration:"
+
+[node name="CdanCdSlider" type="HSlider" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/cdan_container/cdan_settings2"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Controls the number of Wall tiles there will be added in grenrating a map."
+min_value = 1.0
+max_value = 30.0
+value = 1.0
+rounded = true
+scrollable = false
+
+[node name="BoxContainer5" type="BoxContainer" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings"]
+layout_mode = 2
+
+[node name="Button" type="Label" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/BoxContainer5"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Bliz attack"
+
+[node name="blz_setting" type="CheckBox" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/BoxContainer5"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Right click, "
+button_pressed = true
+
+[node name="blz_settings2" type="BoxContainer" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings"]
+layout_mode = 2
+size_flags_horizontal = 3
+vertical = true
+
+[node name="blz_text" type="Label" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/blz_settings2"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Bliz attack requirement:"
+
+[node name="BlzSlider" type="HSlider" parent="BoxContainer/ScrollContainer/BoxContainer/claim settings/blz_settings2"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Sets the required amount of moves to do a bliz."
+min_value = 1.0
+max_value = 30.0
+value = 1.0
+rounded = true
+scrollable = false
+
+[node name="HSeparator2" type="HSeparator" parent="BoxContainer/ScrollContainer/BoxContainer"]
+layout_mode = 2
+
+[node name="BoxContainer2" type="BoxContainer" parent="BoxContainer/ScrollContainer/BoxContainer"]
+layout_mode = 2
+vertical = true
+
+[node name="Control" type="Label" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer2"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Capital numbers"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BoxContainer" type="GridContainer" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer2"]
+layout_mode = 2
+columns = 2
+
+[node name="green_number" type="BoxContainer" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer2/BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+vertical = true
+
+[node name="Label" type="Label" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer2/BoxContainer/green_number"]
+layout_mode = 2
+text = "Greenwich has"
+
+[node name="green_cap" type="OptionButton" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer2/BoxContainer/green_number"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+selected = 0
+item_count = 4
+popup/item_0/text = "1 capital"
+popup/item_0/id = 0
+popup/item_1/text = "2 capital's"
+popup/item_1/id = 1
+popup/item_2/text = "3 capital's"
+popup/item_2/id = 2
+popup/item_3/text = "4 capital's"
+popup/item_3/id = 3
+
+[node name="plum_number" type="BoxContainer" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer2/BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+vertical = true
+
+[node name="Label" type="Label" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer2/BoxContainer/plum_number"]
+layout_mode = 2
+text = "Plum Valey has"
+
+[node name="plum_cap" type="OptionButton" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer2/BoxContainer/plum_number"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+selected = 0
+item_count = 4
+popup/item_0/text = "1 capital"
+popup/item_0/id = 0
+popup/item_1/text = "2 capital's"
+popup/item_1/id = 1
+popup/item_2/text = "3 capital's"
+popup/item_2/id = 2
+popup/item_3/text = "4 capital's"
+popup/item_3/id = 3
+
+[node name="york_number" type="BoxContainer" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer2/BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+vertical = true
+
+[node name="Label" type="Label" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer2/BoxContainer/york_number"]
+layout_mode = 2
+text = "York  Street has"
+
+[node name="york_cap" type="OptionButton" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer2/BoxContainer/york_number"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+selected = 0
+item_count = 4
+popup/item_0/text = "1 capital"
+popup/item_0/id = 0
+popup/item_1/text = "2 capital's"
+popup/item_1/id = 1
+popup/item_2/text = "3 capital's"
+popup/item_2/id = 2
+popup/item_3/text = "4 capital's"
+popup/item_3/id = 3
+
+[node name="river_number" type="BoxContainer" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer2/BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+vertical = true
+
+[node name="Label" type="Label" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer2/BoxContainer/river_number"]
+layout_mode = 2
+text = "River Solme has"
+
+[node name="river_cap" type="OptionButton" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer2/BoxContainer/river_number"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+selected = 0
+item_count = 4
+popup/item_0/text = "1 capital"
+popup/item_0/id = 0
+popup/item_1/text = "2 capital's"
+popup/item_1/id = 1
+popup/item_2/text = "3 capital's"
+popup/item_2/id = 2
+popup/item_3/text = "4 capital's"
+popup/item_3/id = 3
+
+[node name="RichTextLabel" type="RichTextLabel" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "[center][b]CAREFUL WITH THESE SETTINGS[/b][/center]
+They can crash your game."
+fit_content = true
+
+[node name="HSeparator3" type="HSeparator" parent="BoxContainer/ScrollContainer/BoxContainer"]
+layout_mode = 2
+
+[node name="BoxContainer" type="BoxContainer" parent="BoxContainer/ScrollContainer/BoxContainer"]
+layout_mode = 2
+vertical = true
+
+[node name="Label" type="Label" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Movement Settings"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GridContainer" type="GridContainer" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer"]
+layout_mode = 2
+columns = 2
+
+[node name="tile_int_settings" type="BoxContainer" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+vertical = true
+
+[node name="tile_int_text" type="Label" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/tile_int_settings"]
+layout_mode = 2
+text = "tile initial
+movement boost:"
+
+[node name="tile_int_lim" type="BoxContainer" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/tile_int_settings"]
+layout_mode = 2
+
+[node name="tile_int_lim_text" type="Label" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/tile_int_settings/tile_int_lim"]
+layout_mode = 2
+text = "Limit:"
+
+[node name="tile_int_lim_input" type="LineEdit" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/tile_int_settings/tile_int_lim"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "The max amount of moves you can get initially from claimed tiles."
+virtual_keyboard_type = 2
+
+[node name="tile_int_reduct" type="BoxContainer" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/tile_int_settings"]
+layout_mode = 2
+
+[node name="tile_int_reduct_text" type="Label" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/tile_int_settings/tile_int_reduct"]
+layout_mode = 2
+text = "Threshold:"
+
+[node name="tile_int_reduct_input" type="LineEdit" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/tile_int_settings/tile_int_reduct"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "This sets how meny tiles you need to claim to get a extra move initially."
+virtual_keyboard_type = 2
+
+[node name="tile_sec_settings" type="BoxContainer" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+vertical = true
+
+[node name="tile_sec_text" type="Label" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/tile_sec_settings"]
+layout_mode = 2
+text = "tile secondary
+movement boost:"
+
+[node name="tile_sec_lim" type="BoxContainer" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/tile_sec_settings"]
+layout_mode = 2
+
+[node name="tile_sec_lim_text" type="Label" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/tile_sec_settings/tile_sec_lim"]
+layout_mode = 2
+text = "Limit:"
+
+[node name="tile_sec_lim_input" type="LineEdit" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/tile_sec_settings/tile_sec_lim"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "The max amount of moves you can get from claimed tiles. "
+virtual_keyboard_type = 2
+
+[node name="tile_sec_reduct" type="BoxContainer" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/tile_sec_settings"]
+layout_mode = 2
+
+[node name="tile_sec_reduct_text" type="Label" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/tile_sec_settings/tile_sec_reduct"]
+layout_mode = 2
+text = "Threshold:"
+
+[node name="tile_sec_reduct_input" type="LineEdit" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/tile_sec_settings/tile_sec_reduct"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "This sets how meny tiles you need to claim to get a extra move. This boost shows up when it is higher than the initial limit."
+virtual_keyboard_type = 2
+
+[node name="fuel_settings" type="BoxContainer" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+vertical = true
+
+[node name="fuel_text" type="Label" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/fuel_settings"]
+layout_mode = 2
+text = "fuel movement boost:"
+
+[node name="fuel_lim" type="BoxContainer" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/fuel_settings"]
+layout_mode = 2
+
+[node name="fuel_lim_text" type="Label" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/fuel_settings/fuel_lim"]
+layout_mode = 2
+text = "Limit:"
+
+[node name="fuel_lim_input" type="LineEdit" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/fuel_settings/fuel_lim"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "The max amount of moves you can get from claimed fuel tiles."
+virtual_keyboard_type = 2
+
+[node name="fuel_reduct" type="BoxContainer" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/fuel_settings"]
+layout_mode = 2
+
+[node name="fuel_reduct_text" type="Label" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/fuel_settings/fuel_reduct"]
+layout_mode = 2
+text = "Threshold:"
+
+[node name="fuel_reduct_input" type="LineEdit" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/fuel_settings/fuel_reduct"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "This sets how meny fuel tiles you need to claim to get a extra move."
+virtual_keyboard_type = 2
+
+[node name="turn_settings" type="BoxContainer" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+vertical = true
+
+[node name="turn_text" type="Label" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/turn_settings"]
+layout_mode = 2
+text = "turn movement boost:"
+
+[node name="turn_lim" type="BoxContainer" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/turn_settings"]
+layout_mode = 2
+
+[node name="turn_lim_text" type="Label" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/turn_settings/turn_lim"]
+layout_mode = 2
+text = "Limit:"
+
+[node name="turn_lim_input" type="LineEdit" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/turn_settings/turn_lim"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "The max amount of moves you can get from the current turn number."
+virtual_keyboard_type = 2
+
+[node name="turn_reduct" type="BoxContainer" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/turn_settings"]
+layout_mode = 2
+
+[node name="turn_reduct_text" type="Label" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/turn_settings/turn_reduct"]
+layout_mode = 2
+text = "Threshold:"
+
+[node name="turn_reduct_input" type="LineEdit" parent="BoxContainer/ScrollContainer/BoxContainer/BoxContainer/GridContainer/turn_settings/turn_reduct"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "This sets how meny turns  you need to get a extra move."
+virtual_keyboard_type = 2
+
+[node name="Open and close Extra Settings button" type="Button" parent="."]
+layout_mode = 0
+offset_left = 480.0
+offset_right = 544.0
+offset_bottom = 32.0
+rotation = 1.5707964
+toggle_mode = true
+text = "Open and close Extra Settings"
+
+[node name="extra_setting_animator" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_2fskk")
+}
