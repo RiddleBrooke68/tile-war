@@ -173,6 +173,7 @@ fuel_tile_count = 20
 click_efect = ExtResource("10_6d2wa")
 
 [node name="PointLight2D" type="PointLight2D" parent="game/board border/board"]
+visible = false
 position = Vector2(408, 160)
 color = Color(0.3171617, 0.3023937, 0, 1)
 energy = 4.69
@@ -186,6 +187,7 @@ texture_scale = 5.89
 height = 81.0
 
 [node name="PointLight2D4" type="PointLight2D" parent="game/board border/board"]
+visible = false
 position = Vector2(48, 488)
 color = Color(0.49341172, 0, 0.13870019, 1)
 energy = 1.51

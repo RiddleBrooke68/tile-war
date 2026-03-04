@@ -57,6 +57,8 @@ class_name menu_class
 @onready var blz_setting : CheckBox = %blz_setting
 @onready var blz_text : Label = %blz_text
 @onready var blz_slider : Slider = %BlzSlider
+@onready var fow_setting : CheckBox = %fow_settin
+@onready var fow_dist : LineEdit = %fow_dist
 
 @onready var tile_int_lim_input : LineEdit = %tile_int_lim_input
 @onready var tile_int_reduct_input : LineEdit = %tile_int_reduct_input
@@ -135,7 +137,9 @@ func _ready(mp_is_updating=false):
 	cdan_setting.button_pressed = Global.cdan_enabled
 	# Blz
 	blz_setting.button_pressed = Global.blz_enabled
-	
+	# Fow
+	fow_setting.button_pressed = Global.fow_enabled
+	fow_dist.text = str(Global.fow_sight)
 	# movement
 	tile_int_lim_input.text = str(Global.moves_tile_int_lim_boost)
 	tile_int_reduct_input.text = str(Global.moves_tile_int_reduction_boost)
@@ -491,6 +495,16 @@ func _on_blz_slider_value_changed(value,mp_player_source=true):
 		blz_text.text = "Bliz attack requirement: {0}".format([int(value)])
 		Global.blz_move_requrement = int(value)
 	sound_play(true)
+
+@rpc("any_peer")
+func _on_fow_setting_toggled(toggled_on,mp_player_source=true):
+	if Global.mp_enabled and mp_player_source:
+		_on_fow_setting_toggled.rpc(toggled_on,false)
+	fow_setting.button_pressed = toggled_on
+	Global.fow_enabled = toggled_on
+	sound_play()
+
+
 
 ## Basic, this is just so I can mange ALL THE FLIPIN MOVEMENT SETTING IN ONE PLACE.[br]
 ## This, took so much time, and my hands hurt because of it. 

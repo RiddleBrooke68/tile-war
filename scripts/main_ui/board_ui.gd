@@ -296,32 +296,33 @@ func _on_gui_input(event):
 		var click_size = Vector2(1.0,1.0)
 		var blz_lock = not check_tile_claimably(grid_coords,game.active_player,-1,false,true)
 		
-		if (event.button_index == MOUSE_BUTTON_LEFT and move_manger.mode == 0 or event.button_index == MOUSE_BUTTON_RIGHT and move_manger.mode == 1) and not event.pressed and not (lock_mode or off_input):
-			board_decrese_move_count.emit(1)
-			on_claim_tile(grid_coords,game.active_player) #mp replace 1 with game.active_player.claim_colour
-			sound.stream = load("res://audio/FX/left click sound.mp3") as AudioStream
-		
-		elif Global.blz_enabled and (
-					event.button_index == MOUSE_BUTTON_RIGHT and move_manger.mode == 0 or event.button_index == MOUSE_BUTTON_LEFT and move_manger.mode == 1
-					) and not event.pressed and not (blz_lock or off_input):
-			
-			if game.active_player.moves >= Global.blz_move_requrement: #mp replace 1 with game.active_player.claim_colour
-				var sav = game.active_player.moves
-				board_decrese_move_count.emit(Global.blz_move_requrement)
-				if not on_claim_tile(grid_coords,game.active_player,-1,true,false,false,true):
-					board_decrese_move_count.emit(sav,true)
+		if game.active_player is PlayerClaim:
+			if (event.button_index == MOUSE_BUTTON_LEFT and move_manger.mode == 0 or event.button_index == MOUSE_BUTTON_RIGHT and move_manger.mode == 1) and not event.pressed and not (lock_mode or off_input):
+				board_decrese_move_count.emit(1)
+				on_claim_tile(grid_coords,game.active_player) #mp replace 1 with game.active_player.claim_colour
 				sound.stream = load("res://audio/FX/left click sound.mp3") as AudioStream
-				click_size = Vector2(2.0,2.0)
 			
-			#elif tile.available:
-				#board_decrese_move_count.emit(1)
-				#on_claim_tile(grid_coords,game.active_player)
-				#sound.stream = load("res://audio/FX/left click sound.mp3") as AudioStream
-			
-			else:
-				sound.stream = load("res://audio/FX/right click sound.mp3") as AudioStream
-				click_size = Vector2(0.5,0.5)
-			
+			elif Global.blz_enabled and (
+						event.button_index == MOUSE_BUTTON_RIGHT and move_manger.mode == 0 or event.button_index == MOUSE_BUTTON_LEFT and move_manger.mode == 1
+						) and not event.pressed and not (blz_lock or off_input):
+				
+				if game.active_player.moves >= Global.blz_move_requrement and tile.opposite_claim != "": #mp replace 1 with game.active_player.claim_colour
+					var sav = game.active_player.moves
+					board_decrese_move_count.emit(Global.blz_move_requrement)
+					if not on_claim_tile(grid_coords,game.active_player,-1,true,false,false,true):
+						board_decrese_move_count.emit(sav,true)
+					sound.stream = load("res://audio/FX/left click sound.mp3") as AudioStream
+					click_size = Vector2(2.0,2.0)
+				
+				elif tile.available:
+					board_decrese_move_count.emit(1)
+					on_claim_tile(grid_coords,game.active_player)
+					sound.stream = load("res://audio/FX/left click sound.mp3") as AudioStream
+				
+				else:
+					sound.stream = load("res://audio/FX/right click sound.mp3") as AudioStream
+					click_size = Vector2(0.5,0.5)
+				
 		elif (lock_mode or off_input):
 			sound.stream = load("res://audio/FX/right click sound.mp3") as AudioStream
 			click_size = Vector2(0.5,0.5)
@@ -424,8 +425,8 @@ func on_claim_tile(coords,claim,type:int=-1,
 						picked_tile = main_grid.get_cell_tile_data(neighbor)
 						if type == 0: 
 							type = picked_tile.get_custom_data("type")
-							print(type)
-						if not picked_tile == null:
+							#print(type)
+						if not picked_tile == null and (not tile.opposite_claim_data == null or type == 2):
 							if (not (Global.blz_enabled and blz_fired)
 									or
 									(picked_tile.get_custom_data("ownership") == tile.opposite_claim_data.claim_colour and not picked_tile.get_custom_data("type") in [1,2])):
@@ -441,7 +442,11 @@ func on_claim_tile(coords,claim,type:int=-1,
 												break;
 								
 								if not block_blz:
+									#picked_tile = main_grid.get_cell_tile_data(neighbor)
+									#type = picked_tile.get_custom_data("type")
 									on_claim_tile(neighbor,claim,type,false,true,true)
+									if type != 2:
+										type = 0
 									if not force_do:
 										var ntile : tile_data = check_tile_claimably(neighbor,claim,-1,true)
 										game.gui_board_events(ntile)

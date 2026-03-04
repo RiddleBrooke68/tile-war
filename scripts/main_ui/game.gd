@@ -273,10 +273,7 @@ func game_state_changed(refresh=false,set_active=true):
 		else:
 			board_ui.off_input = false
 		
-		board_ui.action_grid.clear()
-		if active_player.moves == 0:
-			for i in avaible_moves:#board_ui.get_all_avalable_tiles(active_player.claim_colour,false):
-				board_ui.action_grid.set_cell(i.coords,0,Vector2(active_player.claim_colour,0))
+		action_board()
 	
 	
 	claims_info.text = claim_text
@@ -342,10 +339,7 @@ func gui_board_events(target:tile_data):
 					func(thing:tile_data) -> tile_data: return thing):
 					avaible_moves.erase(n)
 		
-		board_ui.action_grid.clear()
-		if active_player.moves != 0:
-			for i in avaible_moves:#board_ui.get_all_avalable_tiles(active_player.claim_colour,false):
-				board_ui.action_grid.set_cell(i.coords,0,Vector2(active_player.claim_colour,0))
+		action_board()
 		
 		moves_plate.number = active_player.moves #mp active_player.moves.
 	
@@ -428,9 +422,12 @@ func remove_active_player_moves(incremts:int=1,set_as=false,bot_only=false):
 		mp_sync_movement.rpc(claims.find(active_player.orginal_claim),active_player.orginal_claim.moves,true)
 	
 	if active_player != null and active_player is PlayerClaim:
-		board_ui.action_grid.clear()
-		if active_player.moves != 0:
-			for i in avaible_moves:#board_ui.get_all_avalable_tiles(active_player.claim_colour,false):
-				board_ui.action_grid.set_cell(i.coords,0,Vector2(active_player.claim_colour,0))
+		action_board()
 		
 		moves_plate.number = active_player.moves #mp active_player.moves.
+
+func action_board():
+	board_ui.action_grid.clear()
+	if active_player.moves != 0:
+		for i in avaible_moves:#board_ui.get_all_avalable_tiles(active_player.claim_colour,false):
+			board_ui.action_grid.set_cell(i.coords,0,Vector2(active_player.claim_colour,0))
