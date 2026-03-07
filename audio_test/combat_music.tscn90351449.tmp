@@ -1,0 +1,36 @@
+[gd_scene load_steps=4 format=3 uid="uid://bnrxvb1j5hxy7"]
+
+[ext_resource type="Script" uid="uid://x7yuw0e7jlue" path="res://audio_test/combat_music.gd" id="1_wwkd5"]
+[ext_resource type="Script" uid="uid://bksx2p3cxaakx" path="res://audio_test/tad_combat_music_temp.gd" id="2_a4n5n"]
+
+[sub_resource type="Resource" id="Resource_s5nqj"]
+script = ExtResource("2_a4n5n")
+tracks = null
+metadata/_custom_type_script = "uid://bksx2p3cxaakx"
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_wwkd5")
+music = SubResource("Resource_s5nqj")
+
+[node name="HSlider" type="HSlider" parent="."]
+layout_mode = 0
+offset_left = 264.0
+offset_top = 232.0
+offset_right = 592.0
+offset_bottom = 248.0
+max_value = 6.0
+value = 1.0
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 336.0
+offset_top = 192.0
+offset_right = 376.0
+offset_bottom = 215.0
+text = "Active player"
