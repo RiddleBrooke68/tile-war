@@ -433,6 +433,7 @@ func on_claim_tile(coords,claim,type:int=-1,
 								
 								# Balance, so when you bliz a tile next to a capital, it won't take the tiles around that capital.
 								if (Global.blz_enabled and blz_fired):
+									type = picked_tile.get_custom_data("type")
 									var neighbors2 = main_grid.get_surrounding_cells(neighbor)
 									for neighbor2 in neighbors2:
 										picked_tile = main_grid.get_cell_tile_data(neighbor2)
@@ -587,7 +588,7 @@ func check_tile_claimably(coords:Vector2i,claim,test_suroundings=false,wants_til
 				elif picked_tile.get_custom_data("ownership") == oppose_claim:
 					for x in check_claim_captatal(oppose_claim).filter(func(_coords): return not _coords in caps_linked):
 						tested_tiles = []
-						if find_linked_tiles(tile.coords,[x],oppose_claim,16):
+						if find_linked_tiles(tile.coords,[x],oppose_claim,36):
 							caps_linked.append(x)
 							cap_debuff += 1
 					if picked_tile.get_custom_data("type") == 0:

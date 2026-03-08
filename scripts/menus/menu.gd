@@ -6,6 +6,8 @@ class_name menu_class
 
 @onready var start_game_button = %start_game
 
+@onready var music_type_setting = %music_type_setting
+
 @onready var map_setting = %map_setting
 
 @onready var wall_text : Label = %wall_text
@@ -95,6 +97,11 @@ func _ready(mp_is_updating=false):
 		music = AudioStreamPlayer.new()
 		add_child(music)
 		music_play()
+	# Music
+	music_type_setting.clear()
+	for i in Global.music_list:
+		music_type_setting.add_item(i.music_name)
+	
 	# Pregenration
 	map_setting.selected = Global.map_type
 	_on_map_setting_item_selected(map_setting.selected,false,true)

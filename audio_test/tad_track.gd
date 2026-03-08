@@ -1,5 +1,5 @@
 extends Resource
-class_name track
+class_name tad_track
 
 enum track_types {
 	base, green, purple, yellow, red, blue

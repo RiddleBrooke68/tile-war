@@ -1,0 +1,20 @@
+[gd_scene load_steps=8 format=3 uid="uid://bm2xxay6nvn7y"]
+
+[ext_resource type="Script" uid="uid://cd436pbrt67tk" path="res://scripts/audio/battle_music_manger.gd" id="1_75gn4"]
+[ext_resource type="Script" uid="uid://62o8dxd6w3g4" path="res://scripts/data/battle_music.gd" id="2_0upog"]
+[ext_resource type="AudioStream" uid="uid://bmtky6humkm78" path="res://audio/music/consepts/battle_2/battle_2_base.ogg" id="3_vccss"]
+[ext_resource type="AudioStream" uid="uid://cj8518kee16ne" path="res://audio/music/consepts/battle_2/battle_2_greenwich.ogg" id="4_sxc1q"]
+[ext_resource type="AudioStream" uid="uid://dypxmi76sunpr" path="res://audio/music/consepts/battle_2/battle_2_plum.ogg" id="5_86rmf"]
+[ext_resource type="AudioStream" uid="uid://bp17c0fe0sbjx" path="res://audio/music/consepts/battle_2/battle_2_york.ogg" id="6_cpc5e"]
+
+[sub_resource type="Resource" id="Resource_ymo55"]
+script = ExtResource("2_0upog")
+track_base = ExtResource("3_vccss")
+track_greenwich = ExtResource("4_sxc1q")
+track_plum = ExtResource("5_86rmf")
+track_york = ExtResource("6_cpc5e")
+metadata/_custom_type_script = "uid://62o8dxd6w3g4"
+
+[node name="battle_music_manger" type="Node"]
+script = ExtResource("1_75gn4")
+music = SubResource("Resource_ymo55")

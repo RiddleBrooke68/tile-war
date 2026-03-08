@@ -47,13 +47,19 @@ const turn_text = "Turn {0}"
 ## Just playes music.
 var music : AudioStreamPlayer
 
+@onready var battle_music_manger = $battle_music_manger
+
 func _ready():
 	
-	music = AudioStreamPlayer.new()
-	add_child(music)
-	music.volume_linear = Global.music_vol/10
-	music.stream = load(Global.music_list[Global.music_type]) as AudioStream
-	music.play()
+	if Global.music_list[Global.music_type].music_style in [Global.music_style_list.basic,Global.music_style_list.md_basic]:
+		music = AudioStreamPlayer.new()
+		add_child(music)
+		music.volume_linear = Global.music_vol/10
+		music.stream = load(Global.music_list[Global.music_type].music_path) as AudioStream
+		music.play()
+	elif Global.music_list[Global.music_type].music_style in [Global.music_style_list.dynamic,Global.music_style_list.md_dynamic]:
+		battle_music_manger.music = load(Global.music_list[Global.music_type].music_path) as battle_music_data
+		battle_music_manger.play()
 	game_state_changed(true)
 
 
@@ -365,12 +371,18 @@ func new_game(mp_player_source=true):
 		new_game.rpc(false)
 	fade_anim.play("fade_out")
 	var tween = get_tree().create_tween()
-	tween.tween_property(music,"volume_linear",0.0,3.0)
+	if Global.music_list[Global.music_type].music_style in [Global.music_style_list.basic,Global.music_style_list.md_basic]:
+		tween.tween_property(music,"volume_linear",0.0,3.0)
+	elif Global.music_list[Global.music_type].music_style in [Global.music_style_list.dynamic,Global.music_style_list.md_dynamic]:
+		tween.tween_property(battle_music_manger,"volume",0.0,3.0)
 
 
 func _on_fade_anim_animation_finished(anim_name):
 	if anim_name == "fade_out":
-		music.stop()
+		if Global.music_list[Global.music_type].music_style in [Global.music_style_list.basic,Global.music_style_list.md_basic]:
+			music.stop()
+		elif Global.music_list[Global.music_type].music_style in [Global.music_style_list.dynamic,Global.music_style_list.md_dynamic]:
+			battle_music_manger.stop()
 		if Global.mp_enabled:
 			mp_back_to_lobby.emit()
 		else:
@@ -384,6 +396,7 @@ func set_active_player(claim:ClaimData):
 		player_prior = claim
 	#if Global.cdan_enabled and claim.claim_dangered:
 		#claim.claim_dangered = false
+	battle_music_manger.track_active = claim.claim_colour
 	claim.claim_active = true
 	active_player = claim.duplicate()
 	active_player.orginal_claim = claim

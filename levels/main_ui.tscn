@@ -1,9 +1,9 @@
-[gd_scene load_steps=30 format=4 uid="uid://bojd4turtuu7f"]
+[gd_scene load_steps=31 format=4 uid="uid://bojd4turtuu7f"]
 
 [ext_resource type="Script" uid="uid://d3656qxysmfyq" path="res://scripts/main_ui/board_ui.gd" id="1_fhnlk"]
 [ext_resource type="Theme" uid="uid://dxveohgc0uce2" path="res://themes/default_theme.tres" id="1_gha74"]
 [ext_resource type="Script" uid="uid://d10xs08ugxfss" path="res://scripts/main_ui/game.gd" id="1_q3ffm"]
-[ext_resource type="Script" uid="uid://cc7akoownbe0k" path="res://scripts/claims/claim_data.gd" id="2_gphvf"]
+[ext_resource type="Script" uid="uid://cc7akoownbe0k" path="res://scripts/data/claims/claim_data.gd" id="2_gphvf"]
 [ext_resource type="Resource" uid="uid://dytqq3fwvh2y3" path="res://Resources/claims/claim_lookup_table.tres" id="3_gew3o"]
 [ext_resource type="Resource" uid="uid://ej04cfpihcpx" path="res://Resources/claims/player_claims/green_pc_claim.tres" id="3_n3ddt"]
 [ext_resource type="Resource" uid="uid://b7hd3vdjnkml6" path="res://Resources/claims/nonplayer_claims/purple_npc_claim.tres" id="4_alpnb"]
@@ -19,6 +19,7 @@
 [ext_resource type="TileSet" uid="uid://btn5xmf7m8py6" path="res://Resources/tilemap/main_ui.tres" id="12_5xd53"]
 [ext_resource type="PackedScene" uid="uid://v1u5kj5n5xv2" path="res://objects/ui/movement_type_manger.tscn" id="12_bwe6u"]
 [ext_resource type="Theme" uid="uid://cedkvwvts0evs" path="res://themes/extra_setting_theame.tres" id="16_sowik"]
+[ext_resource type="PackedScene" uid="uid://bm2xxay6nvn7y" path="res://objects/fx/battle_music_manger.tscn" id="19_ahs4v"]
 
 [sub_resource type="Gradient" id="Gradient_n3ddt"]
 colors = PackedColorArray(0.13544941, 0.09605298, 0.041523762, 1, 0.06992452, 0.019128133, 0.020676874, 1)
@@ -372,6 +373,8 @@ position = Vector2(-14, -39)
 unique_name_in_owner = true
 wait_time = 0.3
 one_shot = true
+
+[node name="battle_music_manger" parent="game" instance=ExtResource("19_ahs4v")]
 
 [node name="win_screen" type="Panel" parent="."]
 layout_mode = 0

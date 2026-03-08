@@ -195,6 +195,7 @@ size_flags_horizontal = 3
 text = "Music type"
 
 [node name="music_type_setting" type="OptionButton" parent="BoxContainer3/BoxContainer/Music type"]
+unique_name_in_owner = true
 layout_mode = 2
 button_pressed = true
 alignment = 1

@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://bm2xxay6nvn7y"]
+
+[ext_resource type="Script" uid="uid://cd436pbrt67tk" path="res://scripts/audio/battle_music_manger.gd" id="1_75gn4"]
+[ext_resource type="Resource" uid="uid://bppt33i77wpr6" path="res://Resources/dynamic_music/battle_2.tres" id="2_n1u0m"]
+
+[node name="battle_music_manger" type="Node"]
+script = ExtResource("1_75gn4")
+music = ExtResource("2_n1u0m")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 2.0
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="repeat_checks"]

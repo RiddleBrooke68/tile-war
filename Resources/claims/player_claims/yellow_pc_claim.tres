@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://cvhqo5cxdof0f" path="res://sprites/ui/claim_data/claim_alined_panels/dangered/claim_york_dangered_data_panel.png" id="1_6wkl6"]
 [ext_resource type="Texture2D" uid="uid://furaa0nu5dm6" path="res://sprites/ui/claim_data/claim_alined_panels/claim_york_data_panel.png" id="1_gshy8"]
-[ext_resource type="Script" uid="uid://cioo3en61w18o" path="res://scripts/claims/player_claim.gd" id="1_xyyt4"]
+[ext_resource type="Script" uid="uid://cioo3en61w18o" path="res://scripts/data/claims/player_claim.gd" id="1_xyyt4"]
 
 [resource]
 script = ExtResource("1_xyyt4")

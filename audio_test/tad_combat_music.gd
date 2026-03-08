@@ -21,6 +21,7 @@ var active = 1
 func _ready():
 	for i in range(music.tracks.size()):
 		var x = AudioStreamPlayer.new()
+		music.tracks[i].audio_track.loop = true
 		x.stream = music.tracks[i].audio_track
 		add_child(x)
 		music_tracks[music.tracks[i].track_type] = x
@@ -31,7 +32,7 @@ func _ready():
 
 func repeat_checks():
 	for i in music_tracks.keys():
-		change_track_volume(i, 0.0 if not i in [active,0] else Global.music_vol/10.0, 8.0 if not i in [active,0] else 2.0)
+		change_track_volume(i, Global.music_vol/10.0/5.0 if not i in [active,0] else Global.music_vol/10.0, 8.0 if not i in [active,0] else 2.0)
 
 func play_track(track_type:track_types):
 	var x = music_tracks[track_type]

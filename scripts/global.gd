@@ -63,14 +63,42 @@ var ai_level = 1:
 			dist = 3
 		ai_level =  value
 var dist = 2
+
 # MUSIC OPTIONS
+## A list of every type of musical style that the game uses.
+enum music_style_list {
+	basic, ## Built in: This song play in only on track, No need for dynamics.
+	dynamic, ## Built in: This song plays using the battle_music_manger, changing the music based on the current game.
+	md_basic, ## Modded: A modded in version of basic.
+	md_dynamic ## Modded: A modded in version of dynamic.
+}
 ## Which type of music is it.
 var music_type = 0
-## Could change this, but don't wana.
+## [center][b] Each entry is a Dict that can contain these varables: [/b][/center][br][br]
+## [b]music_name:[/b] The name of the music.[br]
+## [b]music_style:[/b] The style of music. See [enum music_style_list][br]
+## [b]music_path:[/b] The path to said music.
 var music_list = [
-	"res://audio/music/placeholders/warning siren/warning siren.ogg",
-	"res://audio/music/placeholders/wolfquest sounding ass/wolfquest.ogg",
-	"res://audio/music/placeholders/33 thousand tiles under the blue/33 thousand tiles under the blue.ogg"
+	{
+		"music_name":"warning siren",
+		"music_style":music_style_list.basic,
+		"music_path":"res://audio/music/placeholders/warning siren/warning siren.ogg"
+	},
+	{
+		"music_name":"wolfquest",
+		"music_style":music_style_list.basic,
+		"music_path":"res://audio/music/placeholders/wolfquest sounding ass/wolfquest.ogg"
+	},
+	{
+		"music_name":"33 thousand tiles under the blue",
+		"music_style":music_style_list.basic,
+		"music_path":"res://audio/music/placeholders/33 thousand tiles under the blue/33 thousand tiles under the blue.ogg"
+	},
+	{
+		"music_name":"battle_2",
+		"music_style":music_style_list.dynamic,
+		"music_path":"res://Resources/dynamic_music/battle_2.tres"
+	},
 	]
 var music_vol = 10.0
 var SFX_vol = 10.0

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="battle_music_data" load_steps=6 format=3 uid="uid://bppt33i77wpr6"]
+
+[ext_resource type="Script" uid="uid://62o8dxd6w3g4" path="res://scripts/data/battle_music.gd" id="1_fugom"]
+[ext_resource type="AudioStream" uid="uid://bmtky6humkm78" path="res://audio/music/consepts/battle_2/battle_2_base.ogg" id="2_ub03e"]
+[ext_resource type="AudioStream" uid="uid://cj8518kee16ne" path="res://audio/music/consepts/battle_2/battle_2_greenwich.ogg" id="3_4ha0y"]
+[ext_resource type="AudioStream" uid="uid://dypxmi76sunpr" path="res://audio/music/consepts/battle_2/battle_2_plum.ogg" id="4_lhsep"]
+[ext_resource type="AudioStream" uid="uid://bp17c0fe0sbjx" path="res://audio/music/consepts/battle_2/battle_2_york.ogg" id="5_vw4ak"]
+
+[resource]
+script = ExtResource("1_fugom")
+music_name = "battle_2"
+track_base = ExtResource("2_ub03e")
+track_greenwich = ExtResource("3_4ha0y")
+track_plum = ExtResource("4_lhsep")
+track_york = ExtResource("5_vw4ak")
+metadata/_custom_type_script = "uid://62o8dxd6w3g4"
