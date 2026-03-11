@@ -503,6 +503,7 @@ func _on_blz_slider_value_changed(value,mp_player_source=true):
 		Global.blz_move_requrement = int(value)
 	sound_play(true)
 
+## Enables (or Disables) fog of war.
 @rpc("any_peer")
 func _on_fow_setting_toggled(toggled_on,mp_player_source=true):
 	if Global.mp_enabled and mp_player_source:
@@ -511,7 +512,22 @@ func _on_fow_setting_toggled(toggled_on,mp_player_source=true):
 	Global.fow_enabled = toggled_on
 	sound_play()
 
-
+@rpc("any_peer")
+func _on_fow_distance_changed(new_text:String,mp_player_source=true):
+	if Global.mp_enabled and mp_player_source:
+		_on_fow_distance_changed.rpc(new_text,false)
+	if new_text.is_valid_int():
+		if new_text != str(new_text.to_int()):
+			mp_player_source = false
+			new_text = str(new_text.to_int())
+		if not mp_player_source:
+			fow_dist.text = new_text
+		if new_text.to_int() < 0:
+			new_text = "99999"
+		Global.fow_sight = new_text.to_int()
+		sound_play()
+	else:
+		_on_fow_distance_changed("2",false)
 
 ## Basic, this is just so I can mange ALL THE FLIPIN MOVEMENT SETTING IN ONE PLACE.[br]
 ## This, took so much time, and my hands hurt because of it. 

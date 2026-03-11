@@ -716,21 +716,34 @@ var claim_placeholder = ClaimData.new()
 func update_fog(claim_add:ClaimData=claim_placeholder) -> Error:
 	if Global.fow_enabled:
 		var player_claim : ClaimData
+		
+		# If in multiplayer
 		if Global.mp_enabled:
+			# Check if player isn't a spectator
 			if Global.mp_player_color == 0:
 				return Error.ERR_INVALID_PARAMETER
+			# Gets if the player is the active player
 			player_claim = game.claims_order[Global.mp_player_color-1]
 			if not player_claim.claim_mp_ip_linked == Global.mp_player_id:
 				player_claim = ClaimData.new()
+		
+		# Forces the fog to focas on a partular claim regadless of any other info.
 		elif claim_add != claim_placeholder:
 			player_claim = claim_add
+		
+		
 		else:
 			player_claim = game.player_prior
+		
+		# Checks if this is a vaild claim to draw fog for.
 		if player_claim is PlayerClaim:
+			## Holds all tiles that will be clear once the fog is drawn.
 			var clear_tiles = []
 			clear_tiles = get_claim_tile_type_coords(player_claim.claim_colour)
 			var neighbours_set = []
 			
+			## This runs a loop though all posable tiles around it.[br]
+			## Function MUST be the loop its self.
 			var loop = func loop(i,function,length):
 				var picked_tile = main_grid.get_cell_tile_data(i)
 				if picked_tile == null:
@@ -746,19 +759,26 @@ func update_fog(claim_add:ClaimData=claim_placeholder) -> Error:
 							neighbours_set.append(neighbor)
 						function.call(neighbor,function,length-1)
 			
+			# Searchs the tiles around it.
+			# NOTE: This seems to be very stable for a flood tool method, the game doesn't bug out even on a large scale.
+			# NOTE: Maybe use this method for all flood tool methods currently in the game to reduce on lag.
 			for i in clear_tiles:
 				loop.call(i,loop,Global.fow_sight)
 			clear_tiles.append_array(neighbours_set)
 			
+			# And the final step, actualy drawing the grid of fog.
+			# Easer said than done, but it basicly uses the position, 
+			# and checks if we already tagged it for non-conselment.
 			for i in main_grid.get_used_cells():
 				fog_grid.set_cell(i,
 								0,
 								Vector2i(
 									player_claim.claim_colour,
-									4 if not i in clear_tiles else -1
+									4 if not i in clear_tiles else -1 # If it has been selected, than it cannot be 
 									)
 								)
 			return Error.OK
+	
 	fog_grid.clear()
 	# Returns a lock error, meaning the player does not control this player.
 	return Error.ERR_LOCKED
