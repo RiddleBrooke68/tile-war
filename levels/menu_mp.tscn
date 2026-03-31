@@ -1230,6 +1230,8 @@ wait_time = 5.0
 [connection signal="value_changed" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/cdan_container/cdan_settings2/CdanCdSlider" to="." method="_on_cdan_cd_slider_value_changed"]
 [connection signal="toggled" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/BoxContainer5/blz_setting" to="." method="_on_blz_setting_toggled"]
 [connection signal="value_changed" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/blz_settings2/BlzSlider" to="." method="_on_blz_slider_value_changed"]
+[connection signal="toggled" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/cls_settings/cls_settin" to="." method="_on_cls_setting_toggled"]
+[connection signal="text_changed" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/cls_settings/cls_bost" to="." method="_on_cls_amount_changed"]
 [connection signal="toggled" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/fow_settings/fow_settin" to="." method="_on_fow_setting_toggled"]
 [connection signal="text_changed" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/fow_settings/fow_dist" to="." method="_on_fow_distance_changed"]
 [connection signal="item_selected" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer2/BoxContainer/green_number/green_cap" to="." method="_on_green_cap_item_selected"]

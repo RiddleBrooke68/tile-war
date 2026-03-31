@@ -12,6 +12,8 @@ signal profile_deleted(path:String)
 
 func _ready():
 	profile_name.text = profile.profile_name
+	profile_name.tooltip_text = (
+		"Contain these rules:\n"+str(profile.settings).replace(', "',',\n"'))
 	profile_discription.text = profile.profile_discription
 	profile_type.text = "Interal file" if profile.profile_type == 1 else "External File"
 	profile_delete_button.visible = false if profile.profile_type == 1 else true
