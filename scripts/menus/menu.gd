@@ -59,6 +59,8 @@ class_name menu_class
 @onready var blz_setting : CheckBox = %blz_setting
 @onready var blz_text : Label = %blz_text
 @onready var blz_slider : Slider = %BlzSlider
+@onready var cls_setting : CheckBox = %cls_settin
+@onready var cls_boost : LineEdit = %cls_boost
 @onready var fow_setting : CheckBox = %fow_settin
 @onready var fow_dist : LineEdit = %fow_dist
 
@@ -505,6 +507,33 @@ func _on_blz_slider_value_changed(value,mp_player_source=true):
 
 ## Enables (or Disables) fog of war.
 @rpc("any_peer")
+func _on_cls_setting_toggled(toggled_on,mp_player_source=true):
+	if Global.mp_enabled and mp_player_source:
+		_on_cls_setting_toggled.rpc(toggled_on,false)
+	cls_setting.button_pressed = toggled_on
+	Global.fow_enabled = toggled_on
+	sound_play()
+
+@rpc("any_peer")
+func _on_cls_amount_changed(new_text:String,mp_player_source=true):
+	if Global.mp_enabled and mp_player_source:
+		_on_fow_distance_changed.rpc(new_text,false)
+	if new_text.is_valid_int():
+		if new_text != str(new_text.to_int()):
+			mp_player_source = false
+			new_text = str(new_text.to_int())
+		if not mp_player_source:
+			fow_dist.text = new_text
+		if new_text.to_int() < 0:
+			new_text = "99999"
+		Global.fow_sight = new_text.to_int()
+		sound_play()
+	else:
+		_on_fow_distance_changed("2",false)
+
+
+## Enables (or Disables) fog of war.
+@rpc("any_peer")
 func _on_fow_setting_toggled(toggled_on,mp_player_source=true):
 	if Global.mp_enabled and mp_player_source:
 		_on_fow_setting_toggled.rpc(toggled_on,false)
@@ -697,6 +726,13 @@ func load_profile_data(profile:Dictionary,refresh=true):
 	# blz_move_requrement setting
 	if profile.keys().has("blz_mr") and profile.blz_mr is int:
 		Global.blz_move_requrement = profile.blz_mr
+	# cls setting
+	
+	# cls amount
+	
+	# fow setting
+	
+	# fow dist
 	
 	if profile.keys().has("move_settings") and profile.move_settings is Dictionary:
 		if profile.move_settings.keys().has("tile_int_r") and profile.move_settings.tile_int_r is int:
@@ -748,7 +784,15 @@ func save_profile_data(mp_for_client=false) -> Dictionary:
 	data["blz_e"] = Global.blz_enabled
 	# blz_move_requrement setting
 	data["blz_mr"] = Global.blz_move_requrement
+	# cls setting
 	
+	# cls amount
+	
+	# fow setting
+	
+	# fow dist
+	
+	# Movement
 	data["move_settings"] = {
 		"tile_int_r":Global.moves_tile_int_reduction_boost,
 		"tile_int_l":Global.moves_tile_int_lim_boost,

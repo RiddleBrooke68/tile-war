@@ -641,6 +641,25 @@ value = 1.0
 rounded = true
 scrollable = false
 
+[node name="cls_settings" type="BoxContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings"]
+layout_mode = 2
+size_flags_horizontal = 3
+vertical = true
+
+[node name="cls_text" type="Label" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/cls_settings"]
+layout_mode = 2
+text = "Capital last stand:"
+
+[node name="cls_settin" type="CheckBox" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/cls_settings"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Activates cls. When on your last capital, you get a boost."
+
+[node name="cls_boost" type="LineEdit" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/cls_settings"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Sets the amout of boost you get when on your last capital."
+
 [node name="fow_settings" type="BoxContainer" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -648,16 +667,17 @@ size_flags_horizontal = 3
 [node name="fow_text" type="Label" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/fow_settings"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Bliz attack requirement:"
+text = "Fog of war distance:"
 
 [node name="fow_settin" type="CheckBox" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/fow_settings"]
 unique_name_in_owner = true
 layout_mode = 2
-tooltip_text = "Sets the required amount of moves to do a bliz."
+tooltip_text = "Activates fow."
 
 [node name="fow_dist" type="LineEdit" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/fow_settings"]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Sets the distance you can see from your own tiles."
 
 [node name="HSeparator2" type="HSeparator" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer"]
 layout_mode = 2

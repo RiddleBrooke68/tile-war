@@ -128,7 +128,7 @@ var cls_boost = 2
 ## Fog of war
 var fow_enabled = false
 ## Sight in the fog.
-var fow_sight = 2
+var fow_sight = 3
 
 # Moves settings
 # Tiles
