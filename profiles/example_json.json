@@ -7,6 +7,8 @@
 		"cap":[1,1,1,1], "ai":1,
 		"lms":true, "bran":false,
 		"cdan_e":true, "cdan_d":10,"cdan_cd":5,
-		"blz_e":true,"blz_mr":10
+		"blz_e":true,"blz_mr":10,
+		"cls_e":true,"cls_num":2,
+		"fow_e":false,"fow_dist":3,
 	}
 }

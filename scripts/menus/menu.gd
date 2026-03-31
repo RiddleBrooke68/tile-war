@@ -146,6 +146,9 @@ func _ready(mp_is_updating=false):
 	cdan_setting.button_pressed = Global.cdan_enabled
 	# Blz
 	blz_setting.button_pressed = Global.blz_enabled
+	# Cls
+	cls_setting.button_pressed = Global.cls_enabled
+	cls_boost.text = str(Global.cls_boost)
 	# Fow
 	fow_setting.button_pressed = Global.fow_enabled
 	fow_dist.text = str(Global.fow_sight)
@@ -505,28 +508,29 @@ func _on_blz_slider_value_changed(value,mp_player_source=true):
 		Global.blz_move_requrement = int(value)
 	sound_play(true)
 
-## Enables (or Disables) fog of war.
+## Enables (or Disables) capital last stand.
 @rpc("any_peer")
 func _on_cls_setting_toggled(toggled_on,mp_player_source=true):
 	if Global.mp_enabled and mp_player_source:
 		_on_cls_setting_toggled.rpc(toggled_on,false)
 	cls_setting.button_pressed = toggled_on
-	Global.fow_enabled = toggled_on
+	Global.cls_enabled = toggled_on
 	sound_play()
 
+## Sets the boost made by the cls.
 @rpc("any_peer")
 func _on_cls_amount_changed(new_text:String,mp_player_source=true):
 	if Global.mp_enabled and mp_player_source:
-		_on_fow_distance_changed.rpc(new_text,false)
+		_on_cls_amount_changed.rpc(new_text,false)
 	if new_text.is_valid_int():
 		if new_text != str(new_text.to_int()):
 			mp_player_source = false
 			new_text = str(new_text.to_int())
 		if not mp_player_source:
-			fow_dist.text = new_text
+			cls_boost.text = new_text
 		if new_text.to_int() < 0:
 			new_text = "99999"
-		Global.fow_sight = new_text.to_int()
+		Global.cls_boost = new_text.to_int()
 		sound_play()
 	else:
 		_on_fow_distance_changed("2",false)
@@ -727,12 +731,17 @@ func load_profile_data(profile:Dictionary,refresh=true):
 	if profile.keys().has("blz_mr") and profile.blz_mr is int:
 		Global.blz_move_requrement = profile.blz_mr
 	# cls setting
-	
+	if profile.keys().has("cls_e") and profile.cls_e is bool:
+		Global.cls_enabled = profile.cls_e
 	# cls amount
-	
+	if profile.keys().has("cls_num") and profile.cls_num is int:
+		Global.cls_boost = profile.cls_num
 	# fow setting
-	
+	if profile.keys().has("fow_e") and profile.fow_e is bool:
+		Global.fow_enabled = profile.fow_e
 	# fow dist
+	if profile.keys().has("fow_dist") and profile.fow_dist is int:
+		Global.fow_sight = profile.fow_dist
 	
 	if profile.keys().has("move_settings") and profile.move_settings is Dictionary:
 		if profile.move_settings.keys().has("tile_int_r") and profile.move_settings.tile_int_r is int:
@@ -785,13 +794,13 @@ func save_profile_data(mp_for_client=false) -> Dictionary:
 	# blz_move_requrement setting
 	data["blz_mr"] = Global.blz_move_requrement
 	# cls setting
-	
+	data["cls_e"] = Global.cls_enabled
 	# cls amount
-	
+	data["cls_num"] = Global.cls_boost
 	# fow setting
-	
+	data["fow_e"] = Global.fow_enabled
 	# fow dist
-	
+	data["fow_dist"] = Global.fow_sight
 	# Movement
 	data["move_settings"] = {
 		"tile_int_r":Global.moves_tile_int_reduction_boost,

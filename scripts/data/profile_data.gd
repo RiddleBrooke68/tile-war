@@ -15,6 +15,8 @@ var profile_path = ""
 	"lms":true, "bran":false,
 	"cdan_e":true, "cdan_d":10,"cdan_cd":5,
 	"blz_e":true,"blz_mr":10,
+	"cls_e":true,"cls_num":2,
+	"fow_e":false,"fow_dist":2,
 	"move_settings":{
 		"tile_int_r":2,"tile_int_l":10,
 		"tile_sec_r":5,"tile_sec_l":20,
