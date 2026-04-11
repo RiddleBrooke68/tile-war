@@ -1,0 +1,9 @@
+<mod version="0.1.02.12" active="0" priority="0" md_folder="/mod_example.no">
+<name>mod_example</name>
+<author>RiddleBrooke68</author>
+<md effect_type="0">
+<mus>
+<main path="/audio" audio="audio_music_placeholders_stolen_pvz_gw_lounge_lizard.main.ogg"></main>
+</mus>
+</md>
+</mod>
