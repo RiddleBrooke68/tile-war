@@ -6,7 +6,7 @@
 	"description": "A example mod for tile war.",
 	"requirements": [],
 	"requirements_names": [],
-	"enabled":true,
+	"enabled":false,
     "priority":0, 
     
     "md_folder":"/mod_example.no",
