@@ -756,7 +756,7 @@ unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Activates cls. When on your last capital, you get a boost."
 
-[node name="cls_bost" type="LineEdit" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/cls_settings"]
+[node name="cls_boost" type="LineEdit" parent="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/cls_settings"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Sets the amout of boost you get when on your last capital."
@@ -1231,7 +1231,7 @@ wait_time = 5.0
 [connection signal="toggled" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/BoxContainer5/blz_setting" to="." method="_on_blz_setting_toggled"]
 [connection signal="value_changed" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/blz_settings2/BlzSlider" to="." method="_on_blz_slider_value_changed"]
 [connection signal="toggled" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/cls_settings/cls_settin" to="." method="_on_cls_setting_toggled"]
-[connection signal="text_changed" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/cls_settings/cls_bost" to="." method="_on_cls_amount_changed"]
+[connection signal="text_changed" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/cls_settings/cls_boost" to="." method="_on_cls_amount_changed"]
 [connection signal="toggled" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/fow_settings/fow_settin" to="." method="_on_fow_setting_toggled"]
 [connection signal="text_changed" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/claim settings/fow_settings/fow_dist" to="." method="_on_fow_distance_changed"]
 [connection signal="item_selected" from="Extra_options/BoxContainer/ScrollContainer/BoxContainer/BoxContainer2/BoxContainer/green_number/green_cap" to="." method="_on_green_cap_item_selected"]

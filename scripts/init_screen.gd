@@ -41,6 +41,7 @@ func _ready():
 	# For broadcast testing only
 	if "brc_testing" in Global.cmd_args.keys():
 		screen = 2
+	ModLoader.get_mods_paths()
 
 func _process(_delta):
 	if screen == 0:

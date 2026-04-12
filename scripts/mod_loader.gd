@@ -8,7 +8,39 @@ const mod_path = "./mods"
 const music_path = "/audio"
 ##@experimental
 ## This is what every mod must have to oprate.
-const md_xml_filename = "dat.xml"
+const modinfo_filename = "modinfo.json"
+
+const modinfo_format = {
+	"id": "",
+	"name": "",
+	"version": "",
+	"authors": "",
+	#"description": "",
+	#"requirements": [],
+	#"requirements_names": [],
+	"enabled":0,
+	"priority":0,
+	
+	"md_folder":"",
+	"md_level":0,
+	"md_file":{},
+	#"tags": ["mus"]
+}
+
+## The levels for a mod to effect a game.
+enum md_levels {
+	## Will work regardless of effect_type.[br]
+	## In multiplayer, this only efects the client.
+	min,
+	## Will work if effect_type is 1 or higher.[br]
+	## In multiplayer, effects the gameplay slightly.
+	mid,
+	## Will work if effect_type is 2.[br]
+	## Multiplayer disabled.
+	max
+}
+
+
 
 # XML Parts:
 ## Contains all the info of how the xml's nodes should be formated
@@ -40,6 +72,7 @@ const md_xml_format = {
 
 #Xml should just have a list of xml files instead of files.
 var mod_paths_list = []
+var mod_list = {}
 var mod_folder : DirAccess
 
 #func _ready():
@@ -50,6 +83,9 @@ var mod_folder : DirAccess
 	#Xml The root must be <mod version="{Insert Current Version}" active="{0 mean disabled, 1 means active}" priority="{The higher number, the higher priorty}">
 	#Xml Should have (<name> The mod name.), (<author> The author),
 	#Xml and (<md effect_type="{The level of changes it makes, 0 means it changes only visual and audio, 1 means it also ajusts gameplay, and 2 means it can add stuff and means no mp}"> )
+
+#JSON modding update plain:
+#JSON The change is so it is easer to program in to my code.
 
 func get_mods_paths(path=mod_path):
 	var file_name
@@ -69,11 +105,11 @@ func get_mods_paths(path=mod_path):
 				get_mods_paths(mod_folder.get_current_dir()+"/"+file_name)
 				mod_folder.change_dir(path)
 			else:
-				if file_name == md_xml_filename:
+				if file_name == modinfo_filename:
 					print("Found file: " + mod_folder.get_current_dir()+"/"+file_name)
 					mod_paths_list.append(mod_folder.get_current_dir()+"/"+file_name)
 				else:
-					print("Found file (Wasn't dat.xml): " + file_name)
+					print("Found file (Wasn't modinfo.json): " + file_name)
 		
 		#mod_folder.list_dir_begin()
 		#file_name = mod_folder.get_next()
@@ -93,7 +129,6 @@ func get_mods_paths(path=mod_path):
 		print("An error occurred when trying to access the path.")
 		DirAccess.make_dir_absolute(mod_path)
 	
-	get_mod_effect()
 
 ##@deprecated
 ## If a path contains any of these extra points, the file is ignored.[br][br]
@@ -105,17 +140,54 @@ const disable_list = [".disabled",".break",".remove",".no",".none"]
 #Xml get_mod_efect("mus","main") and returns the song path.
 #Xml or get_mod_efect("map","entrys") where it returns a colection of maps to add to the list of pickable maps.
 
-func get_mod_effect(...req):
-	var mod_xmls = {}
-	for i in mod_paths_list:
-		mod_xmls.merge(xml_parse_method(i))
-	
-	for i in mod_xmls.keys():
-		if mod_xmls[i]["attributes"]["active"] != "0":
-			print(mod_xmls[i])
-	
-	return
+var reqirement_flush : Callable 
 
+## This is called to change the game's behavior when a mod is installed.
+func get_mod_effect(md_level_req:md_levels,...req):
+	if update_mod_list() != Error.OK:
+		return null
+	
+	reqirement_flush = func(current_value:Dictionary,next_value:String,digit:int=0)->Dictionary:
+		if current_value.keys().has(next_value) and req.size() > digit+1:
+			return reqirement_flush.call(current_value[next_value],req[digit+1],digit+1)
+		elif req.size() > digit+1:
+			return {}
+		return current_value[next_value]
+	
+	var mod_choice = {"priority":-1,"md_file":{}}
+	for i in mod_list.keys():
+		var mod_entry = mod_list[i]
+		if mod_entry.priority > mod_choice.priority and mod_entry.md_level <= float(md_level_req) and mod_entry.enabled:
+			mod_choice = mod_entry
+	
+	var mod_detals : Dictionary = reqirement_flush.call(mod_choice["md_file"],req[0])
+	if not mod_detals.is_empty():
+		var final_return = {}
+		final_return["md_folder"] = mod_choice["md_folder"]
+		final_return.merge(mod_detals)
+		return final_return
+	return null
+
+func update_mod_list():
+	for i in mod_paths_list:
+		var modinfo : FileAccess = FileAccess.open(i,FileAccess.READ)
+		if modinfo == null:
+			printerr("ERROR.MOD.001: The modinfo file maybe corupted")
+			return Error.ERR_CANT_OPEN
+		var modinfo_parce = JSON.parse_string(modinfo.get_as_text())
+		if modinfo_format.keys().all(func(element): return element in modinfo_parce.keys()):
+			mod_list[modinfo_parce.id] = modinfo_parce
+		else:
+			printerr("ERROR.MOD.002: The modinfo file maybe corupted")
+			modinfo.close()
+			return Error.ERR_CANT_OPEN
+		modinfo.close()
+	return Error.OK
+
+
+#region removed code
+
+##@deprecated
 func xml_parse_method(path):
 	var parser = XMLParser.new()
 	var xml_dict = {}
@@ -170,6 +242,8 @@ func xml_parse_method(path):
 	xml_dict[md_name] = temp_dicts[temp_dicts.keys()[0]]
 	
 	return xml_dict
+
+#endregion
 
 
 ##@deprecated

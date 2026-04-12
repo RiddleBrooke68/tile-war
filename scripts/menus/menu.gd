@@ -92,7 +92,6 @@ func _ready(mp_is_updating=false):
 				# Options without an argument will be present in the dictionary,
 				# with the value set to an empty string.
 				#cmd_args[cmdline.trim_prefix("--")] = ""
-	ModLoader.get_mods_paths()
 	sound = AudioStreamPlayer.new()
 	add_child(sound)
 	if music == null:
@@ -183,11 +182,15 @@ func sound_play(use_drag=false):
 func music_play():
 	music.volume_linear = Global.music_vol/10
 	if not music.playing:
-		var mod_music = ModLoader.get_mods_list(0)
-		if mod_music != "":
-			var son : AudioStreamOggVorbis = load(mod_music) as AudioStreamOggVorbis
-			son.loop = true
-			music.stream = son
+		var mod_path = ModLoader.get_mod_effect(ModLoader.md_levels.min,"mus","main")
+		if mod_path != null:
+			var mod_music = ModLoader.mod_path + mod_path.md_folder + mod_path.path + mod_path.audio
+			if FileAccess.file_exists(mod_music):
+				var son : AudioStreamOggVorbis = load(mod_music) as AudioStreamOggVorbis
+				son.loop = true
+				music.stream = son
+			else:
+				music.stream = load("res://audio/music/On the house/On the house.ogg") as AudioStream
 		else:
 			music.stream = load("res://audio/music/On the house/On the house.ogg") as AudioStream
 		music.play()
