@@ -14,6 +14,10 @@ signal tile_info(data:tile_data)
 
 @export var click_efect : PackedScene
 
+@export_category("Grid")
+@export var grid_scale = 4.0
+@export_group("map_scales")
+@export var grid_map_scale : Array[Vector2] = []
 ## The main grid. 18x20 or a 3 to 4 ratio
 @onready var main_grid : TileMapLayer = $main_grid
 ## The overlay thats to show the player what their clicking.
@@ -114,6 +118,12 @@ func _ready():
 		#if Global.map_type == 1:
 			#placement.x = -10
 		main_grid.set_pattern(placement,tile_set.get_pattern(Global.map_type))
+		
+		var grid_mult = grid_map_scale[Global.map_type]
+		main_grid.scale = grid_mult * grid_scale
+		overlay_grid.scale = grid_mult * grid_scale
+		action_grid.scale = grid_mult * grid_scale
+		fog_grid.scale = grid_mult * grid_scale
 		
 		var break_loop = 500
 		var end_genration = 3
