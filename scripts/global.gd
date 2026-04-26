@@ -2,9 +2,18 @@ extends Node
 
 const app_id = 0xF3459
 
-
+## Controls which grid the player is using.
+var grid_style = 0
 
 # PREGENRATION
+
+var grid_maps : Array[map_data] = [
+	preload("res://Resources/maps/no_genration.tres"),
+	preload("res://Resources/maps/standoff.tres"),
+	preload("res://Resources/maps/fortress.tres"),
+	preload("res://Resources/maps/surrounded.tres"),
+	preload("res://Resources/maps/big_n_empty.tres"),
+	]
 ## Which map will be played.
 var map_type = 1
 # GENRATION

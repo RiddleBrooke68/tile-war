@@ -497,6 +497,11 @@ enum broadcast_form_start {
 ## This simply starts the signal of a broadcast, and is requred before sending anything else.
 ## See [enum menu_mp_class.broadcast_form_start]
 func broadcast_start_signal():
+	# Starting to change the packeting
+	#peerUDP.put_packet([ 
+		#str(Global.app_id).to_utf8_buffer(),server_name.to_utf8_buffer(),
+		#address.to_utf8_buffer(),str(port).to_utf8_buffer()
+		#])
 	peerUDP.put_packet(str(Global.app_id).to_utf8_buffer()) # First part of the a signal, the app_id.
 	peerUDP.put_packet(server_name.to_utf8_buffer()) # Second part of a signal, the name of the server.
 	peerUDP.put_packet(address.to_utf8_buffer())

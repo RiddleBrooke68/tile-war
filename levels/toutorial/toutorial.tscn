@@ -13,7 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://c7opi57w04p76" path="res://sprites/ui/claim_data/claim_alined_panels/dangered/claim_river_dangered_data_panel.png" id="11_kv7of"]
 [ext_resource type="Texture2D" uid="uid://bi8h8mlg13r62" path="res://sprites/ui/claim_data/claim_alined_panels/claim_river_data_panel.png" id="12_pmteo"]
 [ext_resource type="Script" uid="uid://blauxgthrf3nc" path="res://scripts/toutorial/board_toutorial.gd" id="13_gmjdu"]
-[ext_resource type="Texture2D" uid="uid://byluswyxci2qp" path="res://sprites/tilemaps/tile_captures/up_scale/tile_ui_upscale.png" id="14_pga2f"]
+[ext_resource type="Texture2D" uid="uid://ck6shc8dyifwb" path="res://sprites/tilemaps/tile_captures/16bit_upscale/tiles_16bit.png" id="14_pga2f"]
 [ext_resource type="Texture2D" uid="uid://c7fq6cs4cf1nv" path="res://sprites/ui/buttons/next_turn_button/next_turn_button.png" id="15_1sj40"]
 [ext_resource type="Texture2D" uid="uid://bqlx5sj8aytaj" path="res://sprites/ui/buttons/next_turn_button/next_turn_button_clicked.png" id="16_0ic6b"]
 [ext_resource type="Texture2D" uid="uid://fag70sjvwby0" path="res://sprites/ui/buttons/next_turn_button/next_turn_button_locked.png" id="17_uew8m"]

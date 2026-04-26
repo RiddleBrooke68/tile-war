@@ -15,9 +15,12 @@ signal tile_info(data:tile_data)
 @export var click_efect : PackedScene
 
 @export_category("Grid")
-@export var grid_scale = 4.0
+@export var grid_scale : Array[float] = [4.0]
+@export var grid_maps : Array[map_data] = []
+@export var grid_styles : Array[TileSet] = []
 @export_group("map_scales")
 @export var grid_map_scale : Array[Vector2] = []
+@export var grid_map_placement : Array[Vector2i] = [Vector2i(-10,-13)]
 ## The main grid. 18x20 or a 3 to 4 ratio
 @onready var main_grid : TileMapLayer = $main_grid
 ## The overlay thats to show the player what their clicking.
@@ -27,7 +30,10 @@ signal tile_info(data:tile_data)
 ## Hides tiles in multiplayer with fog of war.
 @onready var fog_grid = $fog_grid
 
-const placement = Vector2i(-10,-13)
+@onready var grid_list = [main_grid,overlay_grid,action_grid,fog_grid]
+
+
+
 
 @onready var game = $"../.."
 
@@ -102,8 +108,11 @@ func _ready():
 	add_child(sound)
 	sound.volume_db = linear_to_db(Global.SFX_vol/10)
 	
-	
-	
+	main_grid.clear()
+	main_grid.set_pattern(
+		Global.grid_maps[Global.map_type].map_centre,
+		Global.grid_maps[Global.map_type].map_patern
+		)
 	# Read map limits
 	var set_of_grid : Array[Vector2i] = main_grid.get_used_cells()
 	var maxx = set_of_grid.max()
@@ -113,17 +122,20 @@ func _ready():
 	
 	if not Global.mp_enabled or Global.mp_host:
 		# Pre Gen
-		tile_set = main_grid.tile_set
-		#var placement = Vector2i(-10,-13)
-		#if Global.map_type == 1:
-			#placement.x = -10
-		main_grid.set_pattern(placement,tile_set.get_pattern(Global.map_type))
 		
-		var grid_mult = grid_map_scale[Global.map_type]
-		main_grid.scale = grid_mult * grid_scale
-		overlay_grid.scale = grid_mult * grid_scale
-		action_grid.scale = grid_mult * grid_scale
-		fog_grid.scale = grid_mult * grid_scale
+		#var grid_map_placement = Vector2i(-10,-13)
+		#if Global.map_type == 1:
+			#grid_map_placement.x = -10
+		
+		
+		var grid_mult = Global.grid_maps[Global.map_type].map_scale#grid_map_scale[Global.map_type]
+		for i in grid_list:
+			i.tile_set = grid_styles[Global.grid_style]
+			i.scale = grid_mult * grid_scale[Global.grid_style]
+		#main_grid.scale = grid_mult * grid_scale
+		#overlay_grid.scale = grid_mult * grid_scale
+		#action_grid.scale = grid_mult * grid_scale
+		#fog_grid.scale = grid_mult * grid_scale
 		
 		var break_loop = 500
 		var end_genration = 3
@@ -267,7 +279,10 @@ func deserialize_pattern(pattern_data: Dictionary) -> TileMapPattern:
 
 @rpc("any_peer")
 func mp_update_board_state(board_state:Dictionary):
-	main_grid.set_pattern(placement,deserialize_pattern(board_state))
+	main_grid.set_pattern(
+		Global.grid_maps[Global.map_type].map_centre,
+		deserialize_pattern(board_state)
+		)
 
 
 ## Gets if the mouse enters the board. [member board.hovered]
