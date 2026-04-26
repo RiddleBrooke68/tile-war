@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://du2spoj8mmdb8"]
+
+[ext_resource type="Script" uid="uid://1noknrcdtu6u" path="res://levels/testing/map_saver.gd" id="1_gqkpn"]
+[ext_resource type="TileSet" uid="uid://btn5xmf7m8py6" path="res://Resources/tilemap/tiles_8bit.tres" id="2_3yi3q"]
+
+[node name="MapSaver" type="Node2D"]
+script = ExtResource("1_gqkpn")
+map_path = "uid://bk0scw543otbf"
+
+[node name="main_grid" type="TileMapLayer" parent="."]
+editor_description = "Grid is 7 by 10"
+light_mask = 3
+position = Vector2(632, 368)
+scale = Vector2(4, 4)
+tile_set = ExtResource("2_3yi3q")
