@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://cqj63olmuv65h"]
+[gd_scene load_steps=17 format=3 uid="uid://cqj63olmuv65h"]
 
 [ext_resource type="Script" uid="uid://c8gqgkxqt2ucn" path="res://scripts/menus/menus_mp/menu_mp.gd" id="1_l6f4p"]
 [ext_resource type="Theme" uid="uid://dxveohgc0uce2" path="res://themes/default_theme.tres" id="1_pcbpf"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://c0mjtcv61d7f8" path="res://objects/ui/main_menu/lobby_player_nameplate.tscn" id="4_16mcp"]
 [ext_resource type="PackedScene" uid="uid://cp7aln2bcefjd" path="res://objects/ui/main_menu/lobby_chat.tscn" id="4_iwfhx"]
 [ext_resource type="Theme" uid="uid://cedkvwvts0evs" path="res://themes/extra_setting_theame.tres" id="6_3di4p"]
+[ext_resource type="Texture2D" uid="uid://cni6uhx435u7o" path="res://sprites/TitleArt.png" id="7_e87xn"]
 [ext_resource type="PackedScene" uid="uid://c437j4qxokwfw" path="res://objects/ui/main_menu/profile_system/profile_loader.tscn" id="7_un1pk"]
 
 [sub_resource type="Gradient" id="Gradient_3di4p"]
@@ -364,13 +365,19 @@ offset_left = 352.0
 offset_top = 96.0
 offset_right = 736.0
 offset_bottom = 336.0
+alignment = 2
 vertical = true
+
+[node name="Sprite2D" type="Sprite2D" parent="BoxContainer"]
+position = Vector2(192, 22)
+scale = Vector2(3.75, 3.75)
+texture = ExtResource("7_e87xn")
 
 [node name="Label" type="Label" parent="BoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 64
-text = "Tile War MP"
-horizontal_alignment = 1
+text = "MP "
+horizontal_alignment = 2
 vertical_alignment = 1
 
 [node name="start_game" type="Button" parent="BoxContainer"]

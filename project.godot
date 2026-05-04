@@ -14,7 +14,7 @@ config/name="tile_war"
 config/tags=PackedStringArray("official", "test")
 run/main_scene="uid://cn0cvbx27lh26"
 config/features=PackedStringArray("4.5", "Forward Plus")
-config/icon="res://icon.svg"
+config/icon="uid://cni6uhx435u7o"
 
 [autoload]
 
