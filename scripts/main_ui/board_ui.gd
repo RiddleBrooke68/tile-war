@@ -738,6 +738,7 @@ func check_tile_neutralty(coords:Vector2i,ignore_2nd_neighbor=false,ignore_neigh
 
 var claim_placeholder = ClaimData.new()
 
+## Updates the fog, this is really quick, imo.
 func update_fog(claim_add:ClaimData=claim_placeholder) -> Error:
 	if Global.fow_enabled:
 		var player_claim : ClaimData
@@ -752,10 +753,9 @@ func update_fog(claim_add:ClaimData=claim_placeholder) -> Error:
 			if not player_claim.claim_mp_ip_linked == Global.mp_player_id:
 				player_claim = ClaimData.new()
 		
-		# Forces the fog to focas on a partular claim regadless of any other info.
+		# Forces the fog to focus on a partular claim regadless of any other info.
 		elif claim_add != claim_placeholder:
 			player_claim = claim_add
-		
 		
 		else:
 			player_claim = game.player_prior
@@ -799,13 +799,13 @@ func update_fog(claim_add:ClaimData=claim_placeholder) -> Error:
 								0,
 								Vector2i(
 									player_claim.claim_colour,
-									4 if not i in clear_tiles else -1 # If it has been selected, than it cannot be 
+									4 if not i in clear_tiles else -1 # If it has been selected, than it cannot be visable. 
 									)
 								)
 			return Error.OK
 	
 	fog_grid.clear()
-	# Returns a lock error, meaning the player does not control this player.
+	# Returns a lock error, meaning fog is disabled.
 	return Error.ERR_LOCKED
 
 
@@ -977,6 +977,72 @@ func search_surounding_tiles(tile:Vector2i,distance:int,claim,ignore_set:Array[V
 			broke_timer = true
 	return score
 
+
+# The Idea:
+# Have a list of non connected tiles, that save if they are disconnected.
+# If they are, then the function will just give false
+# If you are the owner of said tile though, and placed a tile.
+# Then it will check again.
+# It will then do what update_fog does, where it gets all of this claim tiles.
+# And then checks if they are linked.
+## A list that is checked if a tile is unlinked.
+var testlink_flag_unlinked = []
+## A list that is checked if a tile is linked.
+var testlink_flag_linked = []
+
+func testlink_func(tile:Vector2i,tile_claim:int,
+					claim:int,limit=-1) -> bool:
+	var answer = false
+	if tile_claim != claim and tile in testlink_flag_unlinked:
+		return false
+	elif tile_claim == claim and tile in testlink_flag_linked:
+		return true
+	
+	## Holds all tiles that will be clear once the fog is drawn.
+	var clear_tiles = []
+	var neighbours_set = []
+	
+	## This runs a loop though all posable tiles around it.[br]
+	## Function MUST be the loop its self.
+	var loop = func loop(i,function,length,answer_local):
+		var picked_tile = main_grid.get_cell_tile_data(i)
+		if picked_tile == null:
+			return answer_local
+		if picked_tile.get_custom_data("ownership") != tile_claim:
+			return answer_local
+		elif picked_tile.get_custom_data("type") == 1 and not answer_local:
+			answer_local = true
+		if length == 0:
+			return answer_local
+		var neighbors = main_grid.get_surrounding_cells(i)
+		for neighbor in neighbors:
+			if not neighbor in clear_tiles:
+				if not neighbor in neighbours_set:
+					neighbours_set.append(neighbor)
+				if function.call(neighbor,function,length-1,answer_local):
+					answer_local = true
+		return answer_local
+	
+	answer = loop.call(tile,loop,limit,answer)
+	clear_tiles.append_array(neighbours_set)
+	
+	for i in clear_tiles:
+		if tile_claim == claim and answer or answer:
+			if i in testlink_flag_unlinked:
+				testlink_flag_unlinked.erase(i)
+			if not i in testlink_flag_linked:
+				testlink_flag_linked.append(i)
+		elif tile_claim != claim and not answer or not answer:
+			if i in testlink_flag_linked:
+				testlink_flag_linked.erase(i)
+			if not i in testlink_flag_unlinked:
+				testlink_flag_unlinked.append(i)
+	
+	return answer
+
+
+# This lags out the game.
+# perhaps I could rework this to work more like the fog code.
 ## Finds if two points are linked, normaly one tile, and its capital.
 func find_linked_tiles(tile:Vector2i,other:Array[Vector2i],claim,limit=-1) -> bool:
 	var answer = false
