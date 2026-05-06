@@ -200,6 +200,9 @@ var drag = false
 func drag_ended(value):
 	drag = value
 
+##Soooo... When I make maps fully into a resorce, and not built in[br]
+##This script is the first I'm going to change[br][br]
+##This sets the map.
 @rpc("any_peer")
 func _on_map_setting_item_selected(index,mp_player_source=true,block=false):
 	if Global.mp_enabled and mp_player_source:

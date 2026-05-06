@@ -519,7 +519,7 @@ func check_tile_claimably(coords:Vector2i,claim,test_suroundings=false,wants_til
 		return false
 	
 	var tile = tile_data.new()
-	var has_neighbors = find_linked_tiles(coords,check_claim_captatal(claim_colour),claim_colour)
+	var has_neighbors = find_linked_cap_tiles(coords,claim_colour,claim_colour)#find_linked_tiles(coords,check_claim_captatal(claim_colour),claim_colour)
 	tested_tiles = []
 	tile.coords = coords
 	var picked_tile = main_grid.get_cell_tile_data(coords)
@@ -599,7 +599,7 @@ func check_tile_claimably(coords:Vector2i,claim,test_suroundings=false,wants_til
 					# Tracks how meny capitals
 					for x in check_claim_captatal(claim_colour).filter(func(_coords): return not _coords in caps_linked):
 						tested_tiles = []
-						if find_linked_tiles(tile.coords,[x],claim_slot,8):
+						if find_linked_cap_tiles(tile.coords,claim_colour,claim_colour,6,x):#find_linked_tiles(tile.coords,[x],claim_slot,8):
 							caps_linked.append(x)
 							tile.cap_list.append(x)
 							cap_buff += 1
@@ -613,7 +613,7 @@ func check_tile_claimably(coords:Vector2i,claim,test_suroundings=false,wants_til
 				elif picked_tile.get_custom_data("ownership") == oppose_claim:
 					for x in check_claim_captatal(oppose_claim).filter(func(_coords): return not _coords in caps_linked):
 						tested_tiles = []
-						if find_linked_tiles(tile.coords,[x],oppose_claim,36):
+						if find_linked_cap_tiles(tile.coords,oppose_claim,claim_slot,16,x):#find_linked_tiles(tile.coords,[x],oppose_claim,36):
 							caps_linked.append(x)
 							cap_debuff += 1
 					if picked_tile.get_custom_data("type") == 0:
@@ -989,10 +989,12 @@ func search_surounding_tiles(tile:Vector2i,distance:int,claim,ignore_set:Array[V
 var testlink_flag_unlinked = []
 ## A list that is checked if a tile is linked.
 var testlink_flag_linked = []
-
-func testlink_func(tile:Vector2i,tile_claim:int,
-					claim:int,limit=-1) -> bool:
+##@experimental[br]
+##This fills an area and checks if all thouse tiles are linked or not.
+func find_linked_cap_tiles(tile:Vector2i,tile_claim:int,
+					claim:int,limit=-1,linked=null) -> bool:
 	var answer = false
+	var answer_func = []
 	if tile_claim != claim and tile in testlink_flag_unlinked:
 		return false
 	elif tile_claim == claim and tile in testlink_flag_linked:
@@ -1004,26 +1006,30 @@ func testlink_func(tile:Vector2i,tile_claim:int,
 	
 	## This runs a loop though all posable tiles around it.[br]
 	## Function MUST be the loop its self.
-	var loop = func loop(i,function,length,answer_local):
+	var loop = func loop(i,function,length,block=[]):
 		var picked_tile = main_grid.get_cell_tile_data(i)
+		block.append(i)
 		if picked_tile == null:
-			return answer_local
-		if picked_tile.get_custom_data("ownership") != tile_claim:
-			return answer_local
-		elif picked_tile.get_custom_data("type") == 1 and not answer_local:
-			answer_local = true
+			return 
+		if picked_tile.get_custom_data("ownership") != tile_claim and tile_claim != claim:
+			return
+		elif picked_tile.get_custom_data("type") == 1:
+			answer_func.append(true)
 		if length == 0:
-			return answer_local
+			return 
 		var neighbors = main_grid.get_surrounding_cells(i)
 		for neighbor in neighbors:
-			if not neighbor in clear_tiles:
-				if not neighbor in neighbours_set:
-					neighbours_set.append(neighbor)
-				if function.call(neighbor,function,length-1,answer_local):
-					answer_local = true
-		return answer_local
+			picked_tile = main_grid.get_cell_tile_data(neighbor)
+			if picked_tile != null:
+				if picked_tile.get_custom_data("ownership") == tile_claim and not neighbor in block:
+					if not neighbor in neighbours_set:
+						neighbours_set.append(neighbor)
+					function.call(neighbor,function,length-1,block)
+		return 
 	
-	answer = loop.call(tile,loop,limit,answer)
+	loop.call(tile,loop,limit)
+	if answer_func.has(true):
+		answer = true
 	clear_tiles.append_array(neighbours_set)
 	
 	for i in clear_tiles:
@@ -1038,11 +1044,15 @@ func testlink_func(tile:Vector2i,tile_claim:int,
 			if not i in testlink_flag_unlinked:
 				testlink_flag_unlinked.append(i)
 	
+	if linked != null:
+		return clear_tiles.has(linked)
+	
 	return answer
 
 
 # This lags out the game.
 # perhaps I could rework this to work more like the fog code.
+## This is semi-deprcated, infavor of [method find_linked_cap_tiles][br][br]
 ## Finds if two points are linked, normaly one tile, and its capital.
 func find_linked_tiles(tile:Vector2i,other:Array[Vector2i],claim,limit=-1) -> bool:
 	var answer = false
@@ -1121,7 +1131,7 @@ func check_claim_tile_type_count(claim,type) -> int:
 			if (picked_tile.get_custom_data("ownership") == claim or claim == -1) and picked_tile.get_custom_data("type") == type:
 				# I want it so, if this tile isn't linked to the capital, then its not counted
 				if claim > 0:
-					if find_linked_tiles(tile,check_claim_captatal(claim),claim):
+					if find_linked_cap_tiles(tile,claim,claim): #find_linked_tiles(tile,check_claim_captatal(claim),claim):
 						tested_tiles = []
 						count += 1
 				else:
