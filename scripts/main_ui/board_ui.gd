@@ -986,18 +986,18 @@ func search_surounding_tiles(tile:Vector2i,distance:int,claim,ignore_set:Array[V
 # It will then do what update_fog does, where it gets all of this claim tiles.
 # And then checks if they are linked.
 ## A list that is checked if a tile is unlinked.
-var testlink_flag_unlinked = []
+var testlink_flag_unlinked = [[],[],[],[],[]]
 ## A list that is checked if a tile is linked.
-var testlink_flag_linked = []
+var testlink_flag_linked = [[],[],[],[],[]]
 ##@experimental[br]
 ##This fills an area and checks if all thouse tiles are linked or not.
 func find_linked_cap_tiles(tile:Vector2i,tile_claim:int,
 					claim:int,limit=-1,linked=null) -> bool:
 	var answer = false
 	var answer_func = []
-	if tile_claim != claim and tile in testlink_flag_unlinked:
+	if tile_claim != claim and tile in testlink_flag_unlinked[tile_claim]:
 		return false
-	elif tile_claim == claim and tile in testlink_flag_linked:
+	elif tile_claim == claim and tile in testlink_flag_linked[tile_claim]:
 		return true
 	
 	## Holds all tiles that will be clear once the fog is drawn.
@@ -1011,7 +1011,8 @@ func find_linked_cap_tiles(tile:Vector2i,tile_claim:int,
 		block.append(i)
 		if picked_tile == null:
 			return 
-		if picked_tile.get_custom_data("ownership") != tile_claim and tile_claim != claim:
+		if (picked_tile.get_custom_data("ownership") != tile_claim 
+				and (tile_claim != claim or length != limit)):
 			return
 		elif picked_tile.get_custom_data("type") == 1:
 			answer_func.append(true)
@@ -1034,15 +1035,15 @@ func find_linked_cap_tiles(tile:Vector2i,tile_claim:int,
 	
 	for i in clear_tiles:
 		if tile_claim == claim and answer or answer:
-			if i in testlink_flag_unlinked:
-				testlink_flag_unlinked.erase(i)
-			if not i in testlink_flag_linked:
-				testlink_flag_linked.append(i)
+			if i in testlink_flag_unlinked[tile_claim]:
+				testlink_flag_unlinked[tile_claim].erase(i)
+			if not i in testlink_flag_linked[tile_claim]:
+				testlink_flag_linked[tile_claim].append(i)
 		elif tile_claim != claim and not answer or not answer:
-			if i in testlink_flag_linked:
-				testlink_flag_linked.erase(i)
-			if not i in testlink_flag_unlinked:
-				testlink_flag_unlinked.append(i)
+			if i in testlink_flag_linked[tile_claim]:
+				testlink_flag_linked[tile_claim].erase(i)
+			if not i in testlink_flag_unlinked[tile_claim]:
+				testlink_flag_unlinked[tile_claim].append(i)
 	
 	if linked != null:
 		return clear_tiles.has(linked)
