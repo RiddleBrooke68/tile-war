@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="tile_war"
-config/tags=PackedStringArray("official", "test")
+config/tags=PackedStringArray("official")
 run/main_scene="uid://cn0cvbx27lh26"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="uid://cni6uhx435u7o"
