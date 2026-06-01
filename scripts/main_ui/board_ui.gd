@@ -113,6 +113,10 @@ func _ready():
 		Global.grid_maps[Global.map_type].map_centre,
 		Global.grid_maps[Global.map_type].map_patern
 		)
+	var grid_mult = Global.grid_maps[Global.map_type].map_scale#grid_map_scale[Global.map_type]
+	for i in grid_list:
+		i.tile_set = grid_styles[Global.grid_style]
+		i.scale = grid_mult * grid_scale[Global.grid_style]
 	# Read map limits
 	var set_of_grid : Array[Vector2i] = main_grid.get_used_cells()
 	var maxx = set_of_grid.max()
@@ -128,10 +132,7 @@ func _ready():
 			#grid_map_placement.x = -10
 		
 		
-		var grid_mult = Global.grid_maps[Global.map_type].map_scale#grid_map_scale[Global.map_type]
-		for i in grid_list:
-			i.tile_set = grid_styles[Global.grid_style]
-			i.scale = grid_mult * grid_scale[Global.grid_style]
+		
 		#main_grid.scale = grid_mult * grid_scale
 		#overlay_grid.scale = grid_mult * grid_scale
 		#action_grid.scale = grid_mult * grid_scale
@@ -226,6 +227,11 @@ func _process(_delta):
 		update_fog()
 		start = true
 	
+	var grid_mult = Global.grid_maps[Global.map_type].map_scale#grid_map_scale[Global.map_type]
+	for i in grid_list:
+		i.tile_set = grid_styles[Global.grid_style]
+		i.scale = grid_mult * grid_scale[Global.grid_style]
+	
 	if hovered:
 		# Get mouse position on grid.
 		var mouse_pos = get_global_mouse_position()
@@ -317,7 +323,7 @@ signal board_decrese_move_count(incremts:int)
 ## Fires for any click on the board.
 func _on_gui_input(event):
 	if event is InputEventMouseButton:
-		var tile : tile_data = check_tile_claimably(grid_coords,game.active_player,-1,true)
+		var tile : tile_data = check_tile_claimably(grid_coords,game.active_player,-1,true,false,false,true)
 		var click_size = Vector2(1.0,1.0)
 		var blz_lock = not check_tile_claimably(grid_coords,game.active_player,-1,false,true)
 		
@@ -506,7 +512,7 @@ func on_claim_tile(coords,claim,type:int=-1,
 	return false
 
 ## Checks if a tile can be claimed. Returns true if claimable.
-func check_tile_claimably(coords:Vector2i,claim,test_suroundings=false,wants_tile_data=false,blz_fired=false,no_emition=false):
+func check_tile_claimably(coords:Vector2i,claim,test_suroundings=false,wants_tile_data=false,blz_fired=false,no_emition=false,recheck_tile=false):
 	
 	var claim_colour = claim
 	var claim_slot = claim
@@ -519,7 +525,7 @@ func check_tile_claimably(coords:Vector2i,claim,test_suroundings=false,wants_til
 		return false
 	
 	var tile = tile_data.new()
-	var has_neighbors = find_linked_cap_tiles(coords,claim_colour,claim_colour)#find_linked_tiles(coords,check_claim_captatal(claim_colour),claim_colour)
+	var has_neighbors = find_linked_cap_tiles(coords,claim_colour,claim_colour,-1,null,recheck_tile)#find_linked_tiles(coords,check_claim_captatal(claim_colour),claim_colour)
 	tested_tiles = []
 	tile.coords = coords
 	var picked_tile = main_grid.get_cell_tile_data(coords)
@@ -599,7 +605,7 @@ func check_tile_claimably(coords:Vector2i,claim,test_suroundings=false,wants_til
 					# Tracks how meny capitals
 					for x in check_claim_captatal(claim_colour).filter(func(_coords): return not _coords in caps_linked):
 						tested_tiles = []
-						if find_linked_cap_tiles(tile.coords,claim_colour,claim_colour,6,x):#find_linked_tiles(tile.coords,[x],claim_slot,8):
+						if find_linked_cap_tiles(tile.coords,claim_colour,claim_colour,6,x,recheck_tile):#find_linked_tiles(tile.coords,[x],claim_slot,8):
 							caps_linked.append(x)
 							tile.cap_list.append(x)
 							cap_buff += 1
@@ -613,7 +619,7 @@ func check_tile_claimably(coords:Vector2i,claim,test_suroundings=false,wants_til
 				elif picked_tile.get_custom_data("ownership") == oppose_claim:
 					for x in check_claim_captatal(oppose_claim).filter(func(_coords): return not _coords in caps_linked):
 						tested_tiles = []
-						if find_linked_cap_tiles(tile.coords,oppose_claim,claim_slot,16,x):#find_linked_tiles(tile.coords,[x],oppose_claim,36):
+						if find_linked_cap_tiles(tile.coords,oppose_claim,claim_slot,16,x,recheck_tile):#find_linked_tiles(tile.coords,[x],oppose_claim,36):
 							caps_linked.append(x)
 							cap_debuff += 1
 					if picked_tile.get_custom_data("type") == 0:
@@ -992,13 +998,14 @@ var testlink_flag_linked = [[],[],[],[],[]]
 ##@experimental[br]
 ##This fills an area and checks if all thouse tiles are linked or not.
 func find_linked_cap_tiles(tile:Vector2i,tile_claim:int,
-					claim:int,limit=-1,linked=null) -> bool:
+					claim:int,limit=-1,linked=null,force_check=false) -> bool:
 	var answer = false
 	var answer_func = []
-	if tile_claim != claim and tile in testlink_flag_unlinked[tile_claim]:
-		return false
-	elif tile_claim == claim and tile in testlink_flag_linked[tile_claim]:
-		return true
+	if not force_check:
+		if tile_claim != claim and tile in testlink_flag_unlinked[tile_claim]:
+			return false
+		elif tile_claim == claim and tile in testlink_flag_linked[tile_claim]:
+			return true
 	
 	## Holds all tiles that will be clear once the fog is drawn.
 	var clear_tiles = []

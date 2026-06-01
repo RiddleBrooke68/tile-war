@@ -7,18 +7,18 @@
 	"requirements": [],
 	"requirements_names": [],
 	"enabled":false,
-    "priority":0, 
-    
-    "md_folder":"/mod_example.no",
-    "md_level":0,
-    "md_file":{
-        "mus":{
-            "main":{
-                "path":"/audio",
-                "audio":"/audio_music_placeholders_stolen_pvz_gw_lounge_lizard.main.ogg"
-            }
-        }
-    },
+	"priority":0, 
+	
+	"md_folder":"/mod_example.no",
+	"md_level":0,
+	"md_file":{
+		"mus":{
+			"main":{
+				"path":"/audio",
+				"audio":"/audio_music_placeholders_stolen_pvz_gw_lounge_lizard.main.ogg"
+			}
+		}
+	},
 
 	"tags": ["mus"]
 }
