@@ -46,8 +46,10 @@ var hovered = false
 ## makes it so it cant be used.
 var lock_mode = false
 
+
 var off_input = false
 
+## Just checks
 var enabled_claims = [true, true, true, true]
 
 ## The grid_coords where the mouse is.
@@ -59,7 +61,13 @@ var tile_set : TileSet
 ## For game sounds. (CURRENTLY USING SOUNDS FROM GOD MACHINE)
 var sound : AudioStreamPlayer
 
+## Defines the tile boundrys, is set at the start of the a game.
 var lot : Vector4i
+
+const tile_const = {
+	&"Empty":Vector2i(-1,0),&"Wall":Vector2i(0,1),&"Cap":Vector2i(-1,1),&"Cursor":Vector2i(0,2),&"Fuel":Vector2i(0,3),
+	&"Sea":Vector2i(0,4) # I want to add this in, where this tile is treated like you own it if you are touching it.
+}
 
 func _ready():
 	
@@ -131,21 +139,20 @@ func _ready():
 		#if Global.map_type == 1:
 			#grid_map_placement.x = -10
 		
-		
-		
 		#main_grid.scale = grid_mult * grid_scale
 		#overlay_grid.scale = grid_mult * grid_scale
 		#action_grid.scale = grid_mult * grid_scale
 		#fog_grid.scale = grid_mult * grid_scale
 		
-		var break_loop = 500
-		var end_genration = 3
-		# Genration
-		var rcoord : Callable = func(dot=false,wall=false,tries=-999):
+		var rcoord : Callable = func(dot=false,wall=false,sea=false,tries=-999):
 			var thing
 			var spot = false
 			while not spot and tries != 0:
-				thing = Vector2i(randi_range(lot.z,lot.x),randi_range(lot.w,lot.y))
+				if not sea or check_claim_tile_type_count(-1,tile_const[&"Sea"].y) == 0 or randi_range(0,10) <= 3:
+					thing = Vector2i(randi_range(lot.z,lot.x),randi_range(lot.w,lot.y))
+				else:
+					thing = get_claim_tile_type_coords(-1,tile_const[&"Sea"].y).pick_random()
+					thing = main_grid.get_surrounding_cells(thing).pick_random()
 				spot = check_tile_neutralty(thing,dot,wall)
 				tries -= 1
 				if tries == 0:
@@ -157,69 +164,142 @@ func _ready():
 					#test.kill() # This will crash the game
 			return thing
 		
-		# Places all enabled players.
-		for i in range(0,4):
-			if enabled_claims[i] and check_claim_captatal(i+1).size() < Global.cap_list[i]:
-				for x in range(check_claim_tile_type_count(i+1,1),Global.cap_list[i]):
-					if not on_claim_tile(rcoord.call(false,false,break_loop),i+1,1,false,false,true):
-						print_rich("[color=red][b]GEN_ERROR.001:[/b] could not find a place for a captial, Dont have such high gen settings.[/color]")
-						OS.alert("Error: could not find a place for a capital tile, Dont have such high gen settings. The game will break after this, ENDING GAME", "GEN_ERROR.001")
-						OS.crash("ERROR")
-						var test = null
-						test.kill() # This will crash the game
-			elif enabled_claims[i] and check_claim_captatal(i+1).size() > Global.cap_list[i]:
-				while check_claim_captatal(i+1).size() > Global.cap_list[i]:
-					on_claim_tile(check_claim_captatal(i+1).pick_random(),0,2,false,false,true)
-			elif not enabled_claims[i]:
-				for x in check_claim_captatal(i+1):
-					on_claim_tile(x,0,2,false,false,true)
-			
-			if enabled_claims[i] and check_claim_captatal(i+1).size() == Global.cap_list[i]:
-				for x in check_claim_captatal(i+1):
-					on_claim_tile(x,game.claims[i],1,false,false,true)
-			print(i+1," capitals: ",check_claim_captatal(i+1).size())
+		_ready_genration(rcoord)
 		
-		# This places down all the unowned tile, and will not stop untill it gets the right amount.
-		while ( check_claim_tile_type_count(0,1) < Global.wall_count
-				or
-				check_claim_tile_type_count(-1,3) < Global.fuel_count):
-			
-			if check_claim_tile_type_count(0,1) < Global.wall_count:
-				if not on_claim_tile(rcoord.call(true,true,break_loop),0,1,false,true,true):
-					end_genration -= 1
-					print_rich("[color=red][b]GEN_ERROR.002:[/b] could not find a place for a wall tile, Dont have such high gen settings.[/color]")
-					OS.alert("Error: could not find a place for a wall tile, Dont have such high gen settings.", "GEN_ERROR.002")
-					#OS.crash("ERROR")
-					#var test = null
-					#test.kill() # This will crash the game
-			
-			if check_claim_tile_type_count(-1,3) < Global.fuel_count:
-				if not on_claim_tile(rcoord.call(true,false,break_loop),0,3,false,true,true):
-					end_genration -= 1
-					print_rich("[color=red][b]GEN_ERROR.003:[/b] could not find a place for a tile, Dont have such high gen settings.[/color]")
-					OS.alert("Error: could not find a place for a fuel tile, Dont have such high gen settings.", "GEN_ERROR.003")
-					#OS.crash("ERROR")
-					#var test = null
-					#test.kill() # This will crash the game
-			
-			if end_genration == 0:
-				print("Stopping.")
-				break
-				#OS.alert("Error: could not find a place for a tile, Dont have such high gen settings.", "ERROR.003")
-				#OS.crash("ERROR")
-				#var test = null
-				#test.kill() # This will crash the game
-			
 		# Debug test if the walls and fuel
-		print("wall: ",check_claim_tile_type_count(0,1))
-		print("fuel: ",check_claim_tile_type_count(-1,3))
+		print("wall: ",check_claim_tile_type_count(0,tile_const[&"Wall"].y))
+		print("fuel: ",check_claim_tile_type_count(-1,tile_const[&"Fuel"].y))
+		print("sea: ",check_claim_tile_type_count(-1,tile_const[&"Sea"].y))
 		for i in check_special_empty_tiles():
 			on_claim_tile(i,0,0,false,true,true)
 		
 		if Global.mp_enabled:
 			mp_update_board_state.rpc(serialize_pattern(main_grid.get_pattern(set_of_grid)))
 
+## This
+func _ready_genration(rcoord:Callable):
+	var break_loop = 500
+	var end_genration = 3
+	
+	# Genration
+		# Places all enabled players.
+	for i in range(0,4):
+		if enabled_claims[i] and check_claim_captatal(i+1).size() < Global.cap_list[i]:
+			
+			for x in range(check_claim_tile_type_count(i+1,1),Global.cap_list[i]):
+				if on_claim_tile(rcoord.call(false,false,false,break_loop),i+1,1,false,false,true):
+					continue
+				
+				print_rich("[color=red][b]GEN_ERROR.001:[/b] could not find a place for a captial, Dont have such high gen settings.[/color]")
+				OS.alert("Error: could not find a place for a capital tile, Dont have such high gen settings. The game will break after this, ENDING GAME", "GEN_ERROR.001")
+				OS.crash("ERROR")
+				var test = null
+				test.kill() # This will crash the game
+		
+		elif enabled_claims[i] and check_claim_captatal(i+1).size() > Global.cap_list[i]:
+			
+			while check_claim_captatal(i+1).size() > Global.cap_list[i]:
+				on_claim_tile(check_claim_captatal(i+1).pick_random(),0,2,false,false,true)
+		
+		elif not enabled_claims[i]:
+			
+			for x in check_claim_captatal(i+1):
+				on_claim_tile(x,0,2,false,false,true)
+		
+		if not enabled_claims[i] or not check_claim_captatal(i+1).size() == Global.cap_list[i]:
+			continue
+		
+		for x in check_claim_captatal(i+1):
+			on_claim_tile(x,game.claims[i],1,false,false,true)
+		
+		print(i+1," capitals: ",check_claim_captatal(i+1).size())
+	
+	# This places down all the unowned tile, and will not stop untill it gets the right amount.
+	while ( check_claim_tile_type_count(tile_const[&"Wall"].x,tile_const[&"Wall"].y) < Global.wall_count
+			or
+			check_claim_tile_type_count(-1,tile_const[&"Fuel"].y) < Global.fuel_count
+			or 
+			check_claim_tile_type_count(tile_const[&"Sea"].x,tile_const[&"Sea"].y) < Global.sea_count):
+		
+		if check_claim_tile_type_count(tile_const[&"Wall"].x,tile_const[&"Wall"].y) < Global.wall_count:
+			if not on_claim_tile(rcoord.call(true,true,false,break_loop),tile_const[&"Wall"].x,tile_const[&"Wall"].y,false,true,true):
+				end_genration -= 1
+				print_rich("[color=red][b]GEN_ERROR.002:[/b] could not find a place for a wall tile, Dont have such high gen settings.[/color]")
+				OS.alert("Error: could not find a place for a wall tile, Dont have such high gen settings.", "GEN_ERROR.002")
+				#OS.crash("ERROR")
+				#var test = null
+				#test.kill() # This will crash the game
+		
+		if check_claim_tile_type_count(-1,tile_const[&"Fuel"].y) < Global.fuel_count:
+			if not on_claim_tile(rcoord.call(true,false,false,break_loop),tile_const[&"Fuel"].x,tile_const[&"Fuel"].y,false,true,true):
+				end_genration -= 1
+				print_rich("[color=red][b]GEN_ERROR.003:[/b] could not find a place for a tile, Dont have such high gen settings.[/color]")
+				OS.alert("Error: could not find a place for a fuel tile, Dont have such high gen settings.", "GEN_ERROR.003")
+				#OS.crash("ERROR")
+				#var test = null
+				#test.kill() # This will crash the game
+		
+		if check_claim_tile_type_count(tile_const[&"Sea"].x,tile_const[&"Sea"].y) < Global.sea_count:
+			if not on_claim_tile(rcoord.call(true,false,true,break_loop),tile_const[&"Sea"].x,tile_const[&"Sea"].y,false,true,true):
+				end_genration -= 1
+				print_rich("[color=red][b]GEN_ERROR.004:[/b] could not find a place for a tile, Dont have such high gen settings.[/color]")
+				OS.alert("Error: could not find a place for a Sea tile, Dont have such high gen settings.", "GEN_ERROR.003")
+				Global.sea_count = check_claim_tile_type_count(tile_const[&"Sea"].x,tile_const[&"Sea"].y)
+		
+		if end_genration == 0:
+			print("Stopping.")
+			break
+			#OS.alert("Error: could not find a place for a tile, Dont have such high gen settings.", "ERROR.003")
+			#OS.crash("ERROR")
+			#var test = null
+			#test.kill() # This will crash the game
+
+## MULTIPLAYER ONLY[br]
+## It incodes the board state, usaualy done at the start of a game.[br]
+## 
+func serialize_pattern(pattern: TileMapPattern) -> Dictionary:
+	var pattern_data := {}
+	pattern_data["size"] = pattern.get_size() # Get the size of the pattern
+	var cells_data := []
+	
+	# Iterate over all used cells in the pattern
+	for coords in pattern.get_used_cells():
+		var cell_data := {}
+		cell_data["coords"] = coords
+		cell_data["source_id"] = pattern.get_cell_source_id(coords)
+		cell_data["atlas_coords"] = pattern.get_cell_atlas_coords(coords)
+		cell_data["alternative_tile"] = pattern.get_cell_alternative_tile(coords)
+		cells_data.append(cell_data)
+	
+	pattern_data["cells"] = cells_data
+	return pattern_data
+
+## MULTIPLAYER ONLY[br]
+## Decodes the current board from the host.
+func deserialize_pattern(pattern_data: Dictionary) -> TileMapPattern:
+	var pattern := TileMapPattern.new()
+	pattern.set_size(pattern_data["size"])
+	
+	for cell_data in pattern_data["cells"]:
+		pattern.set_cell(
+		cell_data["coords"],
+		cell_data["source_id"],
+		cell_data["atlas_coords"],
+		cell_data["alternative_tile"]
+		)
+	return pattern
+
+## Sends the board state.
+@rpc("any_peer")
+func mp_update_board_state(board_state:Dictionary):
+	main_grid.set_pattern(
+		Global.grid_maps[Global.map_type].map_centre,
+		deserialize_pattern(board_state)
+		)
+
+
 var start = false
+
 
 func _process(_delta):
 	if not start:
@@ -252,45 +332,6 @@ func _process(_delta):
 	else:
 		overlay_grid.clear()
 
-
-func serialize_pattern(pattern: TileMapPattern) -> Dictionary:
-	var pattern_data := {}
-	pattern_data["size"] = pattern.get_size() # Get the size of the pattern
-	var cells_data := []
-	
-	# Iterate over all used cells in the pattern
-	for coords in pattern.get_used_cells():
-		var cell_data := {}
-		cell_data["coords"] = coords
-		cell_data["source_id"] = pattern.get_cell_source_id(coords)
-		cell_data["atlas_coords"] = pattern.get_cell_atlas_coords(coords)
-		cell_data["alternative_tile"] = pattern.get_cell_alternative_tile(coords)
-		cells_data.append(cell_data)
-	
-	pattern_data["cells"] = cells_data
-	return pattern_data
-
-func deserialize_pattern(pattern_data: Dictionary) -> TileMapPattern:
-	var pattern := TileMapPattern.new()
-	pattern.set_size(pattern_data["size"])
-	
-	for cell_data in pattern_data["cells"]:
-		pattern.set_cell(
-		cell_data["coords"],
-		cell_data["source_id"],
-		cell_data["atlas_coords"],
-		cell_data["alternative_tile"]
-		)
-	return pattern
-
-@rpc("any_peer")
-func mp_update_board_state(board_state:Dictionary):
-	main_grid.set_pattern(
-		Global.grid_maps[Global.map_type].map_centre,
-		deserialize_pattern(board_state)
-		)
-
-
 ## Gets if the mouse enters the board. [member board.hovered]
 func _on_mouse_entered():
 	hovered = true
@@ -308,6 +349,7 @@ const colours = [
 	Color(0.17, 0.303, 0.58, 1.0)		#Builders League.
 ]
 
+## Creates a partical effect.
 func click_effect_color(coords,_size=Vector2(1.0,1.0)):
 	var glow = get_tree().get_nodes_in_group("glow")
 	if glow.size() > 10:
@@ -549,10 +591,10 @@ func check_tile_claimably(coords:Vector2i,claim,test_suroundings=false,wants_til
 		tile.type = 2
 		tile.opposite_claim = game.claims[claim_slot].name
 		var neighbors = main_grid.get_surrounding_cells(coords)
-		if picked_tile.get_custom_data("type") == 1:
+		if picked_tile.get_custom_data("type") == tile_const[&"Cap"].y:
 			tile.tile_type = "capital"
 			tile.points += 1
-		elif picked_tile.get_custom_data("type") == 3:
+		elif picked_tile.get_custom_data("type") == tile_const[&"Fuel"].y:
 			tile.tile_type = "fuel"
 			tile.points -= 2
 		#var cap_buff = 0
@@ -564,9 +606,9 @@ func check_tile_claimably(coords:Vector2i,claim,test_suroundings=false,wants_til
 				if picked_tile.get_custom_data("ownership") == claim_colour:
 					if picked_tile.get_custom_data("type") == 0:
 						tile.points += 1
-					elif picked_tile.get_custom_data("type") == 1:
+					elif picked_tile.get_custom_data("type") == tile_const[&"Cap"].y:
 						tile.points += 1
-					elif picked_tile.get_custom_data("type") == 3:
+					elif picked_tile.get_custom_data("type") == tile_const[&"Fuel"].y:
 						tile.points -= 1
 		if cap_debuff == 0: #  and not (Global.cdan_enabled and tile.opposite_claim_data.claim_dangered)
 			tile.points -= 10
@@ -585,11 +627,11 @@ func check_tile_claimably(coords:Vector2i,claim,test_suroundings=false,wants_til
 		# Positive and you can claim, else its unclaimable.
 		var count = 1
 		var neighbors = main_grid.get_surrounding_cells(coords)
-		if picked_tile.get_custom_data("type") == 1:
+		if picked_tile.get_custom_data("type") == tile_const[&"Cap"].y:
 			tile.opposite_claim += "'s capital"
 			tile.oppose_points += 1
 			count -= 1
-		elif picked_tile.get_custom_data("type") == 3:
+		elif picked_tile.get_custom_data("type") == tile_const[&"Fuel"].y:
 			tile.oppose_points -= 2
 			count += 2
 		var cap_buff = 0
@@ -632,7 +674,7 @@ func check_tile_claimably(coords:Vector2i,claim,test_suroundings=false,wants_til
 						tile.oppose_points -= 1
 						count += 1
 		picked_tile = main_grid.get_cell_tile_data(coords)
-		if picked_tile.get_custom_data("type") != 1:
+		if picked_tile.get_custom_data("type") != tile_const[&"Wall"].y:
 			tested_tiles = []
 			# If your tiles are connected to 2 capitals or more, you get a +2 boost when attacking.
 			if cap_buff >= 1:
@@ -674,13 +716,15 @@ func check_tile_claimably(coords:Vector2i,claim,test_suroundings=false,wants_til
 			tile.available = true
 		
 	# Wall tile.
-	elif picked_tile.get_custom_data("ownership") == 0 and picked_tile.get_custom_data("type") == 1: # main_grid.get_cell_atlas_coords(coords) == Vector2i(0,1)
+	elif picked_tile.get_custom_data("ownership") == tile_const[&"Wall"].x and picked_tile.get_custom_data("type") == tile_const[&"Wall"].y: # main_grid.get_cell_atlas_coords(coords) == Vector2i(0,1)
 		tile.type = 3
+	#elif picked_tile.get_custom_data("ownership") == tile_const[&"Sea"].x and picked_tile.get_custom_data("type") == tile_const[&"Sea"].y:
+		#tile.type = 3
 	
 	# Empty tile.
 	else:
 		# check if it is a fuel tile
-		if picked_tile.get_custom_data("type") == 3:
+		if picked_tile.get_custom_data("type") == tile_const[&"Fuel"].y:
 			tile.tile_type = "fuel"
 		var neighbors = main_grid.get_surrounding_cells(coords)
 		if has_neighbors:
@@ -779,7 +823,7 @@ func update_fog(claim_add:ClaimData=claim_placeholder) -> Error:
 				var picked_tile = main_grid.get_cell_tile_data(i)
 				if picked_tile == null:
 					return
-				if picked_tile.get_custom_data("type") == 1 and picked_tile.get_custom_data("ownership") == 0:
+				if picked_tile.get_custom_data("ownership") == tile_const[&"Wall"].x and picked_tile.get_custom_data("type") == tile_const[&"Wall"].y:
 					return
 				if length == 0:
 					return
@@ -891,7 +935,7 @@ func start_search(new_tile:tile_data,coords:Vector2i,claim:int,ignore_set:Array[
 	
 	var picked_tile = main_grid.get_cell_tile_data(coords)
 	if not picked_tile == null:
-		if not (picked_tile.get_custom_data("ownership") == 0 and picked_tile.get_custom_data("type") == 1):
+		if not (picked_tile.get_custom_data("ownership") == 0 and picked_tile.get_custom_data("type") == tile_const[&"Wall"].y):
 			new_tile.opposite_claim_data = game.claims_order[picked_tile.get_custom_data("ownership")-1]
 			
 			new_tile.move_to_value = search_surounding_tiles(coords,Global.dist,claim,
@@ -899,7 +943,7 @@ func start_search(new_tile:tile_data,coords:Vector2i,claim:int,ignore_set:Array[
 															can_use_ai,ai_data,
 															float(Time.get_ticks_usec())/1000,stop_time)
 			
-			if picked_tile.get_custom_data("ownership") != claim and picked_tile.get_custom_data("type") == 3:
+			if picked_tile.get_custom_data("ownership") != claim and picked_tile.get_custom_data("type") == tile_const[&"Fuel"].y:
 				new_tile.move_to_value = 1 if new_tile.move_to_value <= 0 else new_tile.move_to_value 
 				new_tile.move_to_value *= ai_data.fuel_beeline if can_use_ai else 1
 			
@@ -907,7 +951,7 @@ func start_search(new_tile:tile_data,coords:Vector2i,claim:int,ignore_set:Array[
 				new_tile.move_to_value = 1 if new_tile.move_to_value <= 0 else new_tile.move_to_value 
 				new_tile.move_to_value *= ai_data.stratigic_beeline if can_use_ai else 1
 			
-			if not picked_tile.get_custom_data("ownership") in [0,claim] and picked_tile.get_custom_data("type") == 1:
+			if not picked_tile.get_custom_data("ownership") in [0,claim] and picked_tile.get_custom_data("type") == tile_const[&"Cap"].y:
 				new_tile.move_to_value = 1 if new_tile.move_to_value <= 0 else new_tile.move_to_value 
 				new_tile.move_to_value *= ai_data.capital_beeline if can_use_ai else 1
 			
@@ -917,10 +961,12 @@ func start_search(new_tile:tile_data,coords:Vector2i,claim:int,ignore_set:Array[
 			if (Global.blz_enabled and Global.ai_level == 2):
 				for neighbor in neighbors:
 					picked_tile = main_grid.get_cell_tile_data(neighbor)
-					if not picked_tile == null:
-						if not picked_tile.get_custom_data("ownership") in [0,claim] and new_tile.opposite_claim_data != null:
-							if picked_tile.get_custom_data("ownership") == new_tile.opposite_claim_data.claim_colour:
-								blz_pref += 1
+					if picked_tile == null:
+						continue
+					if picked_tile.get_custom_data("ownership") in [0,claim] and new_tile.opposite_claim_data != null:
+						continue
+					if picked_tile.get_custom_data("ownership") == new_tile.opposite_claim_data.claim_colour:
+						blz_pref += 1
 				
 				if ai_data is NonPlayerClaim and blz_pref >= ai_data.blz_amount_want:
 					new_tile.blz_prefrance = true
@@ -937,7 +983,10 @@ func start_search(new_tile:tile_data,coords:Vector2i,claim:int,ignore_set:Array[
 var tested_tiles = []
 var broke_timer = false
 ## Searches the surounding tiles to give is tile a score for how much that it is worthed.
-func search_surounding_tiles(tile:Vector2i,distance:int,claim,ignore_set:Array[Vector2i]=[],can_use_ai:bool=false,ai_data:ClaimData=ClaimData.new(),start_time=float(Time.get_ticks_usec())/1000,time_limit_s=-1.0,burnup=0.1) -> int:
+func search_surounding_tiles(tile:Vector2i,distance:int,claim,ignore_set:Array[Vector2i]=[],
+								can_use_ai:bool=false,ai_data:ClaimData=ClaimData.new(),
+								start_time=float(Time.get_ticks_usec())/1000,time_limit_s=-1.0,burnup=0.1) -> int:
+	
 	var score = 0
 	var neighbors = main_grid.get_surrounding_cells(tile)
 	if not tile in ignore_set:
@@ -947,37 +996,48 @@ func search_surounding_tiles(tile:Vector2i,distance:int,claim,ignore_set:Array[V
 		if distance > 0 and time_cur < time_limit_s:# and not broke_timer:
 			for neighbor in neighbors:
 				var picked_tile = main_grid.get_cell_tile_data(neighbor)
-				if not picked_tile == null:
-					#if not (picked_tile.get_custom_data("ownership") == 0 and picked_tile.get_custom_data("type") == 1): #check_tile_claimably(tile,claim)
-					# If this is a fuel source, then the ai will go for it.
-					var fuel_weight = picked_tile.get_custom_data("ownership") != claim and picked_tile.get_custom_data("type") == 3
-					if fuel_weight:
-						score += distance * ai_data.fuel_beeline if can_use_ai else distance
-					# This looks if the tile is of a enemy, and that they can take it.
-					var stratigic_weight = not picked_tile.get_custom_data("ownership") in [0,claim] and check_tile_claimably(tile,claim)
-					if stratigic_weight:
-						score += distance * ai_data.stratigic_beeline if can_use_ai else distance
-					# This looks if the tile is of a enemy, regadless of if they can take it or not.
-					var blindless_weight = not picked_tile.get_custom_data("ownership") in [0,claim]
-					if blindless_weight:
-						score += distance * ai_data.blindless_beeline if can_use_ai else distance * 0
-					
-					var teratory_weight = picked_tile.get_custom_data("ownership") == claim 
-					if teratory_weight:
-						score += maxi(distance - (Global.dist - 1),0) * ai_data.teratory_beeline if can_use_ai else maxi(distance - (Global.dist - 1),0) * 0
-					
-					var capital_weight = not picked_tile.get_custom_data("ownership") in [0,claim] and picked_tile.get_custom_data("type") == 1 and check_tile_claimably(tile,claim)
-					if capital_weight:
-						score += maxi(distance - (Global.dist - 1),0) * ai_data.capital_beeline if can_use_ai else maxi(distance - (Global.dist - 1),0) * 0
-					
-					var wall_weight = picked_tile.get_custom_data("ownership") == 0 and picked_tile.get_custom_data("type") == 1
-					if wall_weight:
-						score += distance * ai_data.wall_beeline if can_use_ai else distance * 0
-					
-					# Maybe seeing if it has hit something it will stop looking around and just go back. Maybe.
-					# I have no Idea though. :\
-					if not (fuel_weight and stratigic_weight and blindless_weight and teratory_weight and capital_weight and wall_weight):
-						score += search_surounding_tiles(neighbor,distance-1,claim,ignore_set,can_use_ai,ai_data,start_time,time_limit_s-burnup)
+				if picked_tile == null:
+					continue
+				
+				# If this is a fuel source, then the ai will go for it.
+				var fuel_weight = picked_tile.get_custom_data("ownership") != claim and picked_tile.get_custom_data("type") == tile_const[&"Fuel"].y
+				if fuel_weight:
+					score += distance * ai_data.fuel_beeline if can_use_ai else distance
+				
+				# This looks if the tile is of a enemy, and that they can take it.
+				var stratigic_weight = not picked_tile.get_custom_data("ownership") in [0,claim] and check_tile_claimably(tile,claim)
+				if stratigic_weight:
+					score += distance * ai_data.stratigic_beeline if can_use_ai else distance
+				
+				# This looks if the tile is of a enemy, regadless of if they can take it or not.
+				var blindless_weight = not picked_tile.get_custom_data("ownership") in [0,claim]
+				if blindless_weight:
+					score += distance * ai_data.blindless_beeline if can_use_ai else distance * 0
+				
+				# This looks for this player's tiles.
+				var teratory_weight = picked_tile.get_custom_data("ownership") == claim 
+				if teratory_weight:
+					score += maxi(distance - (Global.dist - 1),0) * ai_data.teratory_beeline if can_use_ai else maxi(distance - (Global.dist - 1),0) * 0
+				
+				# Looks for enemy capitals.
+				var capital_weight = not picked_tile.get_custom_data("ownership") in [0,claim] and picked_tile.get_custom_data("type") == tile_const[&"Cap"].y and check_tile_claimably(tile,claim)
+				if capital_weight:
+					score += maxi(distance - (Global.dist - 1),0) * ai_data.capital_beeline if can_use_ai else maxi(distance - (Global.dist - 1),0) * 0
+				
+				# Checks for wall, this makes an ai circle around. 
+				var wall_weight = picked_tile.get_custom_data("ownership") == 0 and picked_tile.get_custom_data("type") == tile_const[&"Wall"].y
+				if wall_weight:
+					score += distance * ai_data.wall_beeline if can_use_ai else distance * 0
+				
+				#var sea_weight
+				#if sea_weight:
+					#score +=
+				
+				# Maybe seeing if it has hit something it will stop looking around and just go back. Maybe.
+				# I have no Idea though. :\
+				if not (fuel_weight and stratigic_weight and blindless_weight and teratory_weight and capital_weight and wall_weight):
+					score += search_surounding_tiles(neighbor,distance-1,claim,ignore_set,can_use_ai,ai_data,start_time,time_limit_s-burnup)
+				
 		elif time_cur >= time_limit_s and time_limit_s >= 0 and not broke_timer: 
 			print("timer broke. :( \nTime was: ",time_cur)
 			broke_timer = true
@@ -1019,13 +1079,16 @@ func find_linked_cap_tiles(tile:Vector2i,tile_claim:int,
 		if picked_tile == null:
 			return 
 		if (picked_tile.get_custom_data("ownership") != tile_claim 
-				and (tile_claim != claim or length != limit)):
+				and (tile_claim != claim or length != limit)): # and picked_tile.get_custom_data("type") != tile_const[&"Sea"].y):
 			return
-		elif picked_tile.get_custom_data("type") == 1:
+		elif picked_tile.get_custom_data("type") == tile_const[&"Cap"].y:
 			answer_func.append(true)
 		if length == 0:
 			return 
+		
+		
 		var neighbors = main_grid.get_surrounding_cells(i)
+		#var base_tile_type = picked_tile.get_custom_data("type")
 		for neighbor in neighbors:
 			picked_tile = main_grid.get_cell_tile_data(neighbor)
 			if picked_tile != null:
@@ -1044,11 +1107,14 @@ func find_linked_cap_tiles(tile:Vector2i,tile_claim:int,
 		if tile_claim == claim and answer or answer:
 			if i in testlink_flag_unlinked[tile_claim]:
 				testlink_flag_unlinked[tile_claim].erase(i)
+			
 			if not i in testlink_flag_linked[tile_claim]:
 				testlink_flag_linked[tile_claim].append(i)
+		
 		elif tile_claim != claim and not answer or not answer:
 			if i in testlink_flag_linked[tile_claim]:
 				testlink_flag_linked[tile_claim].erase(i)
+			
 			if not i in testlink_flag_unlinked[tile_claim]:
 				testlink_flag_unlinked[tile_claim].append(i)
 	
@@ -1056,6 +1122,7 @@ func find_linked_cap_tiles(tile:Vector2i,tile_claim:int,
 		return clear_tiles.has(linked)
 	
 	return answer
+
 
 
 # This lags out the game.
@@ -1081,7 +1148,12 @@ func find_linked_tiles(tile:Vector2i,other:Array[Vector2i],claim,limit=-1) -> bo
 						return true
 					elif find_linked_tiles(neighbor,other,claim,limit-1):
 						answer = true
-					
+				
+				#elif picked_tile.get_custom_data("type") == tile_const[&"Sea"].y:
+					#
+					#if find_linked_tiles(neighbor,other,claim,limit-1):
+						#answer = true
+				
 			if not neighbor in tested_tiles:
 				tested_tiles.append(neighbor)
 				
@@ -1090,7 +1162,7 @@ func find_linked_tiles(tile:Vector2i,other:Array[Vector2i],claim,limit=-1) -> bo
 
 # count oprations
 
-## Checks the amount of tiles a claim has. See [method board.find_linked_tiles] for more info
+## Checks the amount of tiles a claim has.
 func check_claim_tile_count(claim) -> int:
 	#var count = 0
 	#for i in [0,1,3]:
@@ -1120,6 +1192,8 @@ func check_claim_fuel_tile_count(claim) -> int:
 						count += 1
 				else:
 					count += 1
+			else:
+				count += 1
 	tested_tiles = []
 	return count
 
@@ -1173,10 +1247,9 @@ func check_special_empty_tiles() -> Array[Vector2i]:
 	for tile in colection:
 		var picked_tile = main_grid.get_cell_tile_data(tile)
 		if not picked_tile == null:
-			if picked_tile.get_custom_data("ownership") == 0 and picked_tile.get_custom_data("type") == 2:
+			if picked_tile.get_custom_data("ownership") == 0 and picked_tile.get_custom_data("type") == tile_const[&"Cursor"].y:
 				coord.append(tile)
 	return coord
-
 
 ## Gets the positon of the capitals.
 func check_claim_captatal(claim:int) -> Array[Vector2i]:
@@ -1185,6 +1258,6 @@ func check_claim_captatal(claim:int) -> Array[Vector2i]:
 	for tile in colection:
 		var picked_tile = main_grid.get_cell_tile_data(tile)
 		if not picked_tile == null:
-			if picked_tile.get_custom_data("ownership") == claim and picked_tile.get_custom_data("type") == 1:
+			if picked_tile.get_custom_data("ownership") == claim and picked_tile.get_custom_data("type") == tile_const[&"Cap"].y:
 				coord.append(tile)
 	return coord

@@ -1,5 +1,6 @@
 extends Node
 
+## This represents the game's id, it uses this to make sure that it is comunicating with another client.
 const app_id = 0xF3459
 
 ## Controls which grid the player is using.
@@ -21,6 +22,8 @@ var map_type = 1
 var wall_count = 74
 ## Sets the number of fuel tiles
 var fuel_count = 16
+## Sets how many sea tiles there are, and sea shells.
+var sea_count = 0
 ## Defines how meny capital of each claim that will be spwaned in, or removed.
 var cap_list = [2,2,2,2]
 

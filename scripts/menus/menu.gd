@@ -14,6 +14,8 @@ class_name menu_class
 @onready var wall_slider : Slider = %WallSlider
 @onready var fuel_text : Label = %fuel_text
 @onready var fuel_slider : Slider = %FuelSlider
+@onready var sea_text : Label = %sea_text
+@onready var sea_slider : Slider = %SeaSlider
 @onready var ai_level : OptionButton = %ai_level_setting
 
 # Claims and their control.
@@ -111,6 +113,7 @@ func _ready(mp_is_updating=false):
 	#_on_wall_slider_value_changed(wall_slider.value)
 	fuel_slider.value = Global.fuel_count
 	#_on_fuel_slider_value_changed(fuel_slider.value)
+	sea_slider.value = Global.sea_count
 	cdan_slider.value = Global.cdan_duration
 	#_on_cdan_slider_value_changed(cdan_slider.value)
 	cdan_cd_slider.value = Global.cdan_capture_duration
@@ -270,6 +273,22 @@ func _on_fuel_slider_value_changed(value,mp_player_source=true):
 	else:
 		fuel_text.text = "Fuel count: {0}".format([value])
 		Global.fuel_count = value
+	sound_play(true)
+
+@rpc("any_peer")
+func _on_sea_slider_value_changed(value,mp_player_source=true):
+	# Multiplayer parts.
+	if Global.mp_enabled and mp_player_source and Global.sea_count != value:
+		sea_text.text = "Sea count: {0}".format([value])
+		Global.sea_count = value
+		_on_sea_slider_value_changed.rpc(value,false)
+	elif Global.mp_enabled and sea_slider.value != value:
+		sea_text.text = "Sea count: {0}".format([value])
+		Global.sea_count = value
+		sea_slider.value = value
+	else:
+		sea_text.text = "Sea count: {0}".format([value])
+		Global.sea_count = value
 	sound_play(true)
 
 # Indviual Claim Settings
