@@ -65,9 +65,14 @@ var sound : AudioStreamPlayer
 var lot : Vector4i
 
 const tile_const = {
-	&"Empty":Vector2i(-1,0),&"Wall":Vector2i(0,1),&"Cap":Vector2i(-1,1),&"Cursor":Vector2i(0,2),&"Fuel":Vector2i(0,3),
+	&"Empty":Vector2i(-1,0),
+	&"Wall":Vector2i(0,1),
+	&"Cap":Vector2i(-1,1),
+	&"Cursor":Vector2i(0,2),
+	&"Fuel":Vector2i(0,3),
 	&"Sea":Vector2i(0,4) # I want to add this in, where this tile is treated like you own it if you are touching it.
 }
+# Something about the sea tile. If you only have a 
 
 func _ready():
 	
@@ -367,10 +372,10 @@ func _on_gui_input(event):
 	if event is InputEventMouseButton:
 		var tile : tile_data = check_tile_claimably(grid_coords,game.active_player,-1,true,false,false,true)
 		var click_size = Vector2(1.0,1.0)
-		var blz_lock = not check_tile_claimably(grid_coords,game.active_player,-1,false,true)
+		var blz_lock = not check_tile_claimably(grid_coords,game.active_player,-1,false,true,false,true)
 		
 		if game.active_player is PlayerClaim:
-			if (event.button_index == MOUSE_BUTTON_LEFT and move_manger.mode == 0 or event.button_index == MOUSE_BUTTON_RIGHT and move_manger.mode == 1) and not event.pressed and not (lock_mode or off_input):
+			if (event.button_index == MOUSE_BUTTON_LEFT and move_manger.mode == 0 or event.button_index == MOUSE_BUTTON_RIGHT and move_manger.mode == 1) and event.pressed and not (lock_mode or off_input):
 				board_decrese_move_count.emit(1)
 				on_claim_tile(grid_coords,game.active_player) #mp replace 1 with game.active_player.claim_colour
 				sound.stream = load("res://audio/FX/left click sound.mp3") as AudioStream
@@ -401,7 +406,7 @@ func _on_gui_input(event):
 			click_size = Vector2(0.5,0.5)
 		
 		click_effect_color(overlay_grid.to_global(overlay_grid.map_to_local(grid_coords)),click_size)
-		tile = check_tile_claimably(grid_coords,game.active_player,-1,true)
+		tile = check_tile_claimably(grid_coords,game.active_player,-1,true,false,false,true)
 		game.gui_board_events(tile)
 		sound.play()
 
@@ -417,7 +422,7 @@ func _on_mpui_input(coords,claim:int,type:int=-1,update=true,terain=false,force_
 		sound.stream = load("res://audio/FX/right click sound.mp3") as AudioStream
 		click_size = Vector2(0.5,0.5)
 	click_effect_color(overlay_grid.to_global(overlay_grid.map_to_local(coords)),click_size)
-	var tile : tile_data = check_tile_claimably(coords,game.active_player,-1,true)
+	var tile : tile_data = check_tile_claimably(coords,game.active_player,-1,true,false,false,true)
 	game.gui_board_events(tile)
 	sound.play()
 
@@ -441,8 +446,10 @@ func on_claim_tile(coords,claim,type:int=-1,
 	if coords is Vector2i:
 		var picked_tile : TileData = main_grid.get_cell_tile_data(coords)
 		if picked_tile != null:
+			## Did the tile change?
 			var changed = true
 			var did_claim = false
+			## The tile data.
 			var tile : tile_data = check_tile_claimably(coords,claim,false,true,blz_fired,true) if not (terain or force_do) else tile_data.new()
 			if picked_tile.get_custom_data("ownership") != 0:
 				if tile.opposite_claim_data == null:
@@ -471,59 +478,88 @@ func on_claim_tile(coords,claim,type:int=-1,
 				#changed = false
 			
 			if changed:
-				if picked_tile.get_custom_data("type") == 1 and type == -1:
-					if Global.cdan_enabled and picked_tile.get_custom_data("ownership") != 0:
-						#if tile.opposite_claim_data == null:
-							#tile.opposite_claim_data = game.claims_order[picked_tile.get_custom_data("ownership")-1] 
+				
+				if picked_tile.get_custom_data("type") == tile_const.Cap.y and type == -1:
+					if Global.cdan_enabled and picked_tile.get_custom_data("ownership") != tile_const.Empty.y:
 						tile.opposite_claim_data.claim_dangered = 5 * (Global.cdan_duration+1)
 						if claim_colour == game.active_player.claim_colour:
 							game.active_player.orginal_claim.claim_dangered = 5 * (Global.cdan_capture_duration+1)
 					type = 1
-				elif picked_tile.get_custom_data("type") == 2 and type in [1,3]:
-					type = 2
+				
+				elif picked_tile.get_custom_data("type") == tile_const.Cursor.y and type in [1,3]:
+					type = tile_const.Cursor.y
 					changed = false
-				elif picked_tile.get_custom_data("type") == 3 and type == -1:
-					type = 3
+				
+				elif picked_tile.get_custom_data("type") == tile_const.Fuel.y and type == -1:
+					type = tile_const.Fuel.y
+				
 				elif type == -1:
-					type = 0
+					type = tile_const.Empty.y
+				
 				main_grid.set_cell(coords,0,Vector2i(claim_colour,type))
-				if (	(picked_tile.get_custom_data("type") == 1 or (type == 1 or type == 2) and not picked_tile.get_custom_data("type") == 1)
-						or
-						(Global.blz_enabled and blz_fired)) and changed and not terain:
-					if type != 2:
+				if changed and not terain: # and ((picked_tile.get_custom_data("type") == 1 
+								#or (type == 1 or type == 2) 
+								#and not picked_tile.get_custom_data("type") == 1) 
+								#or (Global.blz_enabled and blz_fired)):
+					if type != tile_const.Cursor.y:
 						type = 0
+					## The neighbors of the starting tile.
 					var neighbors = main_grid.get_surrounding_cells(coords)
+					var base_tile = picked_tile
+					var old_type = type
 					for neighbor in neighbors:
 						var block_blz = false
 						picked_tile = main_grid.get_cell_tile_data(neighbor)
-						if type == 0: 
+						if type == 0 and picked_tile != null: 
 							type = picked_tile.get_custom_data("type")
 							#print(type)
 						if not picked_tile == null and (not tile.opposite_claim_data == null or type == 2):
-							if (not (Global.blz_enabled and blz_fired)
-									or
-									(picked_tile.get_custom_data("ownership") == tile.opposite_claim_data.claim_colour and not picked_tile.get_custom_data("type") in [1,2])):
+							# Clean check to clear up any seprated tiles.
+							find_linked_cap_tiles(
+									neighbor,
+									picked_tile.get_custom_data("ownership"),
+									tile.opposite_claim_data.claim_colour, 
+									-1, null, true)
+							
+							# Quick check if this item should cover around it.
+							if ((base_tile.get_custom_data("type") == 1 
+								or (old_type == 1 or old_type == 2) 
+								and not base_tile.get_custom_data("type") == 1) 
+								or (Global.blz_enabled and blz_fired)):
 								
-								# Balance, so when you bliz a tile next to a capital, it won't take the tiles around that capital.
-								if (Global.blz_enabled and blz_fired):
-									type = picked_tile.get_custom_data("type")
-									var neighbors2 = main_grid.get_surrounding_cells(neighbor)
-									for neighbor2 in neighbors2:
-										picked_tile = main_grid.get_cell_tile_data(neighbor2)
-										if not picked_tile == null:
-											if (picked_tile.get_custom_data("ownership") == tile.opposite_claim_data.claim_colour and picked_tile.get_custom_data("type") in [1,2]):
-												block_blz = true
-												break;
-								
-								if not block_blz:
-									#picked_tile = main_grid.get_cell_tile_data(neighbor)
-									#type = picked_tile.get_custom_data("type")
-									on_claim_tile(neighbor,claim,type,false,true,true)
-									if type != 2:
-										type = 0
-									if not force_do:
-										var ntile : tile_data = check_tile_claimably(neighbor,claim,-1,true)
-										game.gui_board_events(ntile)
+								if (not (Global.blz_enabled and blz_fired)
+										or
+										(picked_tile.get_custom_data("ownership") == tile.opposite_claim_data.claim_colour 
+										and not picked_tile.get_custom_data("type") in [1,2])):
+									
+									# Balance, so when you bliz a tile next to a capital, it won't take the tiles around that capital.
+									if (Global.blz_enabled and blz_fired):
+										type = picked_tile.get_custom_data("type")
+										var neighbors2 = main_grid.get_surrounding_cells(neighbor)
+										for neighbor2 in neighbors2:
+											picked_tile = main_grid.get_cell_tile_data(neighbor2)
+											if not picked_tile == null:
+												if (picked_tile.get_custom_data("ownership") == tile.opposite_claim_data.claim_colour and picked_tile.get_custom_data("type") in [1,2]):
+													block_blz = true
+													break;
+									
+									if not block_blz:
+										#picked_tile = main_grid.get_cell_tile_data(neighbor)
+										#type = picked_tile.get_custom_data("type")
+										on_claim_tile(neighbor,claim,type,false,true,true)
+										if type != 2:
+											type = 0
+										if not force_do:
+											var ntile : tile_data = check_tile_claimably(neighbor,claim,-1,true)
+											game.gui_board_events(ntile)
+					if not tile.opposite_claim_data == null or type == 2:
+						# Clean check to clear up any seprated tiles.
+						find_linked_cap_tiles(
+								coords,
+								base_tile.get_custom_data("ownership"),
+								tile.opposite_claim_data.claim_colour, 
+								-1, null, true)
+			
 			if update:
 				game_state_change.emit()
 			if not terain and not force_do:
@@ -610,6 +646,9 @@ func check_tile_claimably(coords:Vector2i,claim,test_suroundings=false,wants_til
 						tile.points += 1
 					elif picked_tile.get_custom_data("type") == tile_const[&"Fuel"].y:
 						tile.points -= 1
+				elif Vector2i(picked_tile.get_custom_data("ownership"),picked_tile.get_custom_data("type")
+					) == tile_const[&"Sea"]:
+					tile.points -= 1
 		if cap_debuff == 0: #  and not (Global.cdan_enabled and tile.opposite_claim_data.claim_dangered)
 			tile.points -= 10
 		elif Global.cdan_enabled and game.active_player != null and game.active_player.orginal_claim.claim_dangered > 0:
@@ -644,7 +683,7 @@ func check_tile_claimably(coords:Vector2i,claim,test_suroundings=false,wants_til
 				if picked_tile.get_custom_data("ownership") == claim_colour:
 					tile.points += 1
 					count += 1
-					# Tracks how meny capitals
+					# Tracks how many capitals are linked
 					for x in check_claim_captatal(claim_colour).filter(func(_coords): return not _coords in caps_linked):
 						tested_tiles = []
 						if find_linked_cap_tiles(tile.coords,claim_colour,claim_colour,6,x,recheck_tile):#find_linked_tiles(tile.coords,[x],claim_slot,8):
@@ -673,6 +712,9 @@ func check_tile_claimably(coords:Vector2i,claim,test_suroundings=false,wants_til
 					elif picked_tile.get_custom_data("type") == 3:
 						tile.oppose_points -= 1
 						count += 1
+				elif Vector2i(picked_tile.get_custom_data("ownership"),picked_tile.get_custom_data("type")
+					) == tile_const[&"Sea"] and find_linked_cap_tiles(neighbor,0,claim_colour,-1,null,recheck_tile):
+					tile.points += 1
 		picked_tile = main_grid.get_cell_tile_data(coords)
 		if picked_tile.get_custom_data("type") != tile_const[&"Wall"].y:
 			tested_tiles = []
@@ -712,14 +754,14 @@ func check_tile_claimably(coords:Vector2i,claim,test_suroundings=false,wants_til
 		tile.final_score = count
 		if Global.bran_enabled and count > -10 and has_neighbors:
 			tile.available = true
-		elif count >= 0 and has_neighbors:
+		elif count >= 0 and tile.points > 0 and has_neighbors:
 			tile.available = true
 		
 	# Wall tile.
 	elif picked_tile.get_custom_data("ownership") == tile_const[&"Wall"].x and picked_tile.get_custom_data("type") == tile_const[&"Wall"].y: # main_grid.get_cell_atlas_coords(coords) == Vector2i(0,1)
 		tile.type = 3
-	#elif picked_tile.get_custom_data("ownership") == tile_const[&"Sea"].x and picked_tile.get_custom_data("type") == tile_const[&"Sea"].y:
-		#tile.type = 3
+	elif picked_tile.get_custom_data("ownership") == tile_const[&"Sea"].x and picked_tile.get_custom_data("type") == tile_const[&"Sea"].y:
+		tile.type = 3
 	
 	# Empty tile.
 	else:
@@ -733,6 +775,10 @@ func check_tile_claimably(coords:Vector2i,claim,test_suroundings=false,wants_til
 				
 				if not picked_tile == null:
 					if picked_tile.get_custom_data("ownership") == claim_colour:
+						tile.available = true
+						break
+					elif (Vector2i(picked_tile.get_custom_data("ownership"),
+							picked_tile.get_custom_data("type")) == tile_const[&"Sea"]):
 						tile.available = true
 	
 	# RESULT
@@ -918,8 +964,8 @@ func get_all_local_avalable_tiles(coords,claim,search_for_value=true,ignore_set:
 					new_tile = start_search(new_tile,neighbor,claim_slot,ignore_set,120.0)
 				
 				claimed_tiles.append(new_tile)
-				if distance != 1:
-					claimed_tiles.append_array(get_all_local_avalable_tiles(neighbor,claim,search_for_value,ignore_set,distance-1))
+			if distance != 1:
+				claimed_tiles.append_array(get_all_local_avalable_tiles(neighbor,claim,search_for_value,ignore_set,distance-1))
 	broke_timer = false
 	return claimed_tiles
 
@@ -1029,9 +1075,9 @@ func search_surounding_tiles(tile:Vector2i,distance:int,claim,ignore_set:Array[V
 				if wall_weight:
 					score += distance * ai_data.wall_beeline if can_use_ai else distance * 0
 				
-				#var sea_weight
-				#if sea_weight:
-					#score +=
+				var coastal_weight = Vector2i(picked_tile.get_custom_data("ownership"), picked_tile.get_custom_data("type")) == tile_const[&"Sea"]
+				if coastal_weight:
+					score += distance * ai_data.coastal_beeline if can_use_ai else distance * 0
 				
 				# Maybe seeing if it has hit something it will stop looking around and just go back. Maybe.
 				# I have no Idea though. :\
@@ -1058,9 +1104,10 @@ var testlink_flag_linked = [[],[],[],[],[]]
 ##@experimental[br]
 ##This fills an area and checks if all thouse tiles are linked or not.
 func find_linked_cap_tiles(tile:Vector2i,tile_claim:int,
-					claim:int,limit=-1,linked=null,force_check=false) -> bool:
+					claim:int,limit:int=-1,linked=null,force_check=false) -> bool:
 	var answer = false
 	var answer_func = []
+	# Quick check that the tile isn't owned itself.
 	if not force_check:
 		if tile_claim != claim and tile in testlink_flag_unlinked[tile_claim]:
 			return false
@@ -1073,31 +1120,47 @@ func find_linked_cap_tiles(tile:Vector2i,tile_claim:int,
 	
 	## This runs a loop though all posable tiles around it.[br]
 	## Function MUST be the loop its self.
-	var loop = func loop(i,function,length,block=[]):
+	var loop = func loop(i,function:Callable,length:int,block=[]):
 		var picked_tile = main_grid.get_cell_tile_data(i)
 		block.append(i)
-		if picked_tile == null:
-			return 
-		if (picked_tile.get_custom_data("ownership") != tile_claim 
-				and (tile_claim != claim or length != limit)): # and picked_tile.get_custom_data("type") != tile_const[&"Sea"].y):
-			return
-		elif picked_tile.get_custom_data("type") == tile_const[&"Cap"].y:
-			answer_func.append(true)
-		if length == 0:
-			return 
-		
+		## Just groups the checks on the tile its self.
+		var quick_check_group = true
+		if quick_check_group:
+			# Is it empty this tile? Return to last tile.
+			if picked_tile == null:
+				return
+			# Is this tile not of the same claim as the player? Return to last tile.
+			# Note, this also requires the last tile to be not owned by the player.
+			if (picked_tile.get_custom_data("ownership") != tile_claim 
+					and (tile_claim != claim or length != limit) 
+					and Vector2i(picked_tile.get_custom_data("ownership"),
+						picked_tile.get_custom_data("type")) != tile_const[&"Sea"]):
+				return
+			# Makes the whole search return true.
+			elif picked_tile.get_custom_data("type") == tile_const[&"Cap"].y:
+				answer_func.append(true)
+			# The end of the search.
+			if length == 0:
+				return 
 		
 		var neighbors = main_grid.get_surrounding_cells(i)
 		#var base_tile_type = picked_tile.get_custom_data("type")
 		for neighbor in neighbors:
 			picked_tile = main_grid.get_cell_tile_data(neighbor)
 			if picked_tile != null:
-				if picked_tile.get_custom_data("ownership") == tile_claim and not neighbor in block:
+				#if Vector2i(picked_tile.get_custom_data("ownership"),
+						#picked_tile.get_custom_data("type")) == tile_const[&"Sea"]:
+					#breakpoint
+				# Checks if tile is owned by player.
+				if (picked_tile.get_custom_data("ownership") == tile_claim
+					or Vector2i(picked_tile.get_custom_data("ownership"),
+						picked_tile.get_custom_data("type")) == tile_const[&"Sea"]) and not neighbor in block:
 					if not neighbor in neighbours_set:
 						neighbours_set.append(neighbor)
 					function.call(neighbor,function,length-1,block)
 		return 
 	
+	# Starts the search 
 	loop.call(tile,loop,limit)
 	if answer_func.has(true):
 		answer = true
@@ -1192,8 +1255,6 @@ func check_claim_fuel_tile_count(claim) -> int:
 						count += 1
 				else:
 					count += 1
-			else:
-				count += 1
 	tested_tiles = []
 	return count
 

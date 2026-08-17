@@ -251,6 +251,11 @@ offset_right = 1144.0
 offset_bottom = 632.0
 text = "Local Multiplayer"
 
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(576, 120.00001)
+scale = Vector2(3.75, 3.75)
+texture = ExtResource("5_6nun2")
+
 [node name="Extra_options" type="Panel" parent="." groups=["menu_settings_ui"]]
 layout_mode = 0
 offset_left = -448.0
@@ -1012,11 +1017,6 @@ libraries = {
 
 [node name="profile_loader" parent="." groups=["menu_settings_ui"] instance=ExtResource("4_bvm7p")]
 layout_mode = 1
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(576, 120.00001)
-scale = Vector2(3.75, 3.75)
-texture = ExtResource("5_6nun2")
 
 [node name="toutorial_button" type="Button" parent="."]
 visible = false

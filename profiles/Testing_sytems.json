@@ -1,0 +1,38 @@
+{
+	"discription": "Tests the tile ownership sytem",
+	"name": "Testing_sytems",
+	"path": "./profiles/Testing_sytems.json",
+	"settings": {
+		"ai": 1,
+		"blz_e": true,
+		"blz_mr": 5,
+		"bran": false,
+		"cap": [
+			2,
+			2,
+			2,
+			2
+		],
+		"cdan_cd": 5,
+		"cdan_d": 10,
+		"cdan_e": true,
+		"cls_e": true,
+		"cls_num": 2,
+		"fow_dist": 3,
+		"fow_e": false,
+		"fuel": 30.0,
+		"lms": true,
+		"map": 0,
+		"move_settings": {
+			"fuel_l": 5,
+			"fuel_r": 2,
+			"tile_int_l": 15,
+			"tile_int_r": 2,
+			"tile_sec_l": 20,
+			"tile_sec_r": 5,
+			"turn_l": 10,
+			"turn_r": 2
+		},
+		"wall": 32.0
+	}
+}

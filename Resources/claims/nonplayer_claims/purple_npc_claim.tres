@@ -9,6 +9,7 @@ script = ExtResource("1_totnl")
 fuel_beeline = 4
 teratory_beeline = 0
 capital_beeline = 1
+coastal_beeline = 1
 name = "plum valley"
 claim_colour = 2
 claim_real_color = Color(0.67069995, 0.3515, 0.95, 1)

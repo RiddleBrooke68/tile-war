@@ -9,6 +9,8 @@ class_name tile_data
 @export var tile_type = "claim"
 ## This makes it so the player can or cannot get this tile.
 @export var available = false
+## This states if it will require more moves if only you have a coast next to this.
+@export var coast_reach = false
 
 @export var opposite_claim_data : ClaimData
 @export var opposite_claim = ""

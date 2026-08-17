@@ -11,6 +11,7 @@ blindless_beeline = 1
 teratory_beeline = 5
 capital_beeline = 10
 wall_beeline = 3
+coastal_beeline = 1
 name = "Builders League"
 claim_colour = 5
 claim_real_color = Color(0.42137322, 0.41360003, 0.88, 1)

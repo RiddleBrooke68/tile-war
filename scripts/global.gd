@@ -23,7 +23,7 @@ var wall_count = 74
 ## Sets the number of fuel tiles
 var fuel_count = 16
 ## Sets how many sea tiles there are, and sea shells.
-var sea_count = 0
+var sea_count = 16
 ## Defines how meny capital of each claim that will be spwaned in, or removed.
 var cap_list = [2,2,2,2]
 
@@ -141,6 +141,11 @@ var cls_boost = 2
 var fow_enabled = false
 ## Sight in the fog.
 var fow_sight = 3
+## Allows claims to move off of a coastal tile the have tiles near.
+var coastmove_enabled = true
+## The cost of
+var coastmove_movement_cost = 3
+
 
 # Moves settings
 # Tiles

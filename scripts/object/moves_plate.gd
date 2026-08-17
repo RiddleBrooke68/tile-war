@@ -22,6 +22,8 @@ extends Node2D
 
 @export var number = 10:
 	set(num):
+		#if num != number:
+			#breakpoint
 		animate_change(num)
 		number = num
 
@@ -67,10 +69,10 @@ func animate_change(num):
 	if number_shifter.is_playing():
 		update_plate_display()
 	number_shifter.play("RESET")
-	if number == num or number == 0:
+	if number == num and num >= 10 or number == 0:
 		number_shifter.play("out_of_moves")
 		update_plate_display()
-	elif number != num:
+	else:
 		number_shifter.play("drop_move")
 
 @onready var move_shifter = $move_shifter
