@@ -16,3 +16,4 @@ func _ready():
 			return
 	
 	main_grid.set_pattern(file.map_centre,file.map_patern)
+	print("DONE")

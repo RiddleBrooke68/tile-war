@@ -107,6 +107,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_kfbsc")
 script = ExtResource("1_cnlwo")
+maps = Array[String](["uid://ws3eaaql1jcs", "uid://c5ett8m61vq78", "uid://5oidunn6mkiy", "uid://cmbronbumycg1", "uid://bk0scw543otbf", "uid://cqr3mx4ij5v6p"])
 
 [node name="back_ground" type="Sprite2D" parent="."]
 position = Vector2(576, 324)
@@ -157,7 +158,6 @@ tooltip_text = "This sets the map, before genration.
 Some map may have preplaced walls, fuel tiles, capitals, etc..."
 button_pressed = true
 alignment = 1
-selected = 1
 item_count = 5
 popup/item_0/text = "No genration"
 popup/item_0/id = 0

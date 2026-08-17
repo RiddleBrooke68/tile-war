@@ -14,6 +14,7 @@ var grid_maps : Array[map_data] = [
 	preload("res://Resources/maps/fortress.tres"),
 	preload("res://Resources/maps/surrounded.tres"),
 	preload("res://Resources/maps/big_n_empty.tres"),
+	preload("res://Resources/maps/aqua.tres")
 	]
 ## Which map will be played.
 var map_type = 1

@@ -9,4 +9,5 @@ tile_data = PackedInt32Array(0, 0, 0, 131072, 0, 0, 262144, 0, 0, 393216, 0, 0, 
 script = ExtResource("1_m2q3a")
 map_name = "Surrounded"
 map_patern = SubResource("TileMapPattern_6d2wa")
+captial_max = 2
 metadata/_custom_type_script = "uid://bfobmop1avsqd"

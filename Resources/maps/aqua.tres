@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="map_data" load_steps=3 format=3 uid="uid://cqr3mx4ij5v6p"]
+
+[ext_resource type="Script" uid="uid://bfobmop1avsqd" path="res://scripts/data/map_data.gd" id="1_2l68p"]
+
+[sub_resource type="TileMapPattern" id="TileMapPattern_2l68p"]
+
+[resource]
+script = ExtResource("1_2l68p")
+map_name = "aqua"
+map_patern = SubResource("TileMapPattern_2l68p")
+metadata/_custom_type_script = "uid://bfobmop1avsqd"

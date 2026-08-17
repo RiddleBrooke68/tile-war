@@ -8,7 +8,7 @@ class_name menu_class
 
 @onready var music_type_setting = %music_type_setting
 
-@onready var map_setting = %map_setting
+@onready var map_setting : OptionButton = %map_setting
 
 @onready var wall_text : Label = %wall_text
 @onready var wall_slider : Slider = %WallSlider
@@ -106,6 +106,9 @@ func _ready(mp_is_updating=false):
 		music_type_setting.add_item(i.music_name)
 	
 	# Pregenration
+	map_setting.clear()
+	for i in range(Global.grid_maps.size()):
+		map_setting.add_item(Global.grid_maps[i].map_name,i)
 	map_setting.selected = Global.map_type
 	_on_map_setting_item_selected(map_setting.selected,false,true)
 	# Genration
@@ -203,6 +206,9 @@ var drag = false
 func drag_ended(value):
 	drag = value
 
+
+@export_file("*.tres") var maps : Array[String]
+
 ##Soooo... When I make maps fully into a resorce, and not built in[br]
 ##This script is the first I'm going to change[br][br]
 ##This sets the map.
@@ -213,34 +219,43 @@ func _on_map_setting_item_selected(index,mp_player_source=true,block=false):
 	map_setting.selected = index
 	Global.map_type = index
 	for i in range(0,4):
-		if index == 0:
+		for x in range(Global.grid_maps.size()):
+			if not index == x:
+				continue
+			var loaded_map : map_data = Global.grid_maps[x]
 			if not block:
-				cap_list[i].selected = 0
-				Global.cap_list[i] = 1
-			cap_list[i].set_item_disabled(1,false)
-			cap_list[i].set_item_disabled(2,false)
-			cap_list[i].set_item_disabled(3,true)
-		elif index == 1:
-			if not block:
-				cap_list[i].selected = 1
-				Global.cap_list[i] = 2
-			cap_list[i].set_item_disabled(1,false)
-			cap_list[i].set_item_disabled(2,false)
-			cap_list[i].set_item_disabled(3,false)
-		elif index == 2:
-			if not block:
-				cap_list[i].selected = 1
-				Global.cap_list[i] = 2
-			cap_list[i].set_item_disabled(1,false)
-			cap_list[i].set_item_disabled(2,true)
-			cap_list[i].set_item_disabled(3,true)
-		elif index == 3:
-			if not block:
-				cap_list[i].selected = 1
-				Global.cap_list[i] = 2
-			cap_list[i].set_item_disabled(1,false)
-			cap_list[i].set_item_disabled(2,true)
-			cap_list[i].set_item_disabled(3,true)
+				cap_list[i].selected = loaded_map.captial_defualt - 1
+				Global.cap_list[i] = loaded_map.captial_defualt
+			for v in range(1,4):
+				cap_list[i].set_item_disabled(v,loaded_map.captial_max < v+1)
+		#if index == 0:
+			#if not block:
+				#cap_list[i].selected = 0
+				#Global.cap_list[i] = 1
+			#cap_list[i].set_item_disabled(1,false)
+			#cap_list[i].set_item_disabled(2,false)
+			#cap_list[i].set_item_disabled(3,true)
+		#elif index == 1:
+			#if not block:
+				#cap_list[i].selected = 1
+				#Global.cap_list[i] = 2
+			#cap_list[i].set_item_disabled(1,false)
+			#cap_list[i].set_item_disabled(2,false)
+			#cap_list[i].set_item_disabled(3,false)
+		#elif index == 2:
+			#if not block:
+				#cap_list[i].selected = 1
+				#Global.cap_list[i] = 2
+			#cap_list[i].set_item_disabled(1,false)
+			#cap_list[i].set_item_disabled(2,true)
+			#cap_list[i].set_item_disabled(3,true)
+		#elif index == 3:
+			#if not block:
+				#cap_list[i].selected = 1
+				#Global.cap_list[i] = 2
+			#cap_list[i].set_item_disabled(1,false)
+			#cap_list[i].set_item_disabled(2,true)
+			#cap_list[i].set_item_disabled(3,true)
 	sound_play()
 
 @rpc("any_peer")

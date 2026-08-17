@@ -9,4 +9,5 @@ tile_data = PackedInt32Array(0, 0, 2, 131072, 0, 2, 262144, 0, 2, 393216, 0, 2, 
 script = ExtResource("1_ww36d")
 map_name = "Standoff"
 map_patern = SubResource("TileMapPattern_gew3o")
+captial_max = 4
 metadata/_custom_type_script = "uid://bfobmop1avsqd"

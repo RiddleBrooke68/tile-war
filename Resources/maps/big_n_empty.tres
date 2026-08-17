@@ -11,4 +11,5 @@ map_name = "Big n Empty"
 map_patern = SubResource("TileMapPattern_iuufp")
 map_scale = Vector2(0.75, 0.75)
 map_centre = Vector2i(-13, -17)
+captial_max = 4
 metadata/_custom_type_script = "uid://bfobmop1avsqd"
